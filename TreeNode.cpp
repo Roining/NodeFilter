@@ -57,8 +57,8 @@
 #include "TreeNode.h"
 
 //! [0]
-TreeItem::TreeItem(const QVector<QVariant> &data, TreeItem *parent)
-    : itemData(data),
+TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
+    : itemData(std::make_shared<QVector<QVariant>>(data)),
       parentItem(parent)
 {}
 //! [0]
@@ -98,16 +98,16 @@ int TreeItem::childNumber() const
 //! [5]
 int TreeItem::columnCount() const
 {
-    return itemData.count();
+    return itemData->count();
 }
 //! [5]
 
 //! [6]
 QVariant TreeItem::data(int column) const
 {
-    if (column < 0 || column >= itemData.size())
+    if (column < 0 || column >= itemData->size())
         return QVariant();
-    return itemData.at(column);
+    return itemData->at(column);
 }
 //! [6]
 
@@ -131,11 +131,11 @@ QVariant TreeItem::data(int column) const
 //! [8]
 bool TreeItem::insertColumns(int position, int columns)
 {
-    if (position < 0 || position > itemData.size())
+    if (position < 0 || position > itemData->size())
         return false;
 
     for (int column = 0; column < columns; ++column)
-        itemData.insert(position, QVariant());
+        itemData->insert(position, QVariant());
 
     for (TreeItem *child : qAsConst(childItems))
         child->insertColumns(position, columns);
@@ -166,11 +166,11 @@ bool TreeItem::removeChildren(int position, int count)
 
 bool TreeItem::removeColumns(int position, int columns)
 {
-    if (position < 0 || position + columns > itemData.size())
+    if (position < 0 || position + columns > itemData->size())
         return false;
 
     for (int column = 0; column < columns; ++column)
-        itemData.remove(position);
+        itemData->remove(position);
 
     for (TreeItem *child : qAsConst(childItems))
         child->removeColumns(position, columns);
@@ -181,10 +181,11 @@ bool TreeItem::removeColumns(int position, int columns)
 //! [11]
 bool TreeItem::setData(int column, const QVariant &value)
 {
-    if (column < 0 || column >= itemData.size())
+    if (column < 0 || column >= itemData->size())
         return false;
-
-    itemData[column] = value;
+(*itemData.get())[column] = value ;
+//(*t)[column] = value;
+// this->itemData[column] = value;
     return true;
 }
 //! [11]

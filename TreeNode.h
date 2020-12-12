@@ -5,13 +5,14 @@
 
 #include <QVariant>
 #include <QVector>
-
+#include <memory>
 class TreeItem
 {
 public:
-    explicit TreeItem(const QVector<QVariant> &data, TreeItem *parent = nullptr);
+    explicit TreeItem(const QVector<QVariant> data, TreeItem *parent = nullptr);
     ~TreeItem();
-
+//    TreeItem(const TreeItem& other)
+//      : size(other.size), data(other.data) {}
     TreeItem *child(int number);
     int childCount() const;
     int columnCount() const;
@@ -26,7 +27,7 @@ public:
 
 private:
     QVector<TreeItem*> childItems;
-    QVector<QVariant> itemData;
+   std::shared_ptr<QVector<QVariant>> itemData;
     TreeItem *parentItem;
 };
 //! [0]
