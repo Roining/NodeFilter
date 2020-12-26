@@ -1,5 +1,5 @@
 QT += quick
-
+QT += testlib
 CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -9,6 +9,7 @@ CONFIG += c++11
 SOURCES += \
         TreeModel.cpp \
         TreeNode.cpp \
+        filter.cpp \
         main.cpp
 
 RESOURCES += qml.qrc
@@ -26,4 +27,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     TreeModel.h \
-    TreeNode.h
+    TreeNode.h \
+    filter.h

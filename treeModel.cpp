@@ -50,7 +50,7 @@
 
 #include "TreeModel.h"
 #include "TreeNode.h"
-
+#include <iostream>
 
 
 Q_INVOKABLE void TreeModel::log(){
@@ -58,11 +58,13 @@ Q_INVOKABLE void TreeModel::log(){
 }
 //! [0]
 TreeModel::TreeModel(QObject *parent){
+
+
     const QStringList headers({("Title")});
       QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\default.txt");
        file.open(QIODevice::ReadOnly);
        const QString data = file.readAll();
-//        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO clean this up, push to git
+//        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO clean this up
 
 
     QVector<QVariant> rootData;
@@ -72,6 +74,9 @@ TreeModel::TreeModel(QObject *parent){
     rootItem = new TreeItem(rootData);
     setupModelData(data.split('\n'), rootItem);
     file.close();
+    //proxy = new Filtering(this);
+     //proxy->setSourceModel(this);
+//     proxy->setDynamicSortFilter(true);
 }
 TreeModel::TreeModel(const QStringList &headers, const QString &data, QObject *parent)
     : QAbstractItemModel(parent)
@@ -100,7 +105,7 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 }
 //! [2]
 
-QVariant TreeModel::data(const QModelIndex &index, int role) const
+Q_INVOKABLE QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -180,14 +185,16 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
     TreeItem *parentItem = getItem(parent);
     if (!parentItem)
         return false;
-
+    TreeItem *lastItem = getItem(last);
     beginInsertRows(parent, position, position + rows - 1);
-     TreeItem * success = parentItem->insertChildren(position,
+     TreeItem * success = parentItem->insertChildren1(position,
                                                     rows,
-                                                  rootItem->columnCount());
-     const QModelIndex &child  = this->index(0, 0, parent); //TODO swap this code for smth sane
+                                                  rootItem->columnCount(),lastItem);
+     std::cout << "aaa  " << success->itemData << std::endl;
+     std::cout << "aaa  " << success->itemData << std::endl;
+//     const QModelIndex &child  = this->index(0, 0, parent); //TODO swap this code for smth sane
 
-     this->setData(child,"[Data Here]",Qt::EditRole);
+//    this->setData(child,parentItem->data(0),Qt::EditRole);
 
      endInsertRows();
 
@@ -274,8 +281,13 @@ bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
 
 QHash<int, QByteArray> TreeModel::roleNames() const
     {
-        return { {Qt::DisplayRole, "display"} };
+    return { {Qt::DisplayRole, "display"},{Qt::EditRole,"edit"} };
     }
+void TreeModel::saveIndex(const QModelIndex &index){
+    last = index;
+
+}
+
 
 void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 {

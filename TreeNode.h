@@ -11,24 +11,30 @@ class TreeItem
 public:
     explicit TreeItem(const QVector<QVariant> data, TreeItem *parent = nullptr);
     ~TreeItem();
-//    TreeItem(const TreeItem& other)
-//      : size(other.size), data(other.data) {}
+    TreeItem& operator=( TreeItem& other);
+
+    TreeItem( TreeItem& other);
+
     TreeItem *child(int number);
+    void setParent(TreeItem *parent);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
      TreeItem * insertChildren(int position, int count, int columns);
+     TreeItem * insertChildren1(int position, int count, int columns, TreeItem *parent);
     bool insertColumns(int position, int columns);
     TreeItem *parent();
+    bool isDescendant(TreeItem *parent,TreeItem *child);
     bool removeChildren(int position, int count);
     bool removeColumns(int position, int columns);
     int childNumber() const;
     bool setData(int column, const QVariant &value);
-
+std::shared_ptr<QVector<QVariant>> itemData;
 private:
     QVector<TreeItem*> childItems;
-   std::shared_ptr<QVector<QVariant>> itemData;
+//QVector<TreeItem*> *parents;
     TreeItem *parentItem;
+    bool result;
 };
 //! [0]
 

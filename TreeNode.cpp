@@ -55,6 +55,7 @@
 */
 
 #include "TreeNode.h"
+#include <iostream>
 
 //! [0]
 TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
@@ -62,7 +63,22 @@ TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
       parentItem(parent)
 {}
 //! [0]
+TreeItem& TreeItem::operator=( TreeItem& other){
+   if(&other !=this)
+   {
+        childItems = other.childItems;
+//        parentItem = &other;
+        parentItem = nullptr;
+        itemData = other.itemData;
 
+   }
+   return *this;
+}
+TreeItem::TreeItem( TreeItem& other){
+    childItems = other.childItems;
+    parentItem = &other;
+    itemData = other.itemData;
+}
 //! [1]
 TreeItem::~TreeItem()
 {
@@ -78,7 +94,9 @@ TreeItem *TreeItem::child(int number)
     return childItems.at(number);
 }
 //! [2]
-
+void TreeItem::setParent(TreeItem *parent){
+    parentItem = parent;
+}
 //! [3]
 int TreeItem::childCount() const
 {
@@ -110,7 +128,25 @@ QVariant TreeItem::data(int column) const
     return itemData->at(column);
 }
 //! [6]
+TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  TreeItem *parent)
+{
+   if (position < 0 || position > childItems.size())
+       return childItems[0];
 
+   for (int row = 0; row < count; ++row) {
+       QVector<QVariant> data(columns);
+       TreeItem *item = new TreeItem(data, this);
+       *item = *parent;
+
+       item->setParent(this);
+       childItems.insert(position, item);
+ std::cout << "aaa  " << &item << std::endl;
+  std::cout << "aaa  " << &childItems[0] << std::endl;
+   }
+
+ std::cout << "aaa  " << &childItems[0] << std::endl;
+   return childItems[0];
+}
 //! [7]
  TreeItem * TreeItem::insertChildren(int position, int count, int columns)
 {
@@ -145,6 +181,25 @@ bool TreeItem::insertColumns(int position, int columns)
 //! [8]
 
 //! [9]
+//!
+bool TreeItem::isDescendant(TreeItem *parent,TreeItem *child){
+    bool result;
+    while(true){
+    if(child->parent() == nullptr){
+        result =  false;
+        return  result;
+    }
+    else if((child->parent() == parent)||(child == parent)){
+        result = true;
+        return result;
+//    if(child->parent() != parent)
+    }
+     else  {
+           child = child->parent();
+
+            }
+    };
+};
 TreeItem *TreeItem::parent()
 {
     return parentItem;

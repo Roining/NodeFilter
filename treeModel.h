@@ -56,14 +56,15 @@
 #include <QVariant>
 #include <QFile>
 #include <QIODevice>
-
+#include <QPersistentModelIndex>
+#include <filter.h>
 class TreeItem;
 
 //! [0]
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-
+//    Q_PROPERTY(bool cond READ Cond WRITE setCond)
 
 
 public:
@@ -75,7 +76,7 @@ public:
     ~TreeModel();
 //! [0] //! [1]
 
-    QVariant data(const QModelIndex &index, int role) const override;
+   Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
 
@@ -105,12 +106,18 @@ public:
                     const QModelIndex &parent = QModelIndex()) override;
     QHash<int, QByteArray> roleNames() const override ;
 //   Q_INVOKABLE void load(const QUrl &fileUrl);
-
+   Q_INVOKABLE void saveIndex(const QModelIndex &index);
+    TreeItem *getItem(const QModelIndex &index) const;
+    TreeItem *rootItem;
+    bool cond = false;
+    QPersistentModelIndex last;
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);
-    TreeItem *getItem(const QModelIndex &index) const;
 
-    TreeItem *rootItem;
+
+
+    Filtering* proxy;
+
 };
 //! [2]
 
