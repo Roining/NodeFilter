@@ -176,12 +176,8 @@ bool TreeModel::insertColumns(int position, int columns, const QModelIndex &pare
 
     return success;
 }
-void copyRows(int position,const QModelIndex &parent){
 
-}
-Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent)
-{
-
+Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &parent ){
     TreeItem *parentItem = getItem(parent);
     if (!parentItem)
         return false;
@@ -199,6 +195,51 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
      endInsertRows();
 
     return success; //TODO check for success of operation
+//    TreeItem *parentItem = getItem(parent);
+//    if (!parentItem)
+//        return false;
+//    TreeItem *lastItem = getItem(last);
+//    beginInsertRows(parent, position, position + rows - 1);
+
+
+
+//    parentItem->insertChildren1(position,
+//                                                    rows,
+//                                                  rootItem->columnCount(),lastItem);
+////     std::cout << "aaa  " << success->itemData << std::endl;
+////     std::cout << "aaa  " << success->itemData << std::endl;
+
+
+//     endInsertRows();
+
+//    return true; //TODO check for success of operation //TODO check for success of operation
+}
+Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent)
+{
+
+    TreeItem *parentItem = getItem(parent);
+    if (!parentItem)
+        return false;
+    TreeItem *lastItem = getItem(last);
+    beginInsertRows(parent, position, position + rows - 1);
+
+        parentItem->insertChildren(position,
+                                                       rows,
+                                                     rootItem->columnCount());
+        const QModelIndex &child  = this->index(0, 0, parent); //TODO swap this code for smth sane
+
+           this->setData(child,"Data",Qt::EditRole);
+
+
+
+
+//     std::cout << "aaa  " << success->itemData << std::endl;
+//     std::cout << "aaa  " << success->itemData << std::endl;
+
+
+     endInsertRows();
+
+    return true; //TODO check for success of operation
 }
 
 //! [7]

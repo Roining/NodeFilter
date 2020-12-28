@@ -63,7 +63,7 @@ SplitView{
         styleHints.indent: 25
         //styleHints.columnPadding: 30
       // anchors.fill: parent //TODO: remove in column view
-        property var parentIndex: myClass.parent(treeview.currentModelIndex)
+        property var parentIndex: myProxy.parent(treeview.currentModelIndex)
 //       Keys.onDigit9Pressed: {
 //                              ld.active = !ld.active
 //                          }
@@ -72,21 +72,28 @@ SplitView{
             event.accepted = true
             var test = parentIndex
             console.log(treeview.currentModelIndex.row)
-          myClass.removeRows(treeview.currentModelIndex.row,1,test)//TODO
+          myProxy.removeRows(treeview.currentModelIndex.row,1,test)//TODO
+}
+        Keys.onDigit4Pressed: {
+
+            event.accepted = true
+            var test = treeview.currentModelIndex
+            console.log(test)
+          myProxy.copyRows(0,1,test)//TODO
 }
         Keys.onDigit2Pressed: {
 
             event.accepted = true
             var test = treeview.currentModelIndex
             console.log(test)
-          myClass.insertRows(0,1,test)//TODO
+          myProxy.insertRows(0,1,test)//TODO
 }
         Keys.onDigit8Pressed: {
 
             event.accepted = true
             var test = treeview.currentModelIndex
             console.log(test)
-          myClass.saveIndex(test)//TODO
+          myProxy.saveIndex(test)//TODO
 }
         Keys.onDigit5Pressed: {
 
@@ -95,8 +102,7 @@ SplitView{
             console.log(test)
           //mee.insertRows(0,1,test)//T-ODO
 }
-        model: myClass
-
+        model: myProxy
 
 
 
@@ -109,6 +115,13 @@ SplitView{
                 property bool hasChildren: TreeView.hasChildren
                 property bool isExpanded: TreeView.isExpanded
                 property int depth: TreeView.depth
+//                Component.onCompleted:    {
+////                                           var posInTreeView = waaa.mapFromItem(parent, point.position)
+////                                           var row = waaa.rowAtY(posInTreeView.y, true)
+
+//                                            myProxy.enableFilter(true)
+
+//                                       }
 //                MouseArea {
 //                                anchors.fill: parent
 //                                onClicked: treeview.currentIndex = index
@@ -176,7 +189,7 @@ SplitView{
                     clip:true
                     font.pointSize: 18
                     x: indicator.x + Math.max(treeview.styleHints.indent, indicator.width * 1.5)
-                    text: edit
+                    text: edit //TODO adapt for proxies
                     onEditingFinished: edit = text
                 }
         }
@@ -202,7 +215,7 @@ SplitView{
 SplitView.fillHeight : true
 Shortcut {
     sequence: "Ctrl+E"
-    onActivated: myProxy.saveIndex(waaa.currentModelIndex)
+    onActivated: myProxy1.saveIndex(waaa.currentModelIndex)
 }
 //SplitView.minimumHeight:200
 //implicitHeight: 400
@@ -215,27 +228,34 @@ Shortcut {
 
 
 
-        property var parentIndex: myProxy.parent(waaa.currentModelIndex)
+        property var parentIndex: myProxy1.parent(waaa.currentModelIndex)
         Keys.onDigit3Pressed: {
 
             event.accepted = true
             var test = parentIndex
             console.log(waaa.currentModelIndex.row)
-          myProxy.removeRows(waaa.currentModelIndex.row,1,test)//TODO
+          myProxy1.removeRows(waaa.currentModelIndex.row,1,test)//TODO
+}
+        Keys.onDigit4Pressed: {
+
+            event.accepted = true
+            var test = waaa.currentModelIndex
+            console.log(test)
+          myProxy1.copyRows(0,1,test)//TODO
 }
         Keys.onDigit2Pressed: {
 
             event.accepted = true
             var test = waaa.currentModelIndex
             console.log(test)
-          myProxy.insertRows(0,1,test)//TODO
+          myProxy1.insertRows(0,1,test)//TODO
 }
         Keys.onDigit8Pressed: {
 
             event.accepted = true
             var test = waaa.currentModelIndex
             console.log(test)
-          myProxy.saveIndex(test)//TODO
+          myProxy1.saveIndex(test)//TODO
 }
         Keys.onDigit5Pressed: {
 
@@ -244,7 +264,7 @@ Shortcut {
             console.log(test)
           //mee.insertRows(0,1,test)//TODO
 }
-        model: myProxy
+        model: myProxy1
 
 
 
@@ -265,20 +285,14 @@ Shortcut {
                                             property bool isExpanded: TreeView.isExpanded
                                             property int depth: TreeView.depth
 
-//                                            Component.onCompleted:    {
-//                            //                                           var posInTreeView = waaa.mapFromItem(parent, point.position)
-//                            //                                           var row = waaa.rowAtY(posInTreeView.y, true)
-//                                                   console.log(hasChildren)
-//                                                 console.log("uuuuuu  "+ hasChildren)
-//                                                if(hasChildren){
+                                            Component.onCompleted:    {
+                            //                                           var posInTreeView = waaa.mapFromItem(parent, point.position)
+                            //                                           var row = waaa.rowAtY(posInTreeView.y, true)
 
-//                                                    newId.visible === true
-//                                                    console.log("aaaa" + hasChildren)
-//                                                }
-
-//                                                                       if (isExpanded == false)
-//                                                                           waaa.expand(tap.row) //TODO
-//                                                                   }
+                                                                       // myProxy1.enableFilter(true)
+                                                                       if (isExpanded == false)
+                                                                           waaa.expand(tap.row) //TODO
+                                                                   }
                                             Keys.onDigit0Pressed: {
 
                                                 event.accepted = true
@@ -351,6 +365,7 @@ Shortcut {
 }
 
 
+
     TextArea{
     id:search
     signal info(string msg)
@@ -364,7 +379,11 @@ Shortcut {
 
     focus:true
     onTextChanged: {
+        //myProxy1.enableFilter(true)
+        myProxy1.setBool(true)
         waaa.model.setQuery(text)
+
+
     }
 
     }

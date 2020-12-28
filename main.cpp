@@ -13,12 +13,16 @@ int main(int argc, char *argv[])
 
     TreeModel myClass(nullptr);
     Filtering my(0,&myClass);
+    Filtering my1(0,&myClass);
+    Filtering my2(0,&myClass);//TODO: dynamically instantiate these
 //    auto m =new QAbstractItemModelTester(&myClass, QAbstractItemModelTester::FailureReportingMode::Fatal);
 //    qmlRegisterType<TreeModel>("TreeModel.com",1,0,"TreeModel");
 //    qmlRegisterType<Filtering>("TreeModel.com",1,0,"Filtering");
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("myClass",&myClass);
     engine.rootContext()->setContextProperty("myProxy",&my);
+     engine.rootContext()->setContextProperty("myProxy1",&my1);
+      engine.rootContext()->setContextProperty("myProxy2",&my2);
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 
 

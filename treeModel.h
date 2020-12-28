@@ -95,7 +95,7 @@ public:
                  int role = Qt::EditRole) override;
     bool setHeaderData(int section, Qt::Orientation orientation,
                        const QVariant &value, int role = Qt::EditRole) override;
-    void copyRows(int position,const QModelIndex &parent = QModelIndex());
+ Q_INVOKABLE   bool copyRows(int position,int rows,const QModelIndex &parent = QModelIndex());
     bool insertColumns(int position, int columns,
                        const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int position, int columns,
@@ -109,7 +109,7 @@ public:
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
     TreeItem *getItem(const QModelIndex &index) const;
     TreeItem *rootItem;
-    bool cond = false;
+    bool cond = true;
     QPersistentModelIndex last;
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);
