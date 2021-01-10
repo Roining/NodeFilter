@@ -51,7 +51,11 @@
 #include "TreeModel.h"
 #include "TreeNode.h"
 #include <iostream>
-
+#include <QDataStream>
+QDataStream &operator<<(QDataStream &out, const TreeModel &item){
+out << item.cond ;
+return out;
+}
 
 Q_INVOKABLE void TreeModel::log(){
 
@@ -98,7 +102,10 @@ TreeModel::~TreeModel()
 //! [1]
 
 //! [2]
-int TreeModel::columnCount(const QModelIndex &parent) const
+
+    QDataStream &operator>>(QDataStream &, TreeModel &);
+\
+    int TreeModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return rootItem->columnCount();
@@ -182,6 +189,10 @@ Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &
     if (!parentItem)
         return false;
     TreeItem *lastItem = getItem(last);
+//    if(parentItem->parent()->itemData ==parentItem->itemData ){
+//        insertRows(position,rows,parent);
+//    return false;
+//    }
     beginInsertRows(parent, position, position + rows - 1);
      TreeItem * success = parentItem->insertChildren1(position,
                                                     rows,
@@ -214,6 +225,8 @@ Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &
 
 //    return true; //TODO check for success of operation //TODO check for success of operation
 }
+
+
 Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
 
@@ -226,7 +239,7 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
         parentItem->insertChildren(position,
                                                        rows,
                                                      rootItem->columnCount());
-        const QModelIndex &child  = this->index(0, 0, parent); //TODO swap this code for smth sane
+        const QModelIndex &child  = this->index(position, 0, parent); //TODO swap this code for smth sane
 
            this->setData(child,"Data",Qt::EditRole);
 
@@ -238,10 +251,47 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
 
 
      endInsertRows();
+//     emit dataChanged();
 
     return true; //TODO check for success of operation
 }
+Q_INVOKABLE bool TreeModel::insertRows1(int position, int rows, const QModelIndex &parent){
 
+//    QDataStream out(&file);
+//    out << *this;
+//insertRows(parent.row()+1,1,parent.parent());
+TreeItem *parentItem = getItem(parent);
+if (!parentItem)
+    return false;
+TreeItem *lastItem = getItem(last);
+QFile file("file.txt");
+file.open(QIODevice::WriteOnly);
+QDataStream stream( &file );
+// loop
+stream << "test";
+
+// loop end
+file.close();
+beginInsertRows(parent, position, position + rows - 1);
+
+    parentItem->insertChildren(position,
+                                                   rows,
+                                                 rootItem->columnCount());
+    const QModelIndex &child  = this->index(position, 0, parent); //TODO swap this code for smth sane
+
+       this->setData(child,"Data",Qt::EditRole);
+
+
+
+
+//     std::cout << "aaa  " << success->itemData << std::endl;
+//     std::cout << "aaa  " << success->itemData << std::endl;
+
+
+ endInsertRows();
+
+return true; //TODO check for success of operation
+}
 //! [7]
 Q_INVOKABLE QModelIndex TreeModel::parent(const QModelIndex &index) const
 {

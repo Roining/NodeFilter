@@ -6,8 +6,10 @@
 #include <QVariant>
 #include <QVector>
 #include <memory>
+#include <QUuid>
 class TreeItem
 {
+
 public:
     explicit TreeItem(const QVector<QVariant> data, TreeItem *parent = nullptr);
     ~TreeItem();
@@ -30,11 +32,13 @@ public:
     int childNumber() const;
     bool setData(int column, const QVariant &value);
 std::shared_ptr<QVector<QVariant>> itemData;
+bool visible = true;
 private:
-    QVector<TreeItem*> childItems;
+   std::shared_ptr<QVector<TreeItem*>> childItems;
 //QVector<TreeItem*> *parents;
     TreeItem *parentItem;
     bool result;
+    QUuid id;
 };
 //! [0]
 

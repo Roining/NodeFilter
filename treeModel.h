@@ -107,16 +107,19 @@ public:
     QHash<int, QByteArray> roleNames() const override ;
 //   Q_INVOKABLE void load(const QUrl &fileUrl);
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
+    Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent);
+
     TreeItem *getItem(const QModelIndex &index) const;
     TreeItem *rootItem;
     bool cond = true;
     QPersistentModelIndex last;
+    int f = 5;
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);
 
 
 
-    Filtering* proxy;
+
 
 };
 //! [2]

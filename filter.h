@@ -11,6 +11,7 @@ public:
 
     Filtering(QObject *parent = nullptr);
     Filtering(QObject *parent = nullptr, TreeModel* my = nullptr);
+    Q_INVOKABLE bool removeRows(int position, int rows, const QModelIndex &parent);
     Q_INVOKABLE bool copyRows(int position, int rows,
                               const QModelIndex &parent = QModelIndex());
     Q_INVOKABLE bool insertRows(int position, int rows, const QModelIndex &parent);

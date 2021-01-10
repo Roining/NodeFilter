@@ -60,8 +60,11 @@
 //! [0]
 TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
     : itemData(std::make_shared<QVector<QVariant>>(data)),
-      parentItem(parent)
-{}
+      parentItem(parent),childItems(std::make_shared<QVector<TreeItem*>>()),id(id.createUuid())
+{
+//    id = id.createUuid(); //TODO:check if valid
+
+}
 //! [0]
 TreeItem& TreeItem::operator=( TreeItem& other){
    if(&other !=this)
@@ -82,25 +85,26 @@ TreeItem::TreeItem( TreeItem& other){
 //! [1]
 TreeItem::~TreeItem()
 {
-    qDeleteAll(childItems);
+  //  qDeleteAll(*childItems); //TODO double check if valid
 }
 //! [1]
+//!
 
 //! [2]
 TreeItem *TreeItem::child(int number)
 {
-    if (number < 0 || number >= childItems.size())
+    if (number < 0 || number >= childItems->size())
         return nullptr;
-    return childItems.at(number);
+    return childItems->at(number);
 }
-//! [2]
+//! [2]3
 void TreeItem::setParent(TreeItem *parent){
     parentItem = parent;
 }
 //! [3]
 int TreeItem::childCount() const
 {
-    return childItems.count();
+    return childItems.get()->count();
 }
 //! [3]
 
@@ -108,7 +112,7 @@ int TreeItem::childCount() const
 int TreeItem::childNumber() const
 {
     if (parentItem)
-        return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
+        return parentItem->childItems->indexOf(const_cast<TreeItem*>(this));
     return 0;
 }
 //! [4]
@@ -130,8 +134,8 @@ QVariant TreeItem::data(int column) const
 //! [6]
 TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  TreeItem *parent)
 {
-   if (position < 0 || position > childItems.size())
-       return childItems[0];
+   if (position < 0 || position > childItems->size())
+       return (*childItems.get())[0];
 
    for (int row = 0; row < count; ++row) {
        QVector<QVariant> data(columns);
@@ -139,28 +143,29 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
        *item = *parent;
 
        item->setParent(this);
-       childItems.insert(position, item);
+       childItems->insert(position, item);
  std::cout << "aaa  " << &item << std::endl;
-  std::cout << "aaa  " << &childItems[0] << std::endl;
+//  std::cout << "aaa  " << &childItems[0] << std::endl;
    }
 
- std::cout << "aaa  " << &childItems[0] << std::endl;
-   return childItems[0];
+// std::cout << "aaa  " << &childItems[0] << std::endl;
+   auto f = (*childItems.get())[0];
+   return (*childItems.get())[0];
 }
 //! [7]
  TreeItem * TreeItem::insertChildren(int position, int count, int columns)
 {
-    if (position < 0 || position > childItems.size())
-        return childItems[0];
+    if (position < 0 || position > childItems->size())
+        return (*childItems.get())[0];
 
     for (int row = 0; row < count; ++row) {
         QVector<QVariant> data(columns);
         TreeItem *item = new TreeItem(data, this);
-        childItems.insert(position, item);
+        childItems->insert(position, item);
 
     }
 
-    return childItems[0];
+    return (*childItems.get())[0];
 }
 //! [7]
 
@@ -173,7 +178,7 @@ bool TreeItem::insertColumns(int position, int columns)
     for (int column = 0; column < columns; ++column)
         itemData->insert(position, QVariant());
 
-    for (TreeItem *child : qAsConst(childItems))
+    for (TreeItem *child : qAsConst(*childItems))
         child->insertColumns(position, columns);
 
     return true;
@@ -209,11 +214,11 @@ TreeItem *TreeItem::parent()
 //! [10]
 bool TreeItem::removeChildren(int position, int count)
 {
-    if (position < 0 || position + count > childItems.size())
+    if (position < 0 || position + count > childItems->size())
         return false;
 
     for (int row = 0; row < count; ++row)
-        delete childItems.takeAt(position);
+        delete childItems->takeAt(position);
 
     return true;
 }
@@ -227,7 +232,7 @@ bool TreeItem::removeColumns(int position, int columns)
     for (int column = 0; column < columns; ++column)
         itemData->remove(position);
 
-    for (TreeItem *child : qAsConst(childItems))
+    for (TreeItem *child : qAsConst(*childItems))
         child->removeColumns(position, columns);
 
     return true;

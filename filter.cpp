@@ -1,6 +1,14 @@
 #include "filter.h"
 #include "treeModel.h"
 #include "TreeNode.h"
+Q_INVOKABLE bool Filtering::removeRows(int position, int rows, const QModelIndex &parent)
+{
+    setBool(false);
+//    enableFilter(false);
+     sourceModel->removeRows(position,rows,mapToSource(parent));
+//     enableFilter(true);
+     setBool(true);
+}
 Q_INVOKABLE bool Filtering::getBool() const{
          return sourceModel->cond;//TODO
      }
@@ -28,7 +36,7 @@ Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex
 {
     setBool(false);
 //   enableFilter(false);
-    sourceModel->insertRows(position,rows,mapToSource(parent));
+    sourceModel->insertRows1(position,rows,mapToSource(parent));
 //    enableFilter(true);
     setBool(true);
 }

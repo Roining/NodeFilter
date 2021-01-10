@@ -9,29 +9,10 @@ import QtQuick.Layouts 1.11
 import Qt.labs.qmlmodels 1.0
 
 ApplicationWindow {
-    width: 1280
+    width: 1920
     height: 1024
     visible: true
     title: qsTr("Hello World")
-
-//    FileDialog {
-//        id: openDialog
-//        fileMode: FileDialog.OpenFile
-//        selectedNameFilter.index: 1
-//        nameFilters: ["Text files (*.txt)", "HTML files (*.html *.htm)", "Markdown files (*.md *.markdown)"]
-//        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-//        onAccepted: document.load(file)
-//    }
-
-//    FileDialog {
-//        id: saveDialog
-//        fileMode: FileDialog.SaveFile
-//        defaultSuffix: document.fileType
-//        nameFilters: openDialog.nameFilters
-//        selectedNameFilter.index: document.fileType === "txt" ? 0 : 1
-//        folder: StandardPaths.writableLocation(StandardPaths.DocumentsLocation)
-//        onAccepted: document.saveAs(file)
-   // }
 
 SplitView{
     anchors.fill:parent
@@ -47,7 +28,8 @@ SplitView{
     TreeView {
 
         id:treeview
-        SplitView.fillHeight : true
+//        SplitView.fillHeight : true
+        SplitView.preferredHeight:  parent.height/2
 //SplitView.minimumHeight:200
 //implicitHeight: 400
 //SplitView.maximumHeight: 600
@@ -107,10 +89,22 @@ SplitView{
 
 
         delegate: Rectangle {
+            TapHandler {
+                id:tap2
+                onTapped: {
+                    var posInTreeView = treeview.mapFromItem(parent, point.position)
+                    var row = treeview.rowAtY(posInTreeView.y, true)
+                    treeview.currentIndex = treeview.viewIndex(0, row);
+//                     focus = true
+//                                                    if (tapCount == 1)
+//                                                        waaa.toggleExpanded(row)
+                }
+            }
 
                 id:hey
                 implicitWidth: 1920
                 implicitHeight: 50
+                color: "steelblue"
                 focus:true
                 property bool hasChildren: TreeView.hasChildren
                 property bool isExpanded: TreeView.isExpanded
@@ -212,7 +206,8 @@ SplitView{
 
         id:waaa
 //anchors.top: treeview.bottom
-SplitView.fillHeight : true
+//SplitView.fillHeight : true
+        SplitView.preferredHeight:  parent.height/2
 Shortcut {
     sequence: "Ctrl+E"
     onActivated: myProxy1.saveIndex(waaa.currentModelIndex)
@@ -246,9 +241,9 @@ Shortcut {
         Keys.onDigit2Pressed: {
 
             event.accepted = true
-            var test = waaa.currentModelIndex
+            var test = waaa.currentModelIndex.parent
             console.log(test)
-          myProxy1.insertRows(0,1,test)//TODO
+          myProxy1.insertRows(waaa.currentModelIndex.row+1,1,test)//TODO
 }
         Keys.onDigit8Pressed: {
 
@@ -262,37 +257,64 @@ Shortcut {
             event.accepted = true
             var test = waaa.currentModelIndex
             console.log(test)
-          //mee.insertRows(0,1,test)//TODO
+          myProxy1.insertRows(0,1,test)//TODO
 }
         model: myProxy1
 
-
+        onCurrentIndexChanged: console.log("current index: " + currentIndex
+                                               + " current row: " + currentIndex.row)
 
         delegate:
 
 
-
+Component{
+            id:ey
 
                                         Rectangle {
 
+//            MouseArea {
+//                    anchors.fill: parent
 
+
+//                    onClicked: {
+//                        console.log(waaa.currentIndex)
+//                        focus = true
+
+//                        waaa.currentIndex === index;
+//                        console.log(waaa.currentIndex)
+//                        console.log(index)
+
+//                        waaa.expand(waaa.currentIndex.row)
+//                    }
+//                }
+                                            TapHandler {
+                                                id:tap1
+                                                onTapped: {
+                                                    var posInTreeView = waaa.mapFromItem(parent, point.position)
+                                                    var row = waaa.rowAtY(posInTreeView.y, true)
+                                                    waaa.currentIndex = waaa.viewIndex(0, row);
+                                                     focus = true
+//                                                    if (tapCount == 1)
+//                                                        waaa.toggleExpanded(row)
+                                                }
+                                            }
                                             id:newId
                                             visible:true
                                             implicitHeight: 50
                                             implicitWidth: 1920
-                                            focus:true
+//                                            focus:true
                                             property bool hasChildren: TreeView.hasChildren
                                             property bool isExpanded: TreeView.isExpanded
                                             property int depth: TreeView.depth
 
-                                            Component.onCompleted:    {
+//                                            Component.onCompleted:    {
                             //                                           var posInTreeView = waaa.mapFromItem(parent, point.position)
                             //                                           var row = waaa.rowAtY(posInTreeView.y, true)
 
                                                                        // myProxy1.enableFilter(true)
-                                                                       if (isExpanded == false)
-                                                                           waaa.expand(tap.row) //TODO
-                                                                   }
+//                                                                       if (isExpanded == false)
+//                                                                           waaa.expand(tap.row) //TODO
+//                                                                   } //TODO: move to c++?
                                             Keys.onDigit0Pressed: {
 
                                                 event.accepted = true
@@ -350,16 +372,24 @@ Shortcut {
                                             TextArea {
 
                                                 focus:true
-
+                                                signal qmlSignal(string msg)
                                                 wrapMode:TextEdit.Wrap
                                                 textFormat: TextEdit.MarkdownText
                                                 clip:true
                                                 font.pointSize: 18
                                                 x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
                                                text: edit
-                                                onEditingFinished: edit = text
+                                                onEditingFinished: {edit = text
+                                                qmlSignal ("text");
+                                                }
+                                                onQmlSignal: {
+                                                        console.log(msg)
+                                                    }
+
                                             }
                                    }
+    }
+
 
 
 }
