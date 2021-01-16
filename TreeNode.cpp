@@ -154,15 +154,10 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
        QVector<QVariant> data(columns);
        TreeItem *item = new TreeItem(data, this);
        *item = *parent;
-
        item->setParent(this);
        childItems->insert(position, item);
- std::cout << "aaa  " << &item << std::endl;
-//  std::cout << "aaa  " << &childItems[0] << std::endl;
-   }
 
-// std::cout << "aaa  " << &childItems[0] << std::endl;
-   auto f = (*childItems.get())[0];
+   }
    return (*childItems.get())[0];
 }
 //! [7]
@@ -181,7 +176,21 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
     return (*childItems.get())[0];
 }
 //! [7]
+ TreeItem * TreeItem::insertChildren2(int position, int count, int columns)
+{
+    if (position < 0 || position > childItems->size())
+        return (*childItems.get())[0];
 
+    for (int row = 0; row < count; ++row) {
+        QVector<QVariant> data(columns);
+        TreeItem *item = new TreeItem(data, this);
+
+        childItems->insert(position, item);
+
+    }
+
+    return (*childItems.get())[position];
+}
 //! [8]
 bool TreeItem::insertColumns(int position, int columns)
 {

@@ -47,45 +47,101 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+//TreeModel::TreeModel(QObject *parent){
 
+
+//    const QStringList headers({("Title")});
+//      QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\default.txt");
+//       file.open(QIODevice::ReadOnly);
+//       const QString data = file.readAll();
+////        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO clean this up
+
+
+//    QVector<QVariant> rootData;
+//    for (const QString &header : headers)
+//        rootData << header;
+
+//deserialize(rootItem,stream);
+//    rootItem = new TreeItem(rootData);
+////    setupModelData(data.split('\n'), rootItem);
+
+//    file.close();
+
+//}
+//QDataStream &operator>>(QDataStream &in,  TreeItem *&item){
+////<<*item.childItems
+////    item = new TreeItem(0,0);
+//    std::shared_ptr<QVector<QVariant>> itemData1 = std::make_shared<QVector<QVariant>>();
+//    item = new TreeItem(*itemData1);
+//in >> *item->itemData;
+//        in>> item->parentItem;
+
+//        in>> *item->childItems;
+//        in>> item->id;
+//        in>> *item->parents;
+//return in;
+//}
 #include "TreeModel.h"
 #include "TreeNode.h"
 #include <iostream>
 #include <QDataStream>
-QDataStream &operator<<(QDataStream &out, const TreeModel &item){
+#include <QDebug>
+QDebug operator<<(QDebug debug, const TreeItem &c)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << '(' << c.itemData.get() << ", " << c.childItems.get() << ')';
 
-out << item.f ;
-
-return out;
+    return debug;
 }
+
 QDataStream &operator<<(QDataStream &out, const TreeItem &item){
 out << *item.itemData;
+out << item.numberOfChildren;
+out << item.id;
+//out << *item.parents;
+
+
+
+qDebug() << *item.childItems;
+//qDebug << item.itemData;
 return out;
 }
 QDataStream &operator>>(QDataStream &in,  TreeItem &item){
 //<<*item.childItems
 in >> *item.itemData;
+in >> item.numberOfChildren;
+in >> item.id;
+//in >> *item.parents;
+
+qDebug() << "before " << *item.childItems;
+std::shared_ptr<QVector<TreeItem*>> temp = std::make_shared<QVector<TreeItem*>>();
+//in >> *temp;
+qDebug() << "after" << *temp;
+
+
 return in;
 }
 Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream){
-if (node->parentItem){
-        stream >> *node;
-}
+
+    stream >> *node;
+
+if(node->numberOfChildren){
+    for(int i = 0; i < node->numberOfChildren;i++){
+        QVector<QVariant> rootData;
+//        node->insertChildren2(i,1,0);
+//        node->child(node->childCount() - 1)->setData(0, node->(*childItems.get())[i]);
 
 
-if(node->childCount()){
-    for(int i = 0; i < node->childCount();i++){
-        TreeItem* childNode = (*node->childItems.get())[i];
-
-        deserialize(childNode,stream);
+        deserialize(node->insertChildren2(i,1,0),stream);
 
     }
 }
 return;
 }
-Q_INVOKABLE void TreeModel::serialize(const TreeItem  *node ,QDataStream &stream){
-if(node->parentItem){
-    stream << *node;}
+Q_INVOKABLE void TreeModel::serialize( TreeItem  *node ,QDataStream &stream){
+
+node->numberOfChildren = node->childCount();
+    stream << *node;
 
 if(node->childCount()){
     for(int i = 0; i < node->childCount();i++){
@@ -103,6 +159,7 @@ Q_INVOKABLE void TreeModel::log(){
     QDataStream stream( &file );
     //stream << *rootItem->child(1);
     //serialize(rootItem,stream);
+    rootItem->numberOfChildren = rootItem->childCount();
         serialize(rootItem,stream);
          file.close();
     }
@@ -111,24 +168,45 @@ Q_INVOKABLE void TreeModel::log(){
 TreeModel::TreeModel(QObject *parent){
 
 
-    const QStringList headers({("Title")});
-      QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\default.txt");
-       file.open(QIODevice::ReadOnly);
-       const QString data = file.readAll();
-//        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO clean this up
 
+    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+    if(file.open(QIODevice::ReadWrite)){
+    QDataStream stream( &file );
 
+//const QStringList headers({("Title")});
     QVector<QVariant> rootData;
-    for (const QString &header : headers)
-        rootData << header;
-
+//    for (const QString &header : headers)
+//        rootData << header;
     rootItem = new TreeItem(rootData);
-    setupModelData(data.split('\n'), rootItem);
+deserialize(rootItem,stream);
+
+//    setupModelData(data.split('\n'), rootItem);
+
     file.close();
-    //proxy = new Filtering(this);
-     //proxy->setSourceModel(this);
-//     proxy->setDynamicSortFilter(true);
+    }
+
 }
+//TreeModel::TreeModel(QObject *parent){
+
+
+//    const QStringList headers({("Title")});
+//      QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\default.txt");
+//       file.open(QIODevice::ReadOnly);
+//       const QString data = file.readAll();
+////        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO clean this up
+
+
+//    QVector<QVariant> rootData;
+//    for (const QString &header : headers)
+//        rootData << header;
+
+
+//    rootItem = new TreeItem(rootData);
+//    setupModelData(data.split('\n'), rootItem);
+
+//    file.close();
+
+//}
 TreeModel::TreeModel(const QStringList &headers, const QString &data, QObject *parent)
     : QAbstractItemModel(parent)
 {
@@ -240,41 +318,20 @@ Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &
     if (!parentItem)
         return false;
     TreeItem *lastItem = getItem(last);
-//    if(parentItem->parent()->itemData ==parentItem->itemData ){
-//        insertRows(position,rows,parent);
-//    return false;
-//    }
     beginInsertRows(parent, position, position + rows - 1);
      TreeItem * success = parentItem->insertChildren1(position,
                                                     rows,
                                                   rootItem->columnCount(),lastItem);
-     std::cout << "aaa  " << success->itemData << std::endl;
-     std::cout << "aaa  " << success->itemData << std::endl;
-//     const QModelIndex &child  = this->index(0, 0, parent); //TODO swap this code for smth sane
-
-//    this->setData(child,parentItem->data(0),Qt::EditRole);
-
      endInsertRows();
 
     return success; //TODO check for success of operation
-//    TreeItem *parentItem = getItem(parent);
-//    if (!parentItem)
-//        return false;
-//    TreeItem *lastItem = getItem(last);
-//    beginInsertRows(parent, position, position + rows - 1);
 
 
 
-//    parentItem->insertChildren1(position,
-//                                                    rows,
-//                                                  rootItem->columnCount(),lastItem);
-////     std::cout << "aaa  " << success->itemData << std::endl;
-////     std::cout << "aaa  " << success->itemData << std::endl;
 
 
-//     endInsertRows();
 
-//    return true; //TODO check for success of operation //TODO check for success of operation
+
 }
 
 
@@ -429,12 +486,12 @@ QHash<int, QByteArray> TreeModel::roleNames() const
     return { {Qt::DisplayRole, "display"},{Qt::EditRole,"edit"} ,{Qt::UserRole +1, "enabled"}};
     }
 void TreeModel::saveIndex(const QModelIndex &index){
-    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
-    if(file.open(QIODevice::ReadWrite)){
-    QDataStream stream( &file );
-     deserialize(rootItem,stream);
+//    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+//    if(file.open(QIODevice::ReadWrite)){
+//    QDataStream stream( &file );
+//     deserialize(rootItem,stream);
 //    stream >> *rootItem->child(1);
-    }
+//    }
 //    deserialize(rootItem,stream);
 
 

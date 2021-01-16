@@ -110,7 +110,7 @@ public:
     Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent);
 
    Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
-   Q_INVOKABLE void serialize(const TreeItem  *node ,QDataStream &stream);
+   Q_INVOKABLE void serialize( TreeItem  *node ,QDataStream &stream);
    Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream);
     TreeItem *rootItem;
     bool cond = true;
