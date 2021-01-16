@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>Delegate.qml</file>
+        <file>Bin.qml</file>
+        <file>SearchProxy.qml</file>
     </qresource>
 </RCC>

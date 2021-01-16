@@ -60,9 +60,10 @@
 //! [0]
 TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
     : itemData(std::make_shared<QVector<QVariant>>(data)),
-      parentItem(parent),childItems(std::make_shared<QVector<TreeItem*>>()),id(id.createUuid())
+      parentItem(parent),childItems(std::make_shared<QVector<TreeItem*>>()),id(id.createUuid()),parents(std::make_shared<QVector<TreeItem*>>())
 {
 //    id = id.createUuid(); //TODO:check if valid
+    parents->append(parentItem);
 
 }
 //! [0]
@@ -72,6 +73,7 @@ TreeItem& TreeItem::operator=( TreeItem& other){
         childItems = other.childItems;
 //        parentItem = &other;
         parentItem = nullptr;
+        parents = other.parents;
         itemData = other.itemData;
 
    }
@@ -79,7 +81,12 @@ TreeItem& TreeItem::operator=( TreeItem& other){
 }
 TreeItem::TreeItem( TreeItem& other){
     childItems = other.childItems;
+//    if(parentItem){
+//        parents->remove(parents->indexOf(parentItem)); //TODO is parentItem properly cleaned up?
+//    }
     parentItem = &other;
+    parents = other.parents;
+    parents->append(parentItem);
     itemData = other.itemData;
 }
 //! [1]
@@ -99,7 +106,13 @@ TreeItem *TreeItem::child(int number)
 }
 //! [2]3
 void TreeItem::setParent(TreeItem *parent){
+//    if(parentItem){
+//        parents->remove(parents->indexOf(parentItem)); //TODO is parentItem properly cleaned up?
+//    }
     parentItem = parent;
+    if(parent){
+    parents->append(parentItem);
+    }
 }
 //! [3]
 int TreeItem::childCount() const

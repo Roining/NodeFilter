@@ -32,13 +32,19 @@ public:
     int childNumber() const;
     bool setData(int column, const QVariant &value);
 std::shared_ptr<QVector<QVariant>> itemData;
+std::shared_ptr<QVector<TreeItem*>> childItems;
+std::shared_ptr<QVector<TreeItem*>> parents;
+TreeItem *parentItem;
+ QUuid id;//TODO make data members private again
+
 bool visible = true;
+ bool enabled = true;
 private:
-   std::shared_ptr<QVector<TreeItem*>> childItems;
+
 //QVector<TreeItem*> *parents;
-    TreeItem *parentItem;
+
     bool result;
-    QUuid id;
+
 };
 //! [0]
 

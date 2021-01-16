@@ -109,11 +109,14 @@ public:
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
     Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent);
 
-    TreeItem *getItem(const QModelIndex &index) const;
+   Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
+   Q_INVOKABLE void serialize(const TreeItem  *node ,QDataStream &stream);
+   Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream);
     TreeItem *rootItem;
     bool cond = true;
     QPersistentModelIndex last;
     int f = 5;
+
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);
 

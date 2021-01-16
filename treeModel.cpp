@@ -53,12 +53,59 @@
 #include <iostream>
 #include <QDataStream>
 QDataStream &operator<<(QDataStream &out, const TreeModel &item){
-out << item.cond ;
+
+out << item.f ;
+
 return out;
 }
+QDataStream &operator<<(QDataStream &out, const TreeItem &item){
+out << *item.itemData;
+return out;
+}
+QDataStream &operator>>(QDataStream &in,  TreeItem &item){
+//<<*item.childItems
+in >> *item.itemData;
+return in;
+}
+Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream){
+if (node->parentItem){
+        stream >> *node;
+}
 
+
+if(node->childCount()){
+    for(int i = 0; i < node->childCount();i++){
+        TreeItem* childNode = (*node->childItems.get())[i];
+
+        deserialize(childNode,stream);
+
+    }
+}
+return;
+}
+Q_INVOKABLE void TreeModel::serialize(const TreeItem  *node ,QDataStream &stream){
+if(node->parentItem){
+    stream << *node;}
+
+if(node->childCount()){
+    for(int i = 0; i < node->childCount();i++){
+        TreeItem* childNode = (*node->childItems.get())[i];
+
+        serialize(childNode,stream);
+
+    }
+}
+return;
+}
 Q_INVOKABLE void TreeModel::log(){
-
+    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+    if(file.open(QIODevice::WriteOnly)){
+    QDataStream stream( &file );
+    //stream << *rootItem->child(1);
+    //serialize(rootItem,stream);
+        serialize(rootItem,stream);
+         file.close();
+    }
 }
 //! [0]
 TreeModel::TreeModel(QObject *parent){
@@ -116,6 +163,10 @@ Q_INVOKABLE QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+    if(role == Qt::UserRole +1){
+        auto item = getItem(index);
+        return item->enabled;
+    }
 
     if (role != Qt::DisplayRole && role != Qt::EditRole)
         return QVariant();
@@ -136,7 +187,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 //! [3]
 
 //! [4]
-TreeItem *TreeModel::getItem(const QModelIndex &index) const
+Q_INVOKABLE TreeItem *TreeModel::getItem(const QModelIndex &index) const
 {
     if (index.isValid()) {
         TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
@@ -264,14 +315,15 @@ TreeItem *parentItem = getItem(parent);
 if (!parentItem)
     return false;
 TreeItem *lastItem = getItem(last);
-QFile file("file.txt");
-file.open(QIODevice::WriteOnly);
+QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+if(file.open(QIODevice::WriteOnly)){
 QDataStream stream( &file );
-// loop
-stream << "test";
+//stream << *rootItem->child(1);
+//serialize(rootItem,stream);
 
-// loop end
+
 file.close();
+}
 beginInsertRows(parent, position, position + rows - 1);
 
     parentItem->insertChildren(position,
@@ -344,6 +396,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
 
 bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+
     if (role != Qt::EditRole)
         return false;
 
@@ -367,15 +420,28 @@ bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
     if (result)
         emit headerDataChanged(orientation, section, section);
 
+
     return result;
 }
 
 QHash<int, QByteArray> TreeModel::roleNames() const
     {
-    return { {Qt::DisplayRole, "display"},{Qt::EditRole,"edit"} };
+    return { {Qt::DisplayRole, "display"},{Qt::EditRole,"edit"} ,{Qt::UserRole +1, "enabled"}};
     }
 void TreeModel::saveIndex(const QModelIndex &index){
+    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+    if(file.open(QIODevice::ReadWrite)){
+    QDataStream stream( &file );
+     deserialize(rootItem,stream);
+//    stream >> *rootItem->child(1);
+    }
+//    deserialize(rootItem,stream);
+
+
+//    file.close();
+//    }
     last = index;
+    return;
 
 }
 
