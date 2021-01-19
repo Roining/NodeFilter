@@ -50,7 +50,8 @@
 
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
-
+#include <QMap>
+#include <QMultiMap>
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
@@ -58,6 +59,8 @@
 #include <QIODevice>
 #include <QPersistentModelIndex>
 #include <filter.h>
+
+
 class TreeItem;
 
 //! [0]
@@ -86,6 +89,7 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     void log();
+    void log1();
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 //! [1]
 
@@ -111,11 +115,16 @@ public:
 
    Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
    Q_INVOKABLE void serialize( TreeItem  *node ,QDataStream &stream);
-   Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream);
+   Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream,bool check = false);
+    QMultiMap<QUuid,QUuid> container;
+    QMap<QUuid,TreeItem*> map;
     TreeItem *rootItem;
     bool cond = true;
     QPersistentModelIndex last;
     int f = 5;
+    TreeItem* clone;
+
+
 
 private:
     void setupModelData(const QStringList &lines, TreeItem *parent);

@@ -55,6 +55,7 @@
 */
 
 #include "TreeNode.h"
+
 #include <iostream>
 
 //! [0]
@@ -89,10 +90,22 @@ TreeItem::TreeItem( TreeItem& other){
     parents->append(parentItem);
     itemData = other.itemData;
 }
+
 //! [1]
 TreeItem::~TreeItem()
 {
   //  qDeleteAll(*childItems); //TODO double check if valid
+}
+bool TreeItem::operator==(const TreeItem& other) const{
+    auto i = (*this->itemData.get());
+    auto u = (*other.itemData.get());
+    auto h = (this->itemData.get()[0]) == (other.itemData.get()[0]);
+        auto ye = (this->itemData.get()[0][0]) == (other.itemData.get()[0][0]);
+    auto t = (this->itemData.get()[0][0]);
+    auto e = (other.itemData.get()[0][0]);
+    auto t1 = (this->itemData.get()[0]);
+    auto e2 = (other.itemData.get()[0]);
+    return (this->itemData.get()[0]) == (other.itemData.get()[0]);
 }
 //! [1]
 //!
@@ -158,7 +171,7 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
        childItems->insert(position, item);
 
    }
-   return (*childItems.get())[0];
+   return (*childItems.get())[position];
 }
 //! [7]
  TreeItem * TreeItem::insertChildren(int position, int count, int columns)
@@ -173,7 +186,7 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
 
     }
 
-    return (*childItems.get())[0];
+    return (*childItems.get())[position];
 }
 //! [7]
  TreeItem * TreeItem::insertChildren2(int position, int count, int columns)

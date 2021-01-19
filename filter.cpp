@@ -6,7 +6,7 @@ Q_INVOKABLE bool Filtering::log()
 {
 
      sourceModel->log();
-
+return true;
 }
 Q_INVOKABLE bool Filtering::removeRows(int position, int rows, const QModelIndex &parent)
 {
@@ -20,6 +20,7 @@ Q_INVOKABLE bool Filtering::getBool() const{
      }
 Q_INVOKABLE void Filtering::setBool(bool var) const{
          sourceModel->cond = var;
+         return;
      }
 Q_INVOKABLE bool Filtering::copyRows(int position, int rows,
                                    const QModelIndex &parent){
@@ -33,6 +34,7 @@ Q_INVOKABLE bool Filtering::copyRows(int position, int rows,
 Q_INVOKABLE void Filtering::saveIndex(const QModelIndex &index){
 
     sourceModel->saveIndex(mapToSource(index));
+    return;
 
 }
 Q_INVOKABLE void Filtering::saveIndex1(const QModelIndex &index){
@@ -57,6 +59,7 @@ Q_INVOKABLE void Filtering::setQuery(QString string){
     query = string;
     invalidateFilter();
     setBool(false);
+    return;
 
 }
 
@@ -115,6 +118,7 @@ return true;
 Q_INVOKABLE void Filtering::enableFilter(bool enabled) {
        m_enabled = enabled;
 //       invalidateFilter();
+       return;
    }
 
 Filtering::Filtering(QObject *parent):QSortFilterProxyModel(parent){

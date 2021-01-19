@@ -81,11 +81,15 @@
 //        in>> *item->parents;
 //return in;
 //}
+
 #include "TreeModel.h"
 #include "TreeNode.h"
 #include <iostream>
 #include <QDataStream>
 #include <QDebug>
+
+
+
 QDebug operator<<(QDebug debug, const TreeItem &c)
 {
     QDebugStateSaver saver(debug);
@@ -94,56 +98,157 @@ QDebug operator<<(QDebug debug, const TreeItem &c)
     return debug;
 }
 
-QDataStream &operator<<(QDataStream &out, const TreeItem &item){
+QDataStream &operator<<(QDataStream &out,  TreeItem &item){
 out << *item.itemData;
 out << item.numberOfChildren;
 out << item.id;
-//out << *item.parents;
+qDebug() << "serialising parents: " << *item.parents;
+//TODO check smwhere if there's more than 1 parent
+if ((*item.parents.get()).size() >1){ //check if item has more than 1 parent; al
+for(int i = 0; i < (*item.parents.get()).size();i++){
+    if ((*item.parents.get())[i] != nullptr){ //check for nullptr
+   item.temp.append((*item.parents.get())[i]->id);
+    }
+}
+}
+out << item.temp;
+out << item.position;
 
 
 
-qDebug() << *item.childItems;
+
 //qDebug << item.itemData;
 return out;
 }
-QDataStream &operator>>(QDataStream &in,  TreeItem &item){
-//<<*item.childItems
-in >> *item.itemData;
-in >> item.numberOfChildren;
-in >> item.id;
-//in >> *item.parents;
 
-qDebug() << "before " << *item.childItems;
-std::shared_ptr<QVector<TreeItem*>> temp = std::make_shared<QVector<TreeItem*>>();
+
+QDataStream &operator>>(QDataStream &in,  TreeItem *item){
+
+
+in >> *item->itemData;
+in >> item->numberOfChildren; //TODO move out of class members
+in >> item->id;
+//list of parents' ids
+in >> item->temp;
+in >> item->position;
+
+
+qDebug() << "deserialising parents before: " << *item->parents;
+//in >> *item->parents;
+qDebug() << "serialising parents after: " << *item->parents;
+
+qDebug() << "before " << *item->childItems;
+
 //in >> *temp;
-qDebug() << "after" << *temp;
+
+
 
 
 return in;
 }
-Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream){
+Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
+if(!check){ // if inserted node is not copied
+    stream >> node;}
+else{ //if node is copied
+//     clone = node;
+    stream >> node;
+//    node->childItems->clear(); //delete(onle from container?) constructed children. Does info get lost when reconstructing? e.g. when there are copied nodes in children?
+//    node->parents->clear(); //TODO
 
-    stream >> *node;
+}
+map.insert(node->id,node);
+//     map.insert(node->id,node);
+    if((node->temp.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied
+     for(int i = 0; i < node->temp.size();i++){
+//         auto p = node->temp[i];
+
+//     auto v = map.key(node->parentItem);
+//     auto f1 = map.value(container.key(node->id));
+//         if(node->temp[i] != map.key(node->parentItem)){ //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
+
+//             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items
+
+//         }
+          //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
+
+             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items ids
+//probable dont need to check for parent now. Likely caused bugs of other otems had item's parent as a parent
+
+     }
+     }
+
 
 if(node->numberOfChildren){
+//    auto l = map.value(container.key(node->id))->position;
     for(int i = 0; i < node->numberOfChildren;i++){
-        QVector<QVariant> rootData;
-//        node->insertChildren2(i,1,0);
-//        node->child(node->childCount() - 1)->setData(0, node->(*childItems.get())[i]);
+//         auto r = map.value(container.key(node->id));
+
+        if(container.key(node->id) == QUuid()){ //if item is a not parent of a copied item
+ deserialize(node->insertChildren2(i,1,0),stream);
+        }
+        else if (map.value(container.key(node->id))->position[0] != i){
+ deserialize(node->insertChildren2(i,1,0),stream);
+        }
+        else{//if item is not a parent of a copied item
+//            auto k = container.key(node->id);
+            auto f = map.value(container.key(node->id));
+
+map.value(container.key(node->id))->position.remove(0);
+
+container.remove(container.key(node->id),node->id); //TODO
+
+//            node->insertChildren1(i,1,0,f);
+            deserialize( node->insertChildren1(i,1,0,f),stream,true);
 
 
-        deserialize(node->insertChildren2(i,1,0),stream);
+        }
 
     }
+//    if(!check){
+//        for(int i = 0;i<node->childItems->size();i++){
+//            (*node->childItems.get())[i] = clone;
+
+//        }
+//    }
 }
 return;
 }
+
 Q_INVOKABLE void TreeModel::serialize( TreeItem  *node ,QDataStream &stream){
+    if (node->parents->size() >1){
+//        for(int i = 0;i< (*node->parents.get())[i]->childItems )
+//        if((node->parentItem->childItems.get()[i])
+//node->position.append(node->parentItem->childItems->indexOf(node));
+for(int i = 0; i < node->parents->size();i++){
+    for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
+//        auto temp =  (*(*node->parents.get())[i]);
+//        auto n = *(*temp.childItems.get())[j];
+//        auto t1 = (*node->parents.get())[i]->childItems->size();
+//         QVector<TreeItem*> pi2 = (temp.childItems.get()[j]);
+//        TreeItem* pi = (temp.childItems.get()[j][j]);
+//        auto t = *node;
+//        auto iu = temp.childItems.get()[j][0];
+//        if( temp.childItems.get()[j][0] == node){
+//      auto r =   *(temp.childItems.get()[0][j]);
+        if( (*(*(*(*node->parents.get())[i]).childItems.get())[j]) == *node){
+//            auto copy = (*temp.childItems.get())[j];
+//            auto copy = temp.childItems.get()[j][0];
+//             TreeItem&  copy = (*(*(*(*node->parents.get())[i]).childItems.get())[j]);
+//            auto p = (*node->parents.get())[i]->childItems->indexOf(&copy);
+            node->position.append((*node->parents.get())[i]->childItems->indexOf(&(*(*(*(*node->parents.get())[i]).childItems.get())[j])));
+        }
+    }
+//auto u = (*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i]->childItems.);
+//auto k = (*node->parents.get())[i];
+
+//    node->position.append((*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i])); //
+}
+    }
 
 node->numberOfChildren = node->childCount();
     stream << *node;
 
-if(node->childCount()){
+if(node->childCount()){ //TODO replace with numberOfChildren?
     for(int i = 0; i < node->childCount();i++){
         TreeItem* childNode = (*node->childItems.get())[i];
 
@@ -152,6 +257,17 @@ if(node->childCount()){
     }
 }
 return;
+}
+Q_INVOKABLE void TreeModel::log1(){
+    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
+    if(file.open(QIODevice::WriteOnly)){
+    QDataStream stream( &file );
+    //stream << *rootItem->child(1);
+    //serialize(rootItem,stream);
+    rootItem->numberOfChildren = rootItem->childCount();
+        serialize(rootItem,stream);
+         file.close();
+    }
 }
 Q_INVOKABLE void TreeModel::log(){
     QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");

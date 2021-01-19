@@ -16,6 +16,7 @@ public:
     TreeItem& operator=( TreeItem& other);
 
     TreeItem( TreeItem& other);
+    bool operator==(const TreeItem& other) const;
  TreeItem * insertChildren2(int position, int count, int columns);
     TreeItem *child(int number);
     void setParent(TreeItem *parent);
@@ -36,10 +37,13 @@ std::shared_ptr<QVector<TreeItem*>> childItems;
 std::shared_ptr<QVector<TreeItem*>> parents;
 TreeItem *parentItem;
 int numberOfChildren;
+QVector<int> position;
  QUuid id;//TODO make data members private again
+ QVector<QUuid> temp;
 
 bool visible = true;
  bool enabled = true;
+
 private:
 
 //QVector<TreeItem*> *parents;
