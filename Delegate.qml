@@ -52,19 +52,20 @@ onActivated: waaa.model.saveIndex(waaa.currentModelIndex)
         event.accepted = true
         var test = waaa.currentModelIndex
         console.log(test)
-      waaa.model.copyRows(0,1,test)//TODO
+      waaa.model.copyRows(0,1,test,myClass.getLastIndex())//TODO
 }
     Keys.onDigit7Pressed: {
      waaa.model.log()
     }
-    Keys.onDigit6Pressed: { //TODO
-        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
-                                                                                           you);
-                                            //        var source1 = source.createObject(you)
-                                                    console.log(waaa.SplitView.preferredHeight)
-                                            waaa.height = waaa.height/2
-                                                    console.log(waaa.SplitView.preferredHeight)
-                                                    var   sprite = trie.createObject(split,{model:component,height:waaa.height})
+    Keys.onDigit6Pressed: {
+        //TODO
+//        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
+//                                                                                           you);
+//                                            //        var source1 = source.createObject(you)
+//                                                    console.log(waaa.SplitView.preferredHeight)
+//                                            waaa.height = waaa.height/2
+//                                                    console.log(waaa.SplitView.preferredHeight)
+//                                                    var   sprite = trie.createObject(split,{model:component,height:waaa.height})
     }
     Keys.onDigit2Pressed: {
 
@@ -176,7 +177,7 @@ Component{
                                                 anchors.verticalCenter: parent.verticalCenter
                                             }
                                         TextArea {
-
+                                            id:content
                                             focus:true
 
                                             wrapMode:TextEdit.Wrap
@@ -188,6 +189,22 @@ Component{
                                             onTextChanged:  {edit = text
 
                                             }
+                                            Keys.onDigit0Pressed: {
+
+                                                content.text =  waaa.model.getId(waaa.currentModelIndex)
+//                                                        textEdit.text = listModel.get(listView.currentIndex).name
+                                                content.selectAll()
+                                                content.copy()
+                                        }
+                                            Shortcut {
+                                                    sequence: "Ctrl+U"
+                                                    onActivated: {
+                                                        content.text =  waaa.model.getId(waaa.currentModelIndex)
+//                                                        textEdit.text = listModel.get(listView.currentIndex).name
+                                                        content.selectAll()
+                                                        content.copy()
+                                                    }
+                                                }
 
 
                                         }

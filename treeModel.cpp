@@ -104,13 +104,7 @@ out << item.numberOfChildren;
 out << item.id;
 qDebug() << "serialising parents: " << *item.parents;
 //TODO check smwhere if there's more than 1 parent
-if ((*item.parents.get()).size() >1){ //check if item has more than 1 parent; al
-for(int i = 0; i < (*item.parents.get()).size();i++){
-    if ((*item.parents.get())[i] != nullptr){ //check for nullptr
-   item.temp.append((*item.parents.get())[i]->id);
-    }
-}
-}
+
 out << item.temp;
 out << item.position;
 
@@ -146,63 +140,99 @@ qDebug() << "before " << *item->childItems;
 
 return in;
 }
-Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
-if(!check){ // if inserted node is not copied
-    stream >> node;}
-else{ //if node is copied
-//     clone = node;
-    stream >> node;
-//    node->childItems->clear(); //delete(onle from container?) constructed children. Does info get lost when reconstructing? e.g. when there are copied nodes in children?
-//    node->parents->clear(); //TODO
+void TreeModel::deserializeCopy( TreeItem  *node ,QDataStream &stream, bool check){
 
+           QVector<QVariant> data(0);
+        auto gh = new TreeItem(data,nullptr); // leak
+      stream >> gh;
+
+       for(int i = 0; i < node->numberOfChildren;i++){
+    deserializeCopy(node->insertChildren2(i,1,0),stream);
+       }
+   return;
 }
-map.insert(node->id,node);
-//     map.insert(node->id,node);
+
+Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
+ if(!check){ // if inserted node is not copied
+    stream >> node;
+    map.insert(node->id,node);
     if((node->temp.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied
      for(int i = 0; i < node->temp.size();i++){
-//         auto p = node->temp[i];
-
-//     auto v = map.key(node->parentItem);
-//     auto f1 = map.value(container.key(node->id));
-//         if(node->temp[i] != map.key(node->parentItem)){ //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
-
-//             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items
-
-//         }
-          //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
-
-             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items ids
-//probable dont need to check for parent now. Likely caused bugs of other otems had item's parent as a parent
-
+ if(node->temp[i] != node->parentItem->id){
+    container.insert(node->id,node->temp[i]);
+    }//container has id's of items linked to their parents' items ids
      }
+     if(!node->position.isEmpty()){
+        node->position.remove(0);
      }
+     }}
+else{
+    //if node is copied
+     stream >> node;
+      map.insert(node->id,node);
+//node->childItems->clear();
+//   node->itemData->clear();
+//        QVector<QVariant> data(0);
+//     auto gh = new TreeItem(data,nullptr); // leak
+//   stream >> gh;
+//   for(int i = 0;i < node->childItems->size();i++){
+//       deserializeCopy((*node->childItems.get())[i], stream);
+//   }
 
+//return;
 
-if(node->numberOfChildren){
-//    auto l = map.value(container.key(node->id))->position;
-    for(int i = 0; i < node->numberOfChildren;i++){
-//         auto r = map.value(container.key(node->id));
+//   QVector<QVariant> data(columns);
+//   TreeItem *item = new TreeItem(data, this);
+//   *item = *parent;
+//   item->setParent(this);
+//   childItems->insert(position, item);
+
+//return (*childItems.get())[position];
+//    for(int i = 0;i < node->childItems->size();i++){
+//        stream >> clone;
+////    clone->itemData->clear();
+//        clone->result = !clone->result;
+//    }
+//    return;
+
+}
+     for(int i = 0; i < node->numberOfChildren;i++){
+        if(i == 76){
+            auto u = 78;
+        }
 
         if(container.key(node->id) == QUuid()){ //if item is a not parent of a copied item
- deserialize(node->insertChildren2(i,1,0),stream);
+
+    deserialize(node->insertChildren2(i,1,0),stream);
         }
-        else if (map.value(container.key(node->id))->position[0] != i){
- deserialize(node->insertChildren2(i,1,0),stream);
+        else{
+      if(  map.value(container.key(node->id)))
+      {
+
+
+
+    auto score = map.value(container.key(node->id));
+
+         if (map.value(container.key(node->id))->position[0] != i){
+    auto e = map.value(container.key(node->id))->position[0];
+    deserialize(node->insertChildren2(i,1,0),stream);
         }
-        else{//if item is not a parent of a copied item
-//            auto k = container.key(node->id);
-            auto f = map.value(container.key(node->id));
 
-map.value(container.key(node->id))->position.remove(0);
+         else if (map.value(container.key(node->id))->position[0] == i){//if item is not a parent of a copied item
 
-container.remove(container.key(node->id),node->id); //TODO
+            auto f = map.value(container.key(node->id)); //copy constructor?
+            auto o = map.value(container.key(node->id))->position[0];
+            map.value(container.key(node->id))->position.remove(0);
 
-//            node->insertChildren1(i,1,0,f);
+            container.remove(container.key(node->id),node->id); //TODO
+
+
             deserialize( node->insertChildren1(i,1,0,f),stream,true);
 
 
         }
-
+      }
+    }
     }
 //    if(!check){
 //        for(int i = 0;i<node->childItems->size();i++){
@@ -210,38 +240,41 @@ container.remove(container.key(node->id),node->id); //TODO
 
 //        }
 //    }
-}
+
 return;
 }
 
 Q_INVOKABLE void TreeModel::serialize( TreeItem  *node ,QDataStream &stream){
-    if (node->parents->size() >1){
-//        for(int i = 0;i< (*node->parents.get())[i]->childItems )
-//        if((node->parentItem->childItems.get()[i])
-//node->position.append(node->parentItem->childItems->indexOf(node));
-for(int i = 0; i < node->parents->size();i++){
-    for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
-//        auto temp =  (*(*node->parents.get())[i]);
-//        auto n = *(*temp.childItems.get())[j];
-//        auto t1 = (*node->parents.get())[i]->childItems->size();
-//         QVector<TreeItem*> pi2 = (temp.childItems.get()[j]);
-//        TreeItem* pi = (temp.childItems.get()[j][j]);
-//        auto t = *node;
-//        auto iu = temp.childItems.get()[j][0];
-//        if( temp.childItems.get()[j][0] == node){
-//      auto r =   *(temp.childItems.get()[0][j]);
-        if( (*(*(*(*node->parents.get())[i]).childItems.get())[j]) == *node){
-//            auto copy = (*temp.childItems.get())[j];
-//            auto copy = temp.childItems.get()[j][0];
-//             TreeItem&  copy = (*(*(*(*node->parents.get())[i]).childItems.get())[j]);
-//            auto p = (*node->parents.get())[i]->childItems->indexOf(&copy);
-            node->position.append((*node->parents.get())[i]->childItems->indexOf(&(*(*(*(*node->parents.get())[i]).childItems.get())[j])));
+    if ((*node->parents.get()).size() >1){ //check if item has more than 1 parent; al
+    for(int i = 0; i < (*node->parents.get()).size();i++){
+        if ((*node->parents.get())[i] != nullptr){ //check for nullptr
+       node->temp.append((*node->parents.get())[i]->id);
         }
     }
+    }
+    if (node->parents->size() >1){
+
+for(int i = 0; i < node->parents->size();i++){
+    for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
+
+
+        if( (*(*(*(*node->parents.get())[i]).childItems.get())[j]) == *node){
+
+            node->position.append((*node->parents.get())[i]->childItems->indexOf(&(*(*(*(*node->parents.get())[i]).childItems.get())[j])));
+
+//    if((*node->parents.get())[i]->parentItem !=nullptr){
+//             node->position.append((*node->parents.get())[i]->parentItem->childItems->indexOf(&*(*node->parents.get())[i]));
+//}
+//    if((*node->parents.get())[i]->parentItem !=nullptr){
+//             node->position.append((*node->parents.get())[i]->childItems->indexOf(&*(*node->parents.get())[i]));
+//}
+//    }
 //auto u = (*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i]->childItems.);
 //auto k = (*node->parents.get())[i];
 
 //    node->position.append((*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i])); //
+        }
+    }
 }
     }
 
@@ -256,8 +289,10 @@ if(node->childCount()){ //TODO replace with numberOfChildren?
 
     }
 }
+
 return;
 }
+
 Q_INVOKABLE void TreeModel::log1(){
     QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
     if(file.open(QIODevice::WriteOnly)){
@@ -419,7 +454,35 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
     return QModelIndex();
 }
 //! [6]
+//!
+//TreeItem* TreeModel::getItemFromId(QUuid id){
+//   return 0;
+//}
+bool TreeModel::isDescendantFromId(QUuid parent,QUuid child){
+    auto parentItem = map.value(parent);
+    auto childItem = map.value(child);
+    bool result;
+    while(true){
+    if(childItem->parent() == nullptr){
+        result =  false;
+        return  result;
+    }
+    else if((childItem->parent() == parentItem)||(childItem == parentItem)){
+        result = true;
+        return result;
+//    if(child->parent() != parent)
+    }
+     else  {
+           childItem = childItem->parent();
 
+            }
+    };
+};
+Q_INVOKABLE QString TreeModel::getId(const QModelIndex &index){
+    auto item = getItem(index);
+    QString string = item->id.toString();
+    return string;
+}
 bool TreeModel::insertColumns(int position, int columns, const QModelIndex &parent)
 {
     beginInsertColumns(parent, position, position + columns - 1);
@@ -428,18 +491,38 @@ bool TreeModel::insertColumns(int position, int columns, const QModelIndex &pare
 
     return success;
 }
-
-Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &parent ){
+Q_INVOKABLE QPersistentModelIndex TreeModel::getLastIndex(){
+    return last;
+}
+Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &parent,const QPersistentModelIndex &source ){
     TreeItem *parentItem = getItem(parent);
-    if (!parentItem)
-        return false;
-    TreeItem *lastItem = getItem(last);
+    if (!parentItem){
+        return false;}
+
+    TreeItem *lastItem = getItem(source);
+
+    lastItem = getItem(source);
+
+
+
+
+
     beginInsertRows(parent, position, position + rows - 1);
+//     TreeItem * success = parentItem->insertChildren1(position,
+//                                                    rows,
+//                                                  rootItem->columnCount(),lastItem);
      TreeItem * success = parentItem->insertChildren1(position,
                                                     rows,
                                                   rootItem->columnCount(),lastItem);
      endInsertRows();
 
+     for(int i = 0; i < lastItem->childCount();i++){
+
+//         last = index(i,0, last);
+          QPersistentModelIndex  itemIndex = index(position,0, parent);
+         copyRows(i, 1, itemIndex,index(i,0, source) );
+
+     }
     return success; //TODO check for success of operation
 
 
@@ -450,7 +533,29 @@ Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &
 
 }
 
+//Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &parent ){
+//    TreeItem *parentItem = getItem(parent);
+//    if (!parentItem)
+//        return false;
+//    TreeItem *lastItem = getItem(last);
+//    beginInsertRows(parent, position, position + rows - 1);
+////     TreeItem * success = parentItem->insertChildren1(position,
+////                                                    rows,
+////                                                  rootItem->columnCount(),lastItem);
+//     TreeItem * success = parentItem->insertChildren1(position,
+//                                                    rows,
+//                                                  rootItem->columnCount(),lastItem);
+//     endInsertRows();
 
+//    return success; //TODO check for success of operation
+
+
+
+
+
+
+
+//}
 Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
 

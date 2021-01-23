@@ -71,11 +71,12 @@ TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
 TreeItem& TreeItem::operator=( TreeItem& other){
    if(&other !=this)
    {
-        childItems = other.childItems;
+
 //        parentItem = &other;
         parentItem = nullptr;
         parents = other.parents;
         itemData = other.itemData;
+        //        childItems = other.childItems;
 
    }
    return *this;
@@ -173,6 +174,24 @@ TreeItem * TreeItem::insertChildren1(int position, int count, int columns,  Tree
    }
    return (*childItems.get())[position];
 }
+TreeItem * TreeItem::insertChildrenRecursive(int position, int count, int columns,  TreeItem *copiedItem)
+{
+   if (position < 0 || position > childItems->size())
+       return (*childItems.get())[0];
+
+   for (int row = 0; row < count; ++row) {
+       QVector<QVariant> data(columns);
+       TreeItem *item = new TreeItem(data, this);
+       *item = *copiedItem;
+       item->setParent(this);
+       childItems->insert(position, item);
+        for(int i = 0; i < copiedItem->childCount();i++){
+            insertChildrenRecursive(i, 0,0, (*copiedItem->childItems.get())[i] );
+        }
+
+   }
+   return (*childItems.get())[position];
+}
 //! [7]
  TreeItem * TreeItem::insertChildren(int position, int count, int columns)
 {
@@ -222,7 +241,8 @@ bool TreeItem::insertColumns(int position, int columns)
 
 //! [9]
 //!
-bool TreeItem::isDescendant(TreeItem *parent,TreeItem *child){
+bool TreeItem::
+isDescendant(TreeItem *parent,TreeItem *child){
     bool result;
     while(true){
     if(child->parent() == nullptr){
@@ -240,6 +260,7 @@ bool TreeItem::isDescendant(TreeItem *parent,TreeItem *child){
             }
     };
 };
+
 TreeItem *TreeItem::parent()
 {
     return parentItem;

@@ -25,6 +25,7 @@ public:
     QVariant data(int column) const;
      TreeItem * insertChildren(int position, int count, int columns);
      TreeItem * insertChildren1(int position, int count, int columns, TreeItem *parent);
+      TreeItem * insertChildrenRecursive(int position, int count, int columns, TreeItem *parent);
     bool insertColumns(int position, int columns);
     TreeItem *parent();
     bool isDescendant(TreeItem *parent,TreeItem *child);
@@ -44,11 +45,12 @@ QVector<int> position;
 bool visible = true;
  bool enabled = true;
 
+ bool result;
+
 private:
 
 //QVector<TreeItem*> *parents;
 
-    bool result;
 
 };
 //! [0]

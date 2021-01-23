@@ -621,3 +621,221 @@ function expandAll(ind) {
 return;
 
 }
+
+
+
+
+_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
+if(!check){ // if inserted node is not copied
+    stream >> node;}
+else{ //if node is copied
+//     clone = new TreeItem(nullptr);
+   stream >> clone;
+    for(int i = 0;i < node->childItems->size();i++){
+        stream >> clone;
+    clone->itemData->clear();
+//        clone->result = !clone->result;
+    }
+    return;
+    //    node->childItems->clear(); //delete(onle from container?) constructed children. Does info get lost when reconstructing? e.g. when there are copied nodes in children?
+//    node->parents->clear(); //TODO
+
+}
+map.insert(node->id,node);
+//     map.insert(node->id,node);
+    if((node->temp.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied
+     for(int i = 0; i < node->temp.size();i++){
+//         auto p = node->temp[i];
+
+//     auto v = map.key(node->parentItem);
+//     auto f1 = map.value(container.key(node->id));
+//         if(node->temp[i] != map.key(node->parentItem)){ //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
+
+//             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items
+
+//         }
+          //TODO what if copies are placed in same row? //if one of parents id's doesn't match parentItem/
+
+             container.insert(node->id,node->temp[i]); //container has id's of items linked to their parents' items ids
+//probable dont need to check for parent now. Likely caused bugs of other otems had item's parent as a parent
+
+     }
+     }
+
+
+if(node->numberOfChildren){
+//    auto l = map.value(container.key(node->id))->position;
+    for(int i = 0; i < node->numberOfChildren;i++){
+//         auto r = map.value(container.key(node->id));
+//        QVector<QUuid> arrkeys;
+//        for( auto element:container.keys()){
+//            if( container.value(element) == node->id){
+//                arrkeys.append(container.value(element));
+
+//            }
+//        }
+//auto values = container.values();
+        if(container.key(node->id) == QUuid()){ //if item is a not parent of a copied item
+ deserialize(node->insertChildren2(i,1,0),stream);
+        }
+        else{
+//            bool result = false;
+//           arrkeys.f
+       if (map.value(container.key(node->id))->position[0] != i){
+ deserialize(node->insertChildren2(i,1,0),stream);
+        }
+        else{//if item is not a parent of a copied item
+//            auto k = container.key(node->id);
+            auto f = map.value(container.key(node->id));
+
+map.value(container.key(node->id))->position.remove(0);
+
+container.remove(container.key(node->id),node->id); //TODO
+
+//            node->insertChildren1(i,1,0,f);
+            deserialize( node->insertChildren1(i,1,0,f),stream,true);
+
+
+        }
+        }
+
+    }
+//    if(!check){
+//        for(int i = 0;i<node->childItems->size();i++){
+//            (*node->childItems.get())[i] = clone;
+
+//        }
+//    }
+}
+return;
+}
+Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
+ if(!check){ // if inserted node is not copied
+    stream >> node;
+    map.insert(node->id,node);
+    if((node->temp.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied
+     for(int i = 0; i < node->temp.size();i++){
+ if(node->temp[i] != map.key(node->parentItem)){
+    container.insert(node->id,node->temp[i]);
+    }//container has id's of items linked to their parents' items ids
+     }
+     if(!node->position.isEmpty()){
+        node->position.remove(0);
+     }
+     }}
+else{
+    //if node is copied
+//     clone = node;
+   stream >> node;
+   node->childItems->clear();
+//   QVector<QVariant> data(columns);
+//   TreeItem *item = new TreeItem(data, this);
+//   *item = *parent;
+//   item->setParent(this);
+//   childItems->insert(position, item);
+
+//return (*childItems.get())[position];
+//    for(int i = 0;i < node->childItems->size();i++){
+//        stream >> clone;
+////    clone->itemData->clear();
+//        clone->result = !clone->result;
+//    }
+//    return;
+
+}
+for(int i = 0; i < node->numberOfChildren;i++){
+    if(container.key(node->id) == QUuid()){ //if item is a not parent of a copied item
+
+deserialize(node->insertChildren2(i,1,0),stream);
+    }
+    else{
+  if(  map.value(container.key(node->id)))
+  {
+
+
+
+auto score = map.value(container.key(node->id));
+
+     if (map.value(container.key(node->id))->position[0] != i){
+auto e = map.value(container.key(node->id))->position[0];
+deserialize(node->insertChildren2(i,1,0),stream);
+    }
+
+     else if (map.value(container.key(node->id))->position[0] == i){//if item is not a parent of a copied item
+
+        auto f = map.value(container.key(node->id)); //copy constructor?
+        auto o = map.value(container.key(node->id))->position[0];
+        map.value(container.key(node->id))->position.remove(0);
+
+        container.remove(container.key(node->id),node->id); //TODO
+
+
+        deserialize( node->insertChildren1(i,1,0,f),stream,true);
+
+
+    }
+  }
+}
+}
+
+
+    Q_INVOKABLE void TreeModel::serialize( TreeItem  *node ,QDataStream &stream){
+        if ((*node->parents.get()).size() >1){ //check if item has more than 1 parent; al
+        for(int i = 0; i < (*node->parents.get()).size();i++){
+            if ((*node->parents.get())[i] != nullptr){ //check for nullptr
+           node->temp.append((*node->parents.get())[i]->id);
+            }
+        }
+        }
+        if (node->parents->size() >1){
+    //        for(int i = 0;i< (*node->parents.get())[i]->childItems )
+    //        if((node->parentItem->childItems.get()[i])
+    //node->position.append(node->parentItem->childItems->indexOf(node));
+    for(int i = 0; i < node->parents->size();i++){
+        for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
+    //        auto temp =  (*(*node->parents.get())[i]);
+    //        auto n = *(*temp.childItems.get())[j];
+    //        auto t1 = (*node->parents.get())[i]->childItems->size();
+    //         QVector<TreeItem*> pi2 = (temp.childItems.get()[j]);
+    //        TreeItem* pi = (temp.childItems.get()[j][j]);
+    //        auto t = *node;
+    //        auto iu = temp.childItems.get()[j][0];
+    ////        if( temp.childItems.get()[j][0] == node){
+    //      auto r =   *(temp.childItems.get()[0][j]);
+            if( (*(*(*(*node->parents.get())[i]).childItems.get())[j]) == *node){
+    //            auto copy = (*temp.childItems.get())[j];
+    //            auto copy = temp.childItems.get()[j][0];
+    //             TreeItem&  copy = (*(*(*(*node->parents.get())[i]).childItems.get())[j]);
+    //            auto p = (*node->parents.get())[i]->childItems->indexOf(&copy);
+                node->position.append((*node->parents.get())[i]->childItems->indexOf(&(*(*(*(*node->parents.get())[i]).childItems.get())[j])));
+
+    //    if((*node->parents.get())[i]->parentItem !=nullptr){
+    //             node->position.append((*node->parents.get())[i]->parentItem->childItems->indexOf(&*(*node->parents.get())[i]));
+    //}
+    //    if((*node->parents.get())[i]->parentItem !=nullptr){
+    //             node->position.append((*node->parents.get())[i]->childItems->indexOf(&*(*node->parents.get())[i]));
+    //}
+    //    }
+    //auto u = (*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i]->childItems.);
+    //auto k = (*node->parents.get())[i];
+
+    //    node->position.append((*node->parents.get())[i]->childItems->indexOf((*node->parents.get())[i])); //
+            }
+        }
+    }
+        }
+
+    node->numberOfChildren = node->childCount();
+        stream << *node;
+
+    if(node->childCount()){ //TODO replace with numberOfChildren?
+        for(int i = 0; i < node->childCount();i++){
+            TreeItem* childNode = (*node->childItems.get())[i];
+
+            serialize(childNode,stream);
+
+        }
+    }
+
+    return;
+    }

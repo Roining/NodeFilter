@@ -15,7 +15,7 @@ public:
   //  Filtering(QObject *parent = nullptr, TreeModel* my = nullptr);
     Q_INVOKABLE bool removeRows(int position, int rows, const QModelIndex &parent);
     Q_INVOKABLE bool copyRows(int position, int rows,
-                              const QModelIndex &parent = QModelIndex());
+                              const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
     Q_INVOKABLE bool insertRows(int position, int rows, const QModelIndex &parent);
     Q_INVOKABLE bool getBool() const;
     Q_INVOKABLE  void setBool(bool var) const;
@@ -24,6 +24,7 @@ public:
      Q_INVOKABLE void saveIndex1(const QModelIndex &index);
     Q_INVOKABLE void setQuery(QString string);
     Q_INVOKABLE void enableFilter(bool enabled);
+    Q_INVOKABLE QString getId(const QModelIndex &index);
 
 
     QString query;

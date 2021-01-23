@@ -23,10 +23,10 @@ Q_INVOKABLE void Filtering::setBool(bool var) const{
          return;
      }
 Q_INVOKABLE bool Filtering::copyRows(int position, int rows,
-                                   const QModelIndex &parent){
+                                   const QModelIndex &parent, const QPersistentModelIndex &source){
     setBool(false);
 
-     sourceModel->copyRows(position,rows,mapToSource(parent));
+     sourceModel->copyRows(position,rows,mapToSource(parent),sourceModel->getLastIndex());
 
      setBool(true);
      return true;
@@ -40,6 +40,9 @@ Q_INVOKABLE void Filtering::saveIndex(const QModelIndex &index){
 Q_INVOKABLE void Filtering::saveIndex1(const QModelIndex &index){
 auto f =  mapToSource(index);
 
+}
+Q_INVOKABLE QString Filtering::getId(const QModelIndex &index){
+    return sourceModel->getId(mapToSource(index));
 }
 Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex &parent)
 {
@@ -87,7 +90,10 @@ p->enabled =false;
        }
    }
   if( container[i].startsWith(">")){
-   if(!(sourceModel->getItem(index)->isDescendant(sourceModel->getItem(sourceModel->last),p))){
+    auto query = container[i].section(":",-1);
+    auto item = sourceModel->map.value(query);
+       if(!(sourceModel->getItem(index)->isDescendant(item,p))){
+//   if(!(sourceModel->getItem(index)->isDescendant(sourceModel->getItem(sourceModel->last),p))){
 //       p->enabled =false;
           return false;}
 

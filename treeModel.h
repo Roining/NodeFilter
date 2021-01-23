@@ -51,6 +51,7 @@
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
 #include <QMap>
+#include <QUuid>
 #include <QMultiMap>
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -95,15 +96,17 @@ public:
 
 //! [2]
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    void deserializeCopy( TreeItem  *node ,QDataStream &stream, bool check =false);
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
     bool setHeaderData(int section, Qt::Orientation orientation,
                        const QVariant &value, int role = Qt::EditRole) override;
- Q_INVOKABLE   bool copyRows(int position,int rows,const QModelIndex &parent = QModelIndex());
+ Q_INVOKABLE   bool copyRows(int position,int rows,const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
     bool insertColumns(int position, int columns,
                        const QModelIndex &parent = QModelIndex()) override;
     bool removeColumns(int position, int columns,
                        const QModelIndex &parent = QModelIndex()) override;
+    Q_INVOKABLE QPersistentModelIndex getLastIndex();
    Q_INVOKABLE bool insertRows(int position, int rows,
                     const QModelIndex &parent = QModelIndex()) override;
    Q_INVOKABLE bool removeRows(int position, int rows,
@@ -116,11 +119,14 @@ public:
    Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
    Q_INVOKABLE void serialize( TreeItem  *node ,QDataStream &stream);
    Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream,bool check = false);
+    TreeItem* getItemFromId(QUuid id);
+    Q_INVOKABLE  QString getId(const QModelIndex &id);
+    bool isDescendantFromId(QUuid parent,QUuid child);
     QMultiMap<QUuid,QUuid> container;
     QMap<QUuid,TreeItem*> map;
     TreeItem *rootItem;
     bool cond = true;
-    QPersistentModelIndex last;
+     QPersistentModelIndex last; //TODO should it remain static? Related to copyRows
     int f = 5;
     TreeItem* clone;
 
