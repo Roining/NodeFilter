@@ -115,17 +115,21 @@ public:
 //   Q_INVOKABLE void load(const QUrl &fileUrl);
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
     Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent);
-
+bool isDescendant(TreeItem *parent,TreeItem *child, bool searchClones = false);
    Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
    Q_INVOKABLE void serialize( TreeItem  *node ,QDataStream &stream);
    Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream,bool check = false);
+ Q_INVOKABLE   bool copyRows1(int position,int rows,const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
+void serialize1( TreeItem  *node );
     TreeItem* getItemFromId(QUuid id);
     Q_INVOKABLE  QString getId(const QModelIndex &id);
+   Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
     bool isDescendantFromId(QUuid parent,QUuid child);
+//    bool result = false;
     QMultiMap<QUuid,QUuid> container;
     QMap<QUuid,TreeItem*> map;
     TreeItem *rootItem;
-    bool cond = true;
+
      QPersistentModelIndex last; //TODO should it remain static? Related to copyRows
     int f = 5;
     TreeItem* clone;

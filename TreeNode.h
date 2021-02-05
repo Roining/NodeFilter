@@ -28,7 +28,7 @@ public:
       TreeItem * insertChildrenRecursive(int position, int count, int columns, TreeItem *parent);
     bool insertColumns(int position, int columns);
     TreeItem *parent();
-    bool isDescendant(TreeItem *parent,TreeItem *child);
+    bool isDescendantOfItself(TreeItem *parent,TreeItem *child);
     bool removeChildren(int position, int count);
     bool removeColumns(int position, int columns);
     int childNumber() const;

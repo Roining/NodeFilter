@@ -27,6 +27,7 @@ TreeView {
     width:parent.width
     height:parent.height
 
+
 Shortcut {
 sequence: "Ctrl+E"
 onActivated: waaa.model.saveIndex(waaa.currentModelIndex)
@@ -105,7 +106,17 @@ Component{
 
 
 
+                                        Shortcut {
+                                        sequence: "Ctrl+N"
+                                        onActivated:  {
+                                    //        event.accepted = true
+                                            var test = waaa.currentModelIndex.parent
+                                            console.log(test)
+                                          waaa.model.insertRows(waaa.currentModelIndex.row+1,1,test)//TODO
 
+
+                                        }
+                                        }
                                         Shortcut {
                                         sequence: "Ctrl+D"
                                         onActivated:  {
@@ -191,20 +202,21 @@ Component{
                                             }
                                             Keys.onDigit0Pressed: {
 
-                                                content.text =  waaa.model.getId(waaa.currentModelIndex)
+//                                                search.info(waaa.model.getId(waaa.currentModelIndex))
+                                                waaa.model.getIdToClipboard(waaa.currentModelIndex)
 //                                                        textEdit.text = listModel.get(listView.currentIndex).name
-                                                content.selectAll()
-                                                content.copy()
+//                                                content.selectAll()
+//                                                content.copy(waaa.model.getId(waaa.currentModelIndex))
                                         }
-                                            Shortcut {
-                                                    sequence: "Ctrl+U"
-                                                    onActivated: {
-                                                        content.text =  waaa.model.getId(waaa.currentModelIndex)
-//                                                        textEdit.text = listModel.get(listView.currentIndex).name
-                                                        content.selectAll()
-                                                        content.copy()
-                                                    }
-                                                }
+//                                            Shortcut {
+//                                                    sequence: "Ctrl+U"
+//                                                    onActivated: {
+//                                                        content.text =  waaa.model.getId(waaa.currentModelIndex)
+////                                                        textEdit.text = listModel.get(listView.currentIndex).name
+////                                                        content.selectAll()
+////                                                        content.copy()
+//                                                    }
+//                                                }
 
 
                                         }
@@ -222,8 +234,9 @@ objectName: "search"
 
 SplitView.preferredHeight: 100
 placeholderText: "Search here"
-
-
+onInfo: {
+search.insert(search.length, ">:" + msg)
+}
 //focus:true
 onTextChanged: {
     waaa.model.setBool(true)

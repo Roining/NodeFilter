@@ -95,9 +95,21 @@ TreeItem::TreeItem( TreeItem& other){
 //! [1]
 TreeItem::~TreeItem()
 {
-  //  qDeleteAll(*childItems); //TODO double check if valid
+    for(int i = 0;i< childItems->size();i++){
+      (*childItems.get())[i]->parents->erase(std::remove( (*childItems.get())[i]->parents->begin(),  (*childItems.get())[i]->parents->end(), this),
+                                              (*childItems.get())[i]->parents->end());
+    }
+
+    qDeleteAll(*childItems);
+    childItems->clear();//TODO double check if valid
+
+
+
 }
 bool TreeItem::operator==(const TreeItem& other) const{
+    auto i1 = this->itemData;
+    auto u1 = other.itemData;
+    auto comp = this->itemData == other.itemData;
     auto i = (*this->itemData.get());
     auto u = (*other.itemData.get());
     auto h = (this->itemData.get()[0]) == (other.itemData.get()[0]);
@@ -106,7 +118,13 @@ bool TreeItem::operator==(const TreeItem& other) const{
     auto e = (other.itemData.get()[0][0]);
     auto t1 = (this->itemData.get()[0]);
     auto e2 = (other.itemData.get()[0]);
-    return (this->itemData.get()[0]) == (other.itemData.get()[0]);
+    if((this->itemData->contains("July 31"))){
+            auto rt = 45;
+}
+//    return (this->itemData.get()[0]) == (other.itemData.get()[0]);
+//    return (this->itemData.get()[0][0]) == (other.itemData.get()[0][0]);
+//    return (*this->itemData.get()) ==(*other.itemData.get());
+    return this->itemData == other.itemData;
 }
 //! [1]
 //!
@@ -242,14 +260,14 @@ bool TreeItem::insertColumns(int position, int columns)
 //! [9]
 //!
 bool TreeItem::
-isDescendant(TreeItem *parent,TreeItem *child){
+isDescendantOfItself(TreeItem *parent,TreeItem *child){
     bool result;
     while(true){
-    if(child->parent() == nullptr){
+    if(!child->parent()){
         result =  false;
         return  result;
     }
-    else if((child->parent() == parent)||(child == parent)){
+    else if((*(child->parent()) == *parent)||(*(child) == *parent)){
         result = true;
         return result;
 //    if(child->parent() != parent)
@@ -260,6 +278,7 @@ isDescendant(TreeItem *parent,TreeItem *child){
             }
     };
 };
+
 
 TreeItem *TreeItem::parent()
 {
