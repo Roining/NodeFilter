@@ -64,7 +64,7 @@ onActivated: waaa.model.saveIndex(waaa.currentModelIndex)
 
 //    width:100
     styleHints.overlay: "green"
-    styleHints.indent: 25
+    styleHints.indent: 0
     styleHints.columnPadding: 30
 
 
@@ -138,24 +138,34 @@ DelegateChooser{
         role: "enabled"
         DelegateChoice{
             roleValue: "true"
-                                    Rectangle {
+            Rectangle {
 
 
 
 
-
-                                        Shortcut {
-                                        sequence: "Ctrl+D"
-                                        onActivated:  {
-                                            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
-                                                                                   you);
-                                    //        var source1 = source.createObject(you)
-
-                                            var   sprite = trie.createObject(tes,{model:component})
+                Shortcut {
+                sequence: "Ctrl+N"
+                onActivated:  {
+            //        event.accepted = true
+                    var test = waaa.currentModelIndex.parent
+                    console.log(test)
+                  waaa.model.insertRows(waaa.currentModelIndex.row+1,1,test)//TODO
 
 
-                                        }
-                                        }
+                }
+                }
+                Shortcut {
+                sequence: "Ctrl+D"
+                onActivated:  {
+                    var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
+                                                           you);
+            //        var source1 = source.createObject(you)
+
+                    var   sprite = trie.createObject(tes,{model:component})
+
+
+                }
+                }
 //                                        TapHandler {
 //                                                                                       id:tap1
 //                                                                                       onTapped: {
@@ -167,87 +177,87 @@ DelegateChooser{
 //                                                                                              waaa.toggleExpanded(row)
 //                                                                                       }
 //                                                                                   }
-                                        id:newId
-                                        visible:true
-                                        implicitHeight: 50
-                                        implicitWidth: 1920
-                                            focus:true
-                                        property bool hasChildren: TreeView.hasChildren
-                                        property bool isExpanded: TreeView.isExpanded
-                                        property int depth: TreeView.depth
+                id:newId
+                visible:true
+                implicitHeight: 50
+                implicitWidth: 1920
+                    focus:true
+                property bool hasChildren: TreeView.hasChildren
+                property bool isExpanded: TreeView.isExpanded
+                property int depth: TreeView.depth
 
 
-                                        Keys.onDigit0Pressed: {
 
-                                            event.accepted = true
-                                            var test = waaa.currentIndex
-                                            console.log(test)
-                                          // mee.insertRows(0,1,test)//TODO
+
+
+
+                Text {
+                    id: indicator1
+                    x: depth * waaa.styleHints.indent
+
+                    color: "black"
+                    font: waaa.styleHints.font
+                    text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
+                    anchors.verticalCenter: parent.verticalCenter
+
+
+                    TapHandler {
+                        id:tap
+                        onTapped: {
+                            var posInTreeView = waaa.mapFromItem(parent, point.position)
+                            var row = waaa.rowAtY(posInTreeView.y, true)
+                            waaa.currentIndex = waaa.viewIndex(0, row);
+                            console.log("function row  "+row + "  index row  " + waaa.currentIndex.row )
+
+                            if (tapCount == 1)
+                                waaa.toggleExpanded(row)
                         }
-                                        Keys.onDigit1Pressed: {
+                    }
+                }
+                Text {
+                        id: ball1
+                        x: depth * waaa.styleHints.indent +indicator1.width*1.5
+                        color: "black"
+                       // anchors.left :  indicator1
+                        anchors.leftMargin:100
+                        font: waaa.styleHints.font
+                        text: "⬤"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                TextArea {
+                    id:content
+                    focus:true
 
-                                            event.accepted = true
-                                            var test = waaa.currentModelIndex.row
-                                            console.log("aaa  " + test)
-                                           //mee.insertRows(0,1,test)//TODO
-                        }
-                                        Keys.onUpPressed: {
+                    wrapMode:TextEdit.Wrap
+                    textFormat: TextEdit.MarkdownText
+                    clip:true
+                    font.pointSize: 18
+                    x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
+                   text: edit
+                    onTextChanged:  {edit = text
 
-                                            event.accepted = true
-                                           // treeview.currentIndex = treeview.viewIndex;
-                                            var test = waaa.mapToModel(waaa.index)
-                                            console.log("aaa " + test)
-                                           //mee.insertRows(0,1,test)//TODO
-                        }
+                    }
+                    Keys.onDigit0Pressed: {
 
-                                        Text {
-                                            id: indicator1
-                                            x: 10
-
-                                            color: "black"
-                                            font: waaa.styleHints.font
-                                            text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
-                                            anchors.verticalCenter: parent.verticalCenter
-
-
-                                            TapHandler {
-                                                id:tap
-                                                onTapped: {
-                                                    var posInTreeView = waaa.mapFromItem(parent, point.position)
-                                                    var row = waaa.rowAtY(posInTreeView.y, true)
-                                                    waaa.currentIndex = waaa.viewIndex(0, row);
-                                                    if (tapCount == 1)
-                                                        waaa.toggleExpanded(row)
-                                                }
-                                            }
-                                        }
-                                        Text {
-                                                id: ball1
-                                                x: indicator1.width*1.5
-                                                color: "black"
-                                               // anchors.left :  indicator1
-                                                anchors.leftMargin:100
-                                                font: waaa.styleHints.font
-                                                text: "⬤"
-                                                anchors.verticalCenter: parent.verticalCenter
-                                            }
-                                        TextArea {
-
-                                            focus:true
-
-                                            wrapMode:TextEdit.Wrap
-                                            textFormat: TextEdit.MarkdownText
-                                            clip:true
-                                            font.pointSize: 18
-                                            x: indicator1.x + indicator1.width * 1.5
-                                           text: edit
-                                            onTextChanged:  {edit = text
-
-                                            }
+//                                                search.info(waaa.model.getId(waaa.currentModelIndex))
+                        waaa.model.getIdToClipboard(waaa.currentModelIndex)
+//                                                        textEdit.text = listModel.get(listView.currentIndex).name
+//                                                content.selectAll()
+//                                                content.copy(waaa.model.getId(waaa.currentModelIndex))
+                }
+//                                            Shortcut {
+//                                                    sequence: "Ctrl+U"
+//                                                    onActivated: {
+//                                                        content.text =  waaa.model.getId(waaa.currentModelIndex)
+////                                                        textEdit.text = listModel.get(listView.currentIndex).name
+////                                                        content.selectAll()
+////                                                        content.copy()
+//                                                    }
+//                                                }
 
 
-                                        }
-                               }
+                }
+       }
     }
         DelegateChoice{
         roleValue: "false"
@@ -255,79 +265,93 @@ DelegateChooser{
 
 
 
-            Component.onCompleted: {
-                waaa.expand(waaa.currentModelIndex.row)
-//                                        expandModelIndex(waaa.currentModelIndex)
-            }
 
-            Shortcut {
-            sequence: "Ctrl+D"
-            onActivated:  {
-                var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
-                                                       you);
+                        Shortcut {
+                        sequence: "Ctrl+N"
+                        onActivated:  {
+                    //        event.accepted = true
+                            var test = waaa.currentModelIndex.parent
+                            console.log(test)
+                          waaa.model.insertRows(waaa.currentModelIndex.row+1,1,test)//TODO
 
 
-                var   sprite = trie.createObject(tes,{model:component})
+                        }
+                        }
+                        Shortcut {
+                        sequence: "Ctrl+D"
+                        onActivated:  {
+                            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
+                                                                   you);
+                    //        var source1 = source.createObject(you)
+
+                            var   sprite = trie.createObject(tes,{model:component})
 
 
-            }
-            }
+                        }
+                        }
 
-            id:newId1
-            visible:false
-           implicitHeight:  1
-            implicitWidth:  1
-                focus:true
-            property bool hasChildren: TreeView.hasChildren
-            property bool isExpanded: TreeView.isExpanded
-            property int depth: TreeView.depth
-            Text {
-                id: indicator12
-                x: depth * waaa.styleHints.indent
-
-                color: "black"
-                font: waaa.styleHints.font
-                text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
-                anchors.verticalCenter: parent.verticalCenter
+                        id:newId2
+                        visible:false
+                        implicitHeight: 1
+                        implicitWidth: 1
+                            focus:true
+                        property bool hasChildren: TreeView.hasChildren
+                        property bool isExpanded: TreeView.isExpanded
+                        property int depth: TreeView.depth
 
 
-                TapHandler {
-                    id:tap3
-                    onTapped: {
-                        var posInTreeView = waaa.mapFromItem(parent, point.position)
-                        var row = waaa.rowAtY(posInTreeView.y, true)
-                        waaa.currentIndex = waaa.viewIndex(0, row);
-                        if (tapCount == 1)
-                            waaa.toggleExpanded(row)
-                    }
-                }
-            }
-            Text {
-                    id: ball12
-                    x: depth * waaa.styleHints.indent +indicator12.width*1.5
-                    color: "black"
-                   // anchors.left :  indicator1
-                    anchors.leftMargin:100
-                    font: waaa.styleHints.font
-                    text: "⬤"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
-            TextArea {
 
-                focus:true
-                signal qmlSignal(string msg)
-                wrapMode:TextEdit.Wrap
-                textFormat: TextEdit.MarkdownText
-                clip:true
-                font.pointSize: 18
-                x: indicator12.x + Math.max(waaa.styleHints.indent, indicator12.width * 1.5)
-               text: edit
-               onTextChanged:  {edit = text
+
+
+
+                        Text {
+                            id: indicator12
+                            x: 25
+
+                            color: "black"
+                            font: waaa.styleHints.font
+                            text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
+                            anchors.verticalCenter: parent.verticalCenter
+
+
+                            TapHandler {
+                                id:tap2
+                                onTapped: {
+                                    var posInTreeView = waaa.mapFromItem(parent, point.position)
+                                    var row = waaa.rowAtY(posInTreeView.y, true)
+                                    waaa.currentIndex = waaa.viewIndex(0, row);
+                                    console.log("function row  "+row + "  index row  " + waaa.currentIndex.row )
+
+                                    if (tapCount == 1)
+                                        waaa.toggleExpanded(row)
+                                }
+                            }
+                        }
+                        Text {
+                                id: ball12
+                                x: indicator12.x*1.2
+                                color: "black"
+                               // anchors.left :  indicator1
+                                anchors.leftMargin:100
+                                font: waaa.styleHints.font
+                                text: "⬤"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        TextArea {
+                            id:content2
+                            focus:true
+
+                            wrapMode:TextEdit.Wrap
+                            textFormat: TextEdit.MarkdownText
+                            clip:true
+                            font.pointSize: 18
+                            x: indicator12.x*1.2 + ball12.width
+                           text: edit
+                            onTextChanged:  {edit = text
+
+                            }
 
                }
-
-            }
-        }
 
         }
 }
@@ -335,6 +359,7 @@ DelegateChooser{
 
 
 
+}
 }
 TextArea{
 //    anchors.top:waaa.bottom

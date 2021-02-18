@@ -56,6 +56,9 @@
 #include <QDebug>
 #include <QClipboard>
 #include <QGuiApplication>
+#include <string>
+#include <QTime>
+#include <QRandomGenerator>
 
 
 
@@ -73,10 +76,11 @@ QDataStream &operator<<(QDataStream &out,  TreeItem &item){
 out << *item.itemData;
 out << item.numberOfChildren;
 out << item.id;
-qDebug() << "serialising parents: " << *item.parents;
+out << item.acceptsCopies;
+qDebug() << "serialising siblings: " << *item.siblings;
 //TODO check smwhere if there's more than 1 parent
 
-out << item.temp;
+out << item.tempParents;
 out << item.position;
 
 
@@ -93,14 +97,15 @@ QDataStream &operator>>(QDataStream &in,  TreeItem *item){
 in >> *item->itemData;
 in >> item->numberOfChildren; //TODO move out of class members
 in >> item->id;
+in >>item->acceptsCopies;
 //list of parents' ids
-in >> item->temp;
+in >> item->tempParents;
 in >> item->position;
 
 
-qDebug() << "deserialising parents before: " << *item->parents;
+qDebug() << "deserialising parents before: " << *item->siblings;
 //in >> *item->parents;
-qDebug() << "serialising parents after: " << *item->parents;
+qDebug() << "serialising parents after: " << *item->siblings;
 
 qDebug() << "before " << *item->childItems;
 
@@ -111,181 +116,177 @@ qDebug() << "before " << *item->childItems;
 
 return in;
 }
-//void TreeModel::deserializeCopy( TreeItem  *node ,QDataStream &stream, bool check){
 
-//           QVector<QVariant> data(0);
-//        auto gh = new TreeItem(data,nullptr); // leak
-//      stream >> gh;
-
-//       for(int i = 0; i < node->numberOfChildren;i++){
-//    deserializeCopy(node->insertChildren2(i,1,0),stream);
-//       }
-//   return;
-//}
-
-Q_INVOKABLE void TreeModel::deserialize( TreeItem  *node ,QDataStream &stream, bool check){
+Q_INVOKABLE void TreeModel::deserialize( TreeItem  &node ,QDataStream &stream, bool check){
  if(!check){ // if inserted node is not copied
-    stream >> node;
-
-    if((node->temp.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied further
-        map.insert(node->id,node);// corresponds id of not copied nodes to a pointer to the node
-     for(int i = 0; i < node->temp.size();i++){
- if(node->temp[i] != node->parentItem->id){
-
-    container.insert(node->temp[i],node->id); //keys are parents, current item(to be copied) is value
+    stream >> &node;
+    if(node.item().toString().contains("Data")){
+    auto tr = 5;
     }
+    if(node.item().toString().contains("ly 30")){
+    auto tr = 5;
+    }
+    if(node.item().toString().contains("ly 29")){
+    auto tr = 5;
+    }
+    if((node.tempParents.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied further
+        map.insert(node.id,&node);// corresponds id of not copied nodes to a pointer to the node
+     for(int i = 0; i < node.tempParents.size();i++){
+
+//if(node->temp[i] !=node->parentItem->id){
+    container.insert(node.tempParents[i],node.id); //keys are parents, current item(to be copied) is value
+
      }
-     if(!node->position.isEmpty()){
-        node->position.remove(0);
+//     }
+     auto cont = container.find(node.parentItem->id,node.id);
+//          container.erase(container.find(node.parentItem->id,node.id));
+
+     if(!node.position.isEmpty()){
+//        node.position.erase(node.
+//                            position.find(node.parentItem->id,node.parent()->children().indexOf(&node)));
      }
      }}
-else{
-    //if node is copied
-     stream >> node;
-//      map.insert(node->id,node); //can this cause regressions
-
-
+else{ //if node is copied
+     stream >> &node;
 }
 
-     for(int i = 0; i < node->numberOfChildren;i++){
+ if(node.item().toString().contains("heee")){
+ auto tr = 5;
+ }
+ if(node.id.toString() == "{7ccabdf5-c278-4012-a4ec-36ff9bef8ecd}" ){
+ auto tr = 5;
+ }
+ if(node.item().toString().contains("ly 29")){
+ auto tr = 5;
+ }
+
+     for(int i = 0; i < node.numberOfChildren;i++){
          if(i ==4){
              ;
              auto u = 4;
          }
-        if(container.value(node->id) == QUuid()){ //if item is a not parent of a copied item
+        if(container.value(node.id) == QUuid()){ //if item is a not parent of a copied item
 
-    deserialize(node->insertChildren2(i,1,0),stream);
+    deserialize(node.insertChildren2(i,1,0),stream);
         }
         else{
 
-      if(  map.value(container.value(node->id)))
-      {
+
  TreeItem* check1 = nullptr;
-auto list = container.values(node->id); //list should contain id's of all potential children
+auto list = container.values(node.id); //list should contain id's of all potential children
 for(int j = 0;j<list.size();j++){
-    auto test = map.value(list[j]);
-    if (map.value(list[j])->position[0] == i){
+    auto tr = map.value(list[j]);
+    auto ht = map.value(list[j])->position.keys();
+   for( auto& item : map.value(list[j])->position.keys()){
+       auto y = map.value(list[j]);
+       auto m = map.value(list[j])->position.value(item);
+       auto u = item;
 
-        check1 = map.value(list[j]);
-        container.remove(node->id,list[j]);
-        break;
+       if(item == node.id&& map.value(list[j])->position.values(item).contains(i)){
 
-    }
+
+
+       check1 = map.value(list[j]);
+//       container.erase(container.find(node.id,list[j]));
+       break;
+   }
+   }
+//    auto test = map.value(list[j]);
+
+//    if (map.value(list[j])->position[0] == i){
+
+//        check1 = map.value(list[j]);
+////        container.remove(node.id,list[j]);
+//        container.erase(container.find(node.id,list[j]));
+//        break;
+
+//    }
 }
 if(check1 != nullptr){
 //    auto f = check1; //copy constructor?
-    auto o = check1->position[0];
-    check1->position.remove(0);
+    auto o = check1->
+            position.find(node.id,i);
+//    check1->
+//            position.erase(check1->
+//                           position.find(node.id,i));
 
 //    container.remove(node->id,container.value(node->id)); //TODO
 
 
-    deserialize( node->insertChildren1(i,1,0,check1),stream,true);
+    deserialize( node.insertChildren1(i,1,0,check1),stream,true);
 }
 else{
-    auto score = map.value(container.value(node->id));
-    deserialize(node->insertChildren2(i,1,0),stream);
+    if(node.item().toString().contains("ly 29")){
+    auto tr = 5;
+    }
+    auto score = map.value(container.value(node.id));
+    deserialize(node.insertChildren2(i,1,0),stream);
 
 }
 check1 = nullptr;
-
-//         if (map.value(container.value(node->id))->position[0] != i){
-//    auto e = map.value(container.value(node->id))->position[0];
-//    deserialize(node->insertChildren2(i,1,0),stream);
-//        }
-
-//         else if (map.value(container.value(node->id))->position[0] == i){//if item is not a parent of a copied item
-
-//            auto f = map.value(container.value(node->id)); //copy constructor?
-//            auto o = map.value(container.value(node->id))->position[0];
-//            map.value(container.value(node->id))->position.remove(0);
-
-//            container.remove(container.value(node->id),node->id); //TODO
-
-
-//            deserialize( node->insertChildren1(i,1,0,f),stream,true);
-
-
-//        }
-      }
     }
     }     
 return;
 }
-void TreeModel::serialize1( TreeItem  *node){
-    node->temp.clear();
-    node->position.clear();
-    if ((*node->parents.get()).size() >1){
+
+void TreeModel::serialize1( TreeItem  &node){
+
+    node.tempParents.clear();
+    node.position.clear();
+    if(node.item().toString().contains("Avoid")){
+    auto tr = 5;
+    }
+    if(node.item().toString().contains("ly 29")){
+    auto tr = 5;
+    }
+    if(node.item().toString().contains("ly 30")){
+    auto tr = 5;
+    }
+    if (node.siblingItems().size() >1){
         //check if item has more than 1 parent; al
-    for(int i = 0; i < (*node->parents.get()).size();i++){
-        if ((*node->parents.get())[i] != nullptr){ //check for nullptr
-       node->temp.append((*node->parents.get())[i]->id);
+    for(int i = 0; i < node.siblingItems().size();i++){
+//        if ((*node->parents.get())[i] != nullptr){ //check for nullptr
+       node.tempParents.append(node.siblingItems()[i]->parentItem->id);
 
-        }
+//        }
     }
     }
-    if (node->parents->size() >1){//TODO: repeats condition above?
+    if (node.siblingItems().size() >1){//TODO: repeats condition above?
         TreeItem* check = nullptr;
-        for(int i = 0; i < node->parents->size();i++){
-            for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
+        for(int i = 0; i < node.siblingItems().size();i++){
 
-
-                if( ((*(*(*(*node->parents.get())[i]).childItems.get())[j]) == *node)&&(!((*(*(*(*node->parents.get())[i]).childItems.get())[j]).position.isEmpty()))){
-
-                    check = &(*(*(*(*node->parents.get())[i]).childItems.get())[j]);
-
-//                    node->position.append((*node->parents.get())[i]->childItems->indexOf(&(*(*(*(*node->parents.get())[i]).childItems.get())[j])));
-
-
-                }
-
-            }
+if( !(node.siblingItems()[i]->position.isEmpty())){
+                    check = node.siblingItems()[i];
+                }           
         }
    if(check !=nullptr){
-for(int i = 0; i < node->parents->size();i++){
-    for(int j = 0;j< (*node->parents.get())[i]->childItems->size();j++){
+       check->position.insert(node.parentItem->id,node.parent()->children().indexOf(&node));
 
-
-        if( ((*(*(*node->parents.get())[i]).childItems.get())[j]) == check){
-
-//           auto& otherNode = (*(*(*(*node->parents.get())[i]).childItems.get())[j]);
-
-            check->position.append(node->parentItem->childItems->indexOf(node));
-
-
-        }
-
-
-
-    }
-}
    }
    else{
-       node->position.append(node->parentItem->childItems->indexOf(node));
+       node.position.insert(node.parentItem->id,node.parent()->children().indexOf(&node));
    }
 
     }
 
-node->numberOfChildren = node->childCount();
-if(node->childCount()){ //TODO replace with numberOfChildren?
-    for(int i = 0; i < node->childCount();i++){
-        TreeItem* childNode = (*node->childItems.get())[i];
+node.numberOfChildren = node.childCount();
+if(node.childCount()){ //TODO replace with numberOfChildren?
+    for(int i = 0; i < node.childCount();i++){
 
-        serialize1(childNode);
+
+        serialize1(*node.children()[i]);
 
     }
 }
 }
-Q_INVOKABLE void TreeModel::serialize( TreeItem  *node ,QDataStream &stream){
 
+Q_INVOKABLE void TreeModel::serialize( TreeItem  &node ,QDataStream &stream){
+    stream << node;
 
-    stream << *node;
+if(node.childCount()){ //TODO replace with numberOfChildren?
+    for(int i = 0; i < node.childCount();i++){
 
-if(node->childCount()){ //TODO replace with numberOfChildren?
-    for(int i = 0; i < node->childCount();i++){
-        TreeItem* childNode = (*node->childItems.get())[i];
-
-        serialize(childNode,stream);
+        serialize(*(node.children()[i]),stream);
 
     }
 }
@@ -293,27 +294,19 @@ if(node->childCount()){ //TODO replace with numberOfChildren?
 return;
 }
 
-Q_INVOKABLE void TreeModel::log1(){
-    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
-    if(file.open(QIODevice::WriteOnly)){
-    QDataStream stream( &file );
-    //stream << *rootItem->child(1);
-    //serialize(rootItem,stream);
-    rootItem->numberOfChildren = rootItem->childCount();
-        serialize(rootItem,stream);
-         file.close();
-    }
-}
+
 Q_INVOKABLE void TreeModel::log(){
-    QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\file.dat");
-    if(file.open(QIODevice::WriteOnly)){
+    QString path = "C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\";
+    QFile file(QStringLiteral("%1\\file.dat").arg(path));
+     int value = QRandomGenerator::global()->generate();
+   auto test =  file.copy(QStringLiteral("%1\\file.dat").arg(path), QStringLiteral("%1\\SavedFilesCache\\fileCacheo%2.dat").arg(path).arg(value));
+    if(file.open(QIODevice::WriteOnly|QIODevice::Truncate)){
     QDataStream stream( &file );
-    //stream << *rootItem->child(1);
-    //serialize(rootItem,stream);
-    rootItem->numberOfChildren = rootItem->childCount();
-    serialize1(rootItem);
-        serialize(rootItem,stream);
+//    rootItem->numberOfChildren = rootItem->childCount();
+    serialize1(*rootItem);
+        serialize(*rootItem,stream);
          file.close();
+
     }
 }
 //! [0]
@@ -330,7 +323,7 @@ TreeModel::TreeModel(QObject *parent){
 //    for (const QString &header : headers)
 //        rootData << header;
     rootItem = new TreeItem(rootData);
-deserialize(rootItem,stream);
+deserialize(*rootItem,stream);
 
 //    setupModelData(data.split('\n'), rootItem);
 
@@ -495,6 +488,7 @@ Q_INVOKABLE void TreeModel::getIdToClipboard(const QModelIndex &index){
 
 
 }
+
 bool TreeModel::insertColumns(int position, int columns, const QModelIndex &parent)
 {
     beginInsertColumns(parent, position, position + columns - 1);
@@ -513,12 +507,16 @@ Q_INVOKABLE   bool TreeModel::copyRows1(int position,int rows,const QModelIndex 
         return false;}
     TreeItem *lastItem = getItem(source);
     lastItem = getItem(source);
-     if(parentItem->isDescendantOfItself(lastItem,parentItem)){
-         qDebug() << "Parent item descends from inserted item";
-         return false;
-     }
+//    if(!lastItem->enabled){
+//        qDebug() << "Not enabled";
+//        return false;
+//    }
+    if(isDescendant(lastItem,parentItem,true)){
+        qDebug() << "Parent item descends from inserted item";
+        return false;
+    }
     beginInsertRows(parent, position, position + rows - 1);
-     TreeItem * success = parentItem->insertChildren1(position,
+     TreeItem & success = parentItem->insertChildren1(position,
                                                 rows,
                                                   rootItem->columnCount(),lastItem);
      this->setData(index(position,0, parent),"Data",Qt::UserRole +2);
@@ -532,7 +530,7 @@ Q_INVOKABLE   bool TreeModel::copyRows1(int position,int rows,const QModelIndex 
 
      }
 
-    return success; //TODO check for success of operation
+    return true; //TODO check for success of operation
 
 
 
@@ -544,34 +542,32 @@ Q_INVOKABLE   bool TreeModel::copyRows1(int position,int rows,const QModelIndex 
 
 
 Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &parent,const QPersistentModelIndex &source ){
-   copyRows1(position,rows,parent,source);
+//   copyRows1(position,rows,parent,source);
    TreeItem *parentItem = getItem(parent);
    if (!parentItem){
        return false;}
-   if(parentItem->parentItem){
-       if( parentItem->parents->size() >1){
-  for(int i = 0; i < parentItem->parents->size();i++){
-      if((*parentItem->parents.get())[i] != parentItem->parentItem){
-      for(int j = 0;j< (*parentItem->parents.get())[i]->childItems->size();j++){
-          if( (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]) == *parentItem){
-  auto& sibling =  (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]);
-  auto check = sibling.id.toString();
-  auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling.id.toString(),1,Qt::MatchRecursive);
 
-  auto res = sibling.id.toString();
-  beginInsertRows(siblingIndex[0], position, position + rows - 1);
-  copyRows1(position,1,siblingIndex[0],index(position, 0, parent));
 
-   endInsertRows();
-            //  parentItem->position.append((*parentItem->parents.get())[i]->childItems->indexOf(&(*(*(*(*parentItem->parents.get())[i]).childItems.get())[j])));
-  }
-      }
-  }
+       if( parentItem->siblingItems().size() >1){
+  for(int i = 0; i < parentItem->siblingItems().size();i++){
 
+  auto sibling =  parentItem->siblingItems()[i];
+  if((parentItem->siblingItems()[i]->acceptsCopies)||(parentItem->siblingItems()[i]->id == parentItem->id)){
+  auto check = sibling->id.toString();
+  auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
+
+  auto res = sibling->id.toString();
+
+  copyRows1(position,1,siblingIndex[0],source);
           }
+       }
    }
 
-  }
+       else{
+          copyRows1(position,rows,parent,source);
+       }
+
+updateProxyFilter();
    return true;
 }
 //bool TreeModel::isDescendant(TreeItem *parent,TreeItem *child){
@@ -591,6 +587,10 @@ Q_INVOKABLE   bool TreeModel::copyRows(int position,int rows,const QModelIndex &
 //  }
 //  return result;
 //};
+  void TreeModel::acceptsCopies(const QModelIndex &index, bool acceptsCopies){
+    auto item = getItem(index);
+    item->acceptsCopies = acceptsCopies;
+}
 bool TreeModel::isDescendant(TreeItem *parent,TreeItem *child,bool searchClones){
 
     if(parent == child){
@@ -624,7 +624,43 @@ bool TreeModel::isDescendant(TreeItem *parent,TreeItem *child,bool searchClones)
   return false;
 };
 
+TreeItem* TreeModel::isDescendant1(TreeItem *parent,TreeItem *child,bool searchClones){
 
+    if(*parent == *child){
+
+
+        return parent;
+    }
+    else if(searchClones){
+        if(*parent == *child){
+
+
+            return parent;
+        }
+    }
+
+         for(int i = 0;i < parent->childItems->size();i++){
+             if(searchClones){
+
+                 if(isDescendant1((*parent->childItems.get())[i],child,true)){
+                     return parent;
+                 }
+
+             }
+             else{
+                 auto item = isDescendant1((*parent->childItems.get())[i],child);
+                 if(item){
+                     return item;
+                 }
+//             if(isDescendant1((*parent->childItems.get())[i],child)){
+//                 return child;
+//             }
+             }
+         }
+
+
+  return nullptr;
+};
 //bool TreeModel::isDescendant(TreeItem *parent,TreeItem *child){
 //    result = false;
 //    if(parent == child){
@@ -670,10 +706,11 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
 
     return true; //TODO check for success of operation
 }
-Q_INVOKABLE bool TreeModel::insertRows1(int position, int rows, const QModelIndex &parent){
+Q_INVOKABLE bool TreeModel::insertRows1(int position, int rows, const QModelIndex &parent,bool transclusion){
 TreeItem *parentItem = getItem(parent);
 if (!parentItem)
     return false;
+
 beginInsertRows(parent, position, position + rows - 1);
 
     parentItem->insertChildren(position,
@@ -684,29 +721,28 @@ beginInsertRows(parent, position, position + rows - 1);
        this->setData(child,"Data",Qt::EditRole);
     this->setData(child,"Data",Qt::UserRole +2);
  endInsertRows();
- if(parentItem->parentItem){
-for(int i = 0; i < parentItem->parents->size();i++){
-    if((*parentItem->parents.get())[i] != parentItem->parentItem){
-    for(int j = 0;j< (*parentItem->parents.get())[i]->childItems->size();j++){
-        if( (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]) == *parentItem){
-auto& sibling =  (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]);
-auto check = sibling.id.toString();
-auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling.id.toString(),1,Qt::MatchRecursive);
+// if(transclusion){
+if(parentItem->siblingItems().size() > 1){
+    QVector<TreeItem*> siblingCopy = (parentItem->siblingItems());
+    siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), parentItem));
+for(int i = 0; i < siblingCopy.size();i++){
 
-auto res = sibling.id.toString();
-beginInsertRows(siblingIndex[0], position, position + rows - 1);
+auto sibling =  siblingCopy[i];
+if(sibling->acceptsCopies|| !transclusion){
+auto check = sibling->id.toString();
+auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
+
+auto res = sibling->id.toString();
 copyRows1(position,1,siblingIndex[0],child);
+}
 
- endInsertRows();
-          //  parentItem->position.append((*parentItem->parents.get())[i]->childItems->indexOf(&(*(*(*(*parentItem->parents.get())[i]).childItems.get())[j])));
-}
-    }
-}
 
         }
-
 }
+//}
 
+
+updateProxyFilter();
 return true; //TODO check for success of operation
 }
 //! [7]
@@ -743,34 +779,36 @@ Q_INVOKABLE bool TreeModel::removeRows(int position, int rows, const QModelIndex
     if (!parentItem){
         return false;}
     const QModelIndex &child  = this->index(position, 0, parent);
-    if(parentItem->parentItem){
-   for(int i = 0; i < parentItem->parents->size();i++){
-       for(int j = 0;j< (*parentItem->parents.get())[i]->childItems->size();j++){
-           if( (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]) == *parentItem){
-   auto& sibling =  (*(*(*(*parentItem->parents.get())[i]).childItems.get())[j]);
-   auto check = sibling.id.toString();
-   auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling.id.toString(),1,Qt::MatchRecursive);
 
-   auto res = sibling.id.toString();
+   for(int i = 0; i < parentItem->siblingItems().size();i++){
+
+   auto sibling =  parentItem->siblingItems()[i];
+   auto check = sibling->id.toString();
+   auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
+   auto res = sibling->id.toString();
+   if(siblingIndex.isEmpty()){
+       beginRemoveRows(QModelIndex(), position, position + rows - 1);
+       const bool success = sibling->removeChildren(position, rows);
+
+        endRemoveRows();
+   }
+   else{
    beginRemoveRows(siblingIndex[0], position, position + rows - 1);
-   const bool success = sibling.removeChildren(position, rows);
+   const bool success = sibling->removeChildren(position, rows);
 
     endRemoveRows();
-             //  parentItem->position.append((*parentItem->parents.get())[i]->childItems->indexOf(&(*(*(*(*parentItem->parents.get())[i]).childItems.get())[j])));
    }
-       }
+             //  parentItem->position.append((*parentItem->parents.get())[i]->childItems->indexOf(&(*(*(*(*parentItem->parents.get())[i]).childItems.get())[j])));
+
+
 
 
            }
 
-   }
-    else{
-            beginRemoveRows(parent, position, position + rows - 1);
-            const bool success = parentItem->removeChildren(position, rows);
-            endRemoveRows();
-    }
 
 
+
+updateProxyFilter();
     return true;
 }
 
@@ -788,7 +826,7 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int rol
 {
     if(role == Qt::UserRole +2){
           TreeItem *item = getItem(index);
-          if(item->id != QUuid()){
+          if(item->id == QUuid()){
           item->id = item->id.createUuid();
           }
            emit dataChanged(index, index,  {Qt::UserRole +2});

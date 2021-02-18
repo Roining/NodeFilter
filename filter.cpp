@@ -1,6 +1,9 @@
 #include "filter.h"
 #include "treeModel.h"
 #include "TreeNode.h"
+#include <functional>
+#include <QRegularExpression>
+
 TreeModel myClass1(nullptr); //TODO
 Q_INVOKABLE bool Filtering::log()
 {
@@ -10,9 +13,10 @@ return true;
 }
 Q_INVOKABLE bool Filtering::removeRows(int position, int rows, const QModelIndex &parent)
 {
-    setBool(false);
+//    setBool(false);
      sourceModel->removeRows(position,rows,mapToSource(parent));
-     setBool(true);
+
+//     setBool(true);
      return true;
 }
 Q_INVOKABLE bool Filtering::getBool() const{
@@ -24,11 +28,11 @@ Q_INVOKABLE void Filtering::setBool(bool var) {
      }
 Q_INVOKABLE bool Filtering::copyRows(int position, int rows,
                                    const QModelIndex &parent, const QPersistentModelIndex &source){
-    setBool(false);
+//    setBool(false);
 
      sourceModel->copyRows(position,rows,mapToSource(parent),sourceModel->getLastIndex());
 
-     setBool(true);
+//     setBool(true);
      return true;
 };
 Q_INVOKABLE void Filtering::saveIndex(const QModelIndex &index){
@@ -37,47 +41,113 @@ Q_INVOKABLE void Filtering::saveIndex(const QModelIndex &index){
     return;
 
 }
+Q_INVOKABLE void Filtering::acceptsCopies(const QModelIndex &index, bool acceptsCopies){
+   sourceModel->acceptsCopies(mapToSource(index),acceptsCopies);
+   return;
+}
 Q_INVOKABLE void Filtering::saveIndex1(const QModelIndex &index){
 auto f =  mapToSource(index);
 
 }
+bool Filtering::lessThan(const QModelIndex& left, const QModelIndex &right ) const{
+    auto leftItem = sourceModel->getItem(left);
+    auto rightItem = sourceModel->getItem(right);
+    if(leftItem->item().toString().contains("Book")){
+    auto tr = 5;
+    }
+    if(rightItem->item().toString().contains("Book")){
+        auto tr = 5;
+        }
+
+
+    QVariant leftData = sourceModel->data(left, Qt::DisplayRole);
+    QVariant rightData = sourceModel->data(right, Qt::DisplayRole);
+   auto itemId =  query.mid(query.lastIndexOf(":")+1);
+   auto itemIndex = sourceModel->match(sourceModel->index( 0, 0 ),Qt::UserRole +2,itemId,1,Qt::MatchRecursive);
+   if(itemIndex.isEmpty()){
+       return false;
+   }
+   auto queryItem = sourceModel->getItem(itemIndex[0]);
+auto leftResult = sourceModel->isDescendant1(leftItem,queryItem);
+auto rightResult = sourceModel->isDescendant1(rightItem,queryItem);
+   if(!(sourceModel->isDescendant1(leftItem,queryItem))||!(sourceModel->isDescendant1(rightItem,queryItem))){
+       return false;
+   }
+//    auto log = QString::localeAwareCompare(leftData.toString(), rightData.toString()) < 0;
+    if(query.contains("sortNAsc:")){
+//    return leftData.toInt() < rightData.toInt();
+        if(leftResult->childCount()&&rightResult->childCount()){
+        return sourceModel->isDescendant1(leftItem,queryItem)->children()[0]->item().toInt() < sourceModel->isDescendant1(rightItem,queryItem)->children()[0]->item().toInt();
+        }
+    }
+    else if(query.contains("sortNDesc:")){
+//       return leftData.toInt() > rightData.toInt();
+        if(leftResult->childCount()&&rightResult->childCount()){
+        return sourceModel->isDescendant1(leftItem,queryItem)->children()[0]->item().toInt() > sourceModel->isDescendant1(rightItem,queryItem)->children()[0]->item().toInt();
+        }
+    }
+    else if(query.contains("sortAAsc:")){
+//        return leftData.toString() < rightData.toString();
+        if(leftResult->childCount()&&rightResult->childCount()){
+        return sourceModel->isDescendant1(leftItem,queryItem)->children()[0]->item() < sourceModel->isDescendant1(rightItem,queryItem)->children()[0]->item();
+        }
+    }
+    else if(    query.contains("sortADesc:")){
+//        return leftData.toString() < rightData.toString();
+        if(leftResult->childCount()&&rightResult->childCount()){
+        return sourceModel->isDescendant1(leftItem,queryItem)->children()[0]->item() < sourceModel->isDescendant1(rightItem,queryItem)->children()[0]->item();
+        }
+    }
+    else{
+        return leftData.toString() < rightData.toString();
+    }
+
+}
+
 Q_INVOKABLE QString Filtering::getId(const QModelIndex &index){
     return sourceModel->getId(mapToSource(index));
 }
-Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex &parent)
+Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex &parent, bool transclusion)
 {
-    setBool(false);
+//    setBool(false);
 
-
+    if(transclusion){
     sourceModel->insertRows1(position,rows,mapToSource(parent));
+    }
+    else{
+        sourceModel->insertRows1(position,rows,mapToSource(parent),false);
 
-    setBool(true);
+    }
+
+//    setBool(true);
     return true;
 }
+
 Q_INVOKABLE void Filtering::getIdToClipboard(const QModelIndex &index){
 sourceModel->getIdToClipboard(mapToSource(index));
 }
 Q_INVOKABLE void Filtering::setQuery(QString string){
 
 
-if(query !=string){
+//if(query !=string){
 //    setBool(true);
  queryChanged = true;
     query = string;
-    QElapsedTimer timer;
-        timer.start();
+    if(query.contains("sort")){
+    sort(0);
+    }
+    else{
+    sort(-1);
+    }
+     invalidateFilter();
+     queryChanged = false;
 
-        invalidateFilter();
-
-        qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";
-
-//    setBool(false);
-        queryChanged = false;
-}
+//setBool(true);
+//}
     return;
 
 }
-
+//bool Filtering::ItemFilter(std::function<bool()>);
 bool Filtering::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const  {
 
 if(query == ""){
@@ -85,13 +155,12 @@ if(query == ""){
 //currentItem->enabled =false;
     return true;
 }
-QElapsedTimer timer;
-    timer.start();
 
 
 
-if(queryChanged){
-if(getBool()){
+
+
+//if(getBool()){
 //bool result = true;
 QModelIndex index = sourceModel->index(source_row, 0, source_parent);
  TreeItem *currentItem =  sourceModel->getItem(index);
@@ -99,20 +168,64 @@ QModelIndex index = sourceModel->index(source_row, 0, source_parent);
 
 //     currentItem->enabled =true;
 QStringList container = query.split(QRegExp("\\s"));
+
+bool finalResult = true;
+
 for(int i =0;i < container.size();i++){
+bool innerResult = true;
+//if( container[i].startsWith("sort:")){
+//    sourceModel->sort(0);
+//    currentItem->enabled =true;
+//   return true;
+//}
+ if( container[i].startsWith("r:")){
+    auto string = container[i].mid(2);
+    QRegularExpression regex(string);
+    QRegularExpressionMatch match = regex.match(sourceModel->data(index,0).toString());
+    if(!match.hasMatch()){
+         currentItem->enabled =false;
+        return false;
+    }
+}
 
-   if( container[i].startsWith("q:")){
+else if( container[i].startsWith("q:")){
+               innerResult = sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
+               bool isInclusive = i>0 && container[i-1] == "OR";
+               bool isInversed = i>0 && container[i-1] == "NOT";
 
-        if (!(sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	))){
-currentItem->enabled =false;
-               return false;
-       }
+               if(innerResult){
+                   if(isInclusive){
+                       currentItem->enabled =true;
+                       return true;
+
+
+                   }
+                   if(isInversed){
+                       currentItem->enabled =false;
+                       return false;
+                   }
+               }
+               else{
+                   if(isInclusive){
+                     finalResult = false;
+
+
+                   }
+
+                if(!isInversed &&!isInclusive){
+
+
+                    currentItem->enabled =false;
+                    return false;
+
+
+                }
+
+
+                }
    }
-  if( container[i].startsWith(">")){
-//      sourceModel->result = false;
+ else if( container[i].startsWith(">")){
     auto query = container[i].section(":",-1);
-//    auto item = sourceModel->map.value(query);
-
     auto itemIndex = sourceModel->match(sourceModel->index( 0, 0 ),Qt::UserRole +2,query,1,Qt::MatchRecursive);
     if(itemIndex.isEmpty()){
         return false;
@@ -121,59 +234,117 @@ currentItem->enabled =false;
     if(!parentItem){
         return false; // check if item id is valid
     }
-//    bool isDescendant = sourceModel->result; //use result for reliable info
-    qDebug() << "Before calling isDescendant()" << timer.elapsed() << "milliseconds";
-    QElapsedTimer timer;
-        timer.start();
 
-    bool isDescendant = false;
     if(container[i].startsWith(">>")){
-     isDescendant = sourceModel->isDescendant(parentItem ,currentItem,true);
+        innerResult =false;
+        for(int i = 0;i < parentItem->siblingItems().size();i++){
+     if(sourceModel->isDescendant( parentItem->siblingItems()[i],currentItem,true)){
+     innerResult =true;
+     break;
+        }
 }
+
+    }
     else{
-     isDescendant = sourceModel->isDescendant(parentItem ,currentItem);
-    }//use result for reliable info
-    qDebug() << "isDescendant" << timer.elapsed() << "milliseconds";
+     innerResult = sourceModel->isDescendant(parentItem,currentItem);
+    }
     bool isInclusive = i>0 && container[i-1] == "OR";
     bool isInversed = i>0 && container[i-1] == "NOT";
-       if(isDescendant){
+
+    if(innerResult){
+        if(isInclusive){
+            currentItem->enabled =true;
+            return true;
+
+
+        }
+        if(isInversed){
+            currentItem->enabled =false;
+            return false;
+        }
+    }
+    else{
+        if(isInclusive){
+          finalResult = false;
+
+
+        }
+
+     if(!isInversed &&!isInclusive){
+
+
+         currentItem->enabled =false;
+         return false;
+
+
+     }
+
+
+     }
+   }
+  else if( container[i].startsWith("<")){
+       auto query = container[i].section(":",-1);
+       auto itemIndex = sourceModel->match(sourceModel->index( 0, 0 ),Qt::UserRole +2,query,1,Qt::MatchRecursive);
+       if(itemIndex.isEmpty()){
+           return false;
+       }
+       auto parentItem = sourceModel->getItem(itemIndex[0]);
+       if(!parentItem){
+           return false; // check if item id is valid
+       }
+
+       if(container[i].startsWith("<<")){
+        innerResult = sourceModel->isDescendant( currentItem,parentItem,true);
+   }
+       else{
+        innerResult = sourceModel->isDescendant(currentItem,parentItem);
+       }
+       bool isInclusive = i>0 && container[i-1] == "OR";
+       bool isInversed = i>0 && container[i-1] == "NOT";
+
+       if(innerResult){
            if(isInclusive){
                currentItem->enabled =true;
-              return true;
+               return true;
+
+
            }
            if(isInversed){
-                currentItem->enabled =false;
+               currentItem->enabled =false;
                return false;
            }
        }
        else{
+           if(isInclusive){
+             finalResult = false;
 
-        if(!isInversed && !isInclusive){
 
-       currentItem->enabled =false;
-          return false;
+           }
+
+        if(!isInversed &&!isInclusive){
+
+
+            currentItem->enabled =false;
+            return false;
+
 
         }
 
+
         }
-
-
    }
-   if( container[i].startsWith("<")){
-       if(!(sourceModel->getItem(index)->isDescendantOfItself(currentItem,sourceModel->getItem(sourceModel->last)))){ //remove this part entirely?
-//           p->enabled =false;
-          return false;}
-   }
+
 }
+currentItem->enabled =finalResult;
+return finalResult;
+        ;
 
-return true;
 
 
 
 
-     return false;
-    }
-}
+
+
 
     return true;
 };
@@ -189,6 +360,7 @@ Filtering::Filtering(QObject *parent):QSortFilterProxyModel(parent){
    setSourceModel(&myClass1);
    setRecursiveFilteringEnabled(true);
   setDynamicSortFilter(false);
+  QObject::connect(&myClass1,&TreeModel::updateProxyFilter,this,&Filtering::updateFilter);
 };
 //Filtering::Filtering(QObject *parent, TreeModel* my):QSortFilterProxyModel(parent){
 //   sourceModel = my;

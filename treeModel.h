@@ -70,7 +70,8 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 //    Q_PROPERTY(bool cond READ Cond WRITE setCond)
 
-
+signals:
+   void updateProxyFilter();
 public:
     TreeModel(QObject *parent = nullptr);
 
@@ -89,14 +90,12 @@ public:
   Q_INVOKABLE  QModelIndex parent(const QModelIndex &index) const override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    void log();
-    void log1();
+  Q_INVOKABLE  void log();
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 //! [1]
 
 //! [2]
     Qt::ItemFlags flags(const QModelIndex &index) const override;
-    void deserializeCopy( TreeItem  *node ,QDataStream &stream, bool check =false);
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
     bool setHeaderData(int section, Qt::Orientation orientation,
@@ -114,16 +113,21 @@ public:
     QHash<int, QByteArray> roleNames() const override ;
 //   Q_INVOKABLE void load(const QUrl &fileUrl);
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
-    Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent);
+    Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent,bool transclusion = true);
+//    Q_INVOKABLE void deserializeTest( TreeItem  &node ,QDataStream &stream, bool check = false);
 bool isDescendant(TreeItem *parent,TreeItem *child, bool searchClones = false);
+TreeItem* isDescendant1(TreeItem *parent,TreeItem *child, bool searchClones = false);
+
    Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
-   Q_INVOKABLE void serialize( TreeItem  *node ,QDataStream &stream);
-   Q_INVOKABLE void deserialize(TreeItem  *node ,QDataStream &stream,bool check = false);
+   Q_INVOKABLE void serialize( TreeItem  &node ,QDataStream &stream);
+   Q_INVOKABLE void deserialize(TreeItem  &node ,QDataStream &stream,bool check = false);
  Q_INVOKABLE   bool copyRows1(int position,int rows,const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
-void serialize1( TreeItem  *node );
+void serialize1( TreeItem  &node );
     TreeItem* getItemFromId(QUuid id);
     Q_INVOKABLE  QString getId(const QModelIndex &id);
    Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
+        void acceptsCopies(const QModelIndex &index,bool acceptsCopies);
+
     bool isDescendantFromId(QUuid parent,QUuid child);
 //    bool result = false;
     QMultiMap<QUuid,QUuid> container;
