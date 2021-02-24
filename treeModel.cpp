@@ -77,50 +77,27 @@ out << *item.itemData;
 out << item.numberOfChildren;
 out << item.id;
 out << item.acceptsCopies;
-qDebug() << "serialising siblings: " << *item.siblings;
-//TODO check smwhere if there's more than 1 parent
-
 out << item.tempParents;
 out << item.position;
 
-
-
-
-//qDebug << item.itemData;
 return out;
 }
 
 
 QDataStream &operator>>(QDataStream &in,  TreeItem *item){
-
-
 in >> *item->itemData;
 in >> item->numberOfChildren; //TODO move out of class members
 in >> item->id;
 in >>item->acceptsCopies;
-//list of parents' ids
 in >> item->tempParents;
 in >> item->position;
-
-
-qDebug() << "deserialising parents before: " << *item->siblings;
-//in >> *item->parents;
-qDebug() << "serialising parents after: " << *item->siblings;
-
-qDebug() << "before " << *item->childItems;
-
-//in >> *temp;
-
-
-
-
 return in;
 }
 
 Q_INVOKABLE void TreeModel::deserialize( TreeItem  &node ,QDataStream &stream, bool check){
  if(!check){ // if inserted node is not copied
     stream >> &node;
-    if(node.item().toString().contains("Data")){
+    if(node.item().toString().contains("Improtance")){
     auto tr = 5;
     }
     if(node.item().toString().contains("ly 30")){
@@ -132,15 +109,12 @@ Q_INVOKABLE void TreeModel::deserialize( TreeItem  &node ,QDataStream &stream, b
     if((node.tempParents.size() >1)&& (!check)){ //temp stores id's of parents.if more than 1 then node is copied further
         map.insert(node.id,&node);// corresponds id of not copied nodes to a pointer to the node
      for(int i = 0; i < node.tempParents.size();i++){
-
 //if(node->temp[i] !=node->parentItem->id){
     container.insert(node.tempParents[i],node.id); //keys are parents, current item(to be copied) is value
-
      }
 //     }
      auto cont = container.find(node.parentItem->id,node.id);
 //          container.erase(container.find(node.parentItem->id,node.id));
-
      if(!node.position.isEmpty()){
 //        node.position.erase(node.
 //                            position.find(node.parentItem->id,node.parent()->children().indexOf(&node)));
@@ -149,7 +123,6 @@ Q_INVOKABLE void TreeModel::deserialize( TreeItem  &node ,QDataStream &stream, b
 else{ //if node is copied
      stream >> &node;
 }
-
  if(node.item().toString().contains("heee")){
  auto tr = 5;
  }
@@ -159,7 +132,6 @@ else{ //if node is copied
  if(node.item().toString().contains("ly 29")){
  auto tr = 5;
  }
-
      for(int i = 0; i < node.numberOfChildren;i++){
          if(i ==4){
              ;
@@ -170,8 +142,6 @@ else{ //if node is copied
     deserialize(node.insertChildren2(i,1,0),stream);
         }
         else{
-
-
  TreeItem* check1 = nullptr;
 auto list = container.values(node.id); //list should contain id's of all potential children
 for(int j = 0;j<list.size();j++){
@@ -181,25 +151,18 @@ for(int j = 0;j<list.size();j++){
        auto y = map.value(list[j]);
        auto m = map.value(list[j])->position.value(item);
        auto u = item;
-
        if(item == node.id&& map.value(list[j])->position.values(item).contains(i)){
-
-
-
        check1 = map.value(list[j]);
 //       container.erase(container.find(node.id,list[j]));
        break;
    }
    }
 //    auto test = map.value(list[j]);
-
 //    if (map.value(list[j])->position[0] == i){
-
 //        check1 = map.value(list[j]);
 ////        container.remove(node.id,list[j]);
 //        container.erase(container.find(node.id,list[j]));
 //        break;
-
 //    }
 }
 if(check1 != nullptr){
@@ -211,8 +174,6 @@ if(check1 != nullptr){
 //                           position.find(node.id,i));
 
 //    container.remove(node->id,container.value(node->id)); //TODO
-
-
     deserialize( node.insertChildren1(i,1,0,check1),stream,true);
 }
 else{
@@ -228,15 +189,27 @@ check1 = nullptr;
     }     
 return;
 }
+void TreeModel::serialize2( TreeItem  &node){
+    node.tempParents.clear();
+    node.position.clear();
+    node.numberOfChildren = node.childCount();
+    if(node.childCount()){ //TODO replace with numberOfChildren?
+        for(int i = 0; i < node.childCount();i++){
+
+
+            serialize2(*node.children()[i]);
+
+        }
+    }
+}
 
 void TreeModel::serialize1( TreeItem  &node){
 
-    node.tempParents.clear();
-    node.position.clear();
-    if(node.item().toString().contains("Avoid")){
+
+    if(node.item().toString().contains("Imro")){
     auto tr = 5;
     }
-    if(node.item().toString().contains("ly 29")){
+    if(node.item().toString().contains("Import")){
     auto tr = 5;
     }
     if(node.item().toString().contains("ly 30")){
@@ -269,7 +242,7 @@ if( !(node.siblingItems()[i]->position.isEmpty())){
 
     }
 
-node.numberOfChildren = node.childCount();
+
 if(node.childCount()){ //TODO replace with numberOfChildren?
     for(int i = 0; i < node.childCount();i++){
 
@@ -303,6 +276,7 @@ Q_INVOKABLE void TreeModel::log(){
     if(file.open(QIODevice::WriteOnly|QIODevice::Truncate)){
     QDataStream stream( &file );
 //    rootItem->numberOfChildren = rootItem->childCount();
+     serialize2(*rootItem);
     serialize1(*rootItem);
         serialize(*rootItem,stream);
          file.close();
@@ -594,14 +568,10 @@ updateProxyFilter();
 bool TreeModel::isDescendant(TreeItem *parent,TreeItem *child,bool searchClones){
 
     if(parent == child){
-
-
         return true;
     }
     else if(searchClones){
         if(*parent == *child){
-
-
             return true;
         }
     }
@@ -722,6 +692,7 @@ beginInsertRows(parent, position, position + rows - 1);
     this->setData(child,"Data",Qt::UserRole +2);
  endInsertRows();
 // if(transclusion){
+
 if(parentItem->siblingItems().size() > 1){
     QVector<TreeItem*> siblingCopy = (parentItem->siblingItems());
     siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), parentItem));
@@ -783,6 +754,7 @@ Q_INVOKABLE bool TreeModel::removeRows(int position, int rows, const QModelIndex
    for(int i = 0; i < parentItem->siblingItems().size();i++){
 
    auto sibling =  parentItem->siblingItems()[i];
+   if(sibling->acceptsCopies||sibling ==parentItem){
    auto check = sibling->id.toString();
    auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
    auto res = sibling->id.toString();
@@ -801,7 +773,7 @@ Q_INVOKABLE bool TreeModel::removeRows(int position, int rows, const QModelIndex
              //  parentItem->position.append((*parentItem->parents.get())[i]->childItems->indexOf(&(*(*(*(*parentItem->parents.get())[i]).childItems.get())[j])));
 
 
-
+}
 
            }
 

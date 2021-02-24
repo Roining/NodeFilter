@@ -150,24 +150,18 @@ Q_INVOKABLE void Filtering::setQuery(QString string){
 //bool Filtering::ItemFilter(std::function<bool()>);
 bool Filtering::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const  {
 
-if(query == ""){
-
-//currentItem->enabled =false;
-    return true;
-}
-
-
-
-
-
-//if(getBool()){
-//bool result = true;
 QModelIndex index = sourceModel->index(source_row, 0, source_parent);
  TreeItem *currentItem =  sourceModel->getItem(index);
+ if(query == ""){
 
+    currentItem->enabled =true;
+    return true;
+ }
 
 //     currentItem->enabled =true;
-QStringList container = query.split(QRegExp("\\s"));
+//QStringList container = query.split(QRegExp("\\s"));
+QStringList container = query.split("~");
+
 
 bool finalResult = true;
 
@@ -187,43 +181,8 @@ bool innerResult = true;
         return false;
     }
 }
+//sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
 
-else if( container[i].startsWith("q:")){
-               innerResult = sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
-               bool isInclusive = i>0 && container[i-1] == "OR";
-               bool isInversed = i>0 && container[i-1] == "NOT";
-
-               if(innerResult){
-                   if(isInclusive){
-                       currentItem->enabled =true;
-                       return true;
-
-
-                   }
-                   if(isInversed){
-                       currentItem->enabled =false;
-                       return false;
-                   }
-               }
-               else{
-                   if(isInclusive){
-                     finalResult = false;
-
-
-                   }
-
-                if(!isInversed &&!isInclusive){
-
-
-                    currentItem->enabled =false;
-                    return false;
-
-
-                }
-
-
-                }
-   }
  else if( container[i].startsWith(">")){
     auto query = container[i].section(":",-1);
     auto itemIndex = sourceModel->match(sourceModel->index( 0, 0 ),Qt::UserRole +2,query,1,Qt::MatchRecursive);
@@ -333,20 +292,85 @@ else if( container[i].startsWith("q:")){
 
         }
    }
+ else {
+      auto trimmedQuery = container[i].section(":",-1);
+ //     QStringList words = trimmedQuery.split("\\s");
+      QStringList words = trimmedQuery.split(QRegExp("\\s"));
+ //     TreeItem *itemPtr = currentItem;
+          auto string = container[i].mid(2);
+ //         auto u = (itemPtr)->item().toString();
+      bool result = false;
+      bool contains = false;
+      for(int i = 0;i <words.size();i++){
+ if(currentItem->item().toString().contains(words[i], Qt::CaseInsensitive)){
+ contains = true;}
+      }
+      if(contains == true){
+      for(int i = 0;i <words.size();i++){
+          TreeItem *itemPtr = currentItem;
+      while(true){
+
+      if((((itemPtr)->item().toString().contains(words[i], Qt::CaseInsensitive)) )){
+          result = true;
+         break;
+  //    if(child->parent() != parent)
+      }
+     else if(!itemPtr->parent()){
+          result =  false;
+          break;
+
+      }
+       else  {
+             itemPtr = itemPtr->parent();
+
+              }
+      }
+      if(result == false){
+          break;
+      }
+      }
+  }
+      innerResult = result;
+ //               innerResult = sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
+                bool isInclusive = i>0 && container[i-1] == "OR";
+                bool isInversed = i>0 && container[i-1] == "NOT";
+
+                if(innerResult){
+                    if(isInclusive){
+                        currentItem->enabled =true;
+                        return true;
+
+
+                    }
+                    if(isInversed){
+                        currentItem->enabled =false;
+                        return false;
+                    }
+                }
+                else{
+                    if(isInclusive){
+                      finalResult = false;
+
+
+                    }
+
+                 if(!isInversed &&!isInclusive){
+
+
+                     currentItem->enabled =false;
+                     return false;
+
+
+                 }
+
+
+                 }
+    }
 
 }
 currentItem->enabled =finalResult;
 return finalResult;
-        ;
-
-
-
-
-
-
-
-
-    return true;
+      return true;
 };
 Q_INVOKABLE void Filtering::enableFilter(bool enabled) {
        m_enabled = enabled;

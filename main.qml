@@ -105,12 +105,12 @@ property var viewArray: [];
     Shortcut {
     sequence: "Ctrl+H"
     onActivated:  {
-        var Randomnumber = Math.random().toString(36).substr(2, 5);
-        console.log(Randomnumber)
-        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
+//        var Randomnumber = Math.random().toSrtring(36).substr(2, 5);
+//        console.log(Randomnumber)
+        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
                                                you);
         var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-        var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
+        var delegateInstance = Qt.createQmlObject("Delegate { id: car_2; }",
                                                you);
         var   sprite = delegateInstance.createObject(tes,{test:component})
 
@@ -156,6 +156,7 @@ SplitView{
 
 }
 }
+
 
 
 }

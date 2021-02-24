@@ -48,26 +48,20 @@
 **
 ****************************************************************************/
 
-/*
-    treeitem.cpp
 
-    A container for items of data supplied by the simple tree model.
-*/
 
 #include "TreeNode.h"
-
 #include <iostream>
 
-//! [0]
+
 TreeItem::TreeItem(const QVector<QVariant> data, TreeItem *parent)
     : itemData(std::make_shared<QVector<QVariant>>(data)),
       parentItem(parent),childItems(std::make_shared<QVector<TreeItem*>>()),id(id.createUuid()),acceptsCopies(true),siblings(std::make_shared<QVector<TreeItem*>>())
 {
-//    id = id.createUuid(); //TODO:check if valid
 
 siblings->append(this);
 }
-//! [0]
+
 TreeItem& TreeItem::operator=( TreeItem& other){
    if(&other !=this)
    {
@@ -78,6 +72,8 @@ TreeItem& TreeItem::operator=( TreeItem& other){
         siblings = other.siblings;//TODO1: setParent alternative
 siblings->append(this);
         itemData = other.itemData;
+        parents.append(other.id);
+         other.copyChildren.append(this->id);
         //        childItems = other.childItems;
 
    }
@@ -92,6 +88,8 @@ TreeItem::TreeItem( TreeItem& other){
     acceptsCopies = other.acceptsCopies;
     siblings = other.siblings;
     siblings->append(this);
+    parents.append(other.id);
+    other.copyChildren.append(this->id);
     itemData = other.itemData;
 }
 
@@ -130,6 +128,9 @@ bool TreeItem::operator==(const TreeItem& other) const{
 //    return (this->itemData.get()[0][0]) == (other.itemData.get()[0][0]);
 //    return (*this->itemData.get()) ==(*other.itemData.get());
 //    return this->itemData == other.itemData;
+    if((this->itemData.get()) == (other.itemData.get())){
+        auto ty = 8;
+    }
     return (this->itemData.get()) == (other.itemData.get());
 }
 //! [1]
@@ -275,25 +276,26 @@ bool TreeItem::insertColumns(int position, int columns)
 
 //! [9]
 //!
-//bool TreeItem::
-//isDescendantOfItself(TreeItem *parent,TreeItem *child){
-//    bool result;
-//    while(true){
-//    if(!child->parent()){
-//        result =  false;
-//        return  result;
-//    }
-//    else if((*(child->parent()) == *parent)||(*(child) == *parent)){
-//        result = true;
-//        return result;
-////    if(child->parent() != parent)
-//    }
-//     else  {
-//           child = child->parent();
+bool TreeItem::
+isDescendantOfItself(TreeItem *parent,TreeItem *child){
 
-//            }
-//    };
-//};
+    bool result;
+    while(true){
+    if(!child->parent()){
+        result =  false;
+        return  result;
+    }
+    else if((*(child->parent()) == *parent)||(*(child) == *parent)){
+        result = true;
+        return result;
+//    if(child->parent() != parent)
+    }
+     else  {
+           child = child->parent();
+
+            }
+    };
+};
 
 
 TreeItem *TreeItem::parent()

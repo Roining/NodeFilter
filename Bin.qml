@@ -214,3 +214,138 @@ tee.destroy();
 //      waaa.model.insertRows(waaa.currentModelIndex.row,1,test)//TODO
 //    }
 //    }
+
+
+//    Keys.onDigit4Pressed: {
+
+//        event.accepted = true
+//        var test = waaa.currentModelIndex.parent
+//        console.log(test)
+//      waaa.model.copyRows(waaa.currentModelIndex.row,1,test,myClass.getLastIndex())//TODO
+//}
+//    Keys.onDigit5Pressed: {
+
+////                                                event.accepted = true
+//       var test = waaa.currentModelIndex
+//        console.log(test)
+//      waaa.model.insertRows(0,1,test)//TODO
+
+////        waaa.expand(waaa.currentModelIndex.row);
+//}
+//    Keys.onDigit9Pressed: {
+
+//        event.accepted = true
+//        var test = waaa.currentModelIndex
+//        console.log(test)
+//      waaa.model.copyRows(0,1,test,myClass.getLastIndex())//TODO
+//}
+//    Keys.onDigit6Pressed: {
+//    search.focus = true
+//    }
+//    Keys.onDigit7Pressed: {
+//     waaa.model.log()
+//    }
+
+//    Keys.onDigit1Pressed: {
+
+//        tee.destroy();
+//}
+//    Keys.onDigit3Pressed: {
+
+//        var test = waaa.model.parent(waaa.currentModelIndex)
+//        console.log("joo" + waaa.currentModelIndex)
+//     waaa.model.removeRows(waaa.currentModelIndex.row,1,test)//TODO
+//}
+//    Keys.onDigit2Pressed: {
+
+//        event.accepted = true
+//        var test = waaa.currentModelIndex.parent
+//        console.log(test)
+//      waaa.model.insertRows(waaa.currentModelIndex.row,1,test)//TODO
+//}
+//    Keys.onDigit8Pressed: {
+
+//        event.accepted = true
+//        var test = waaa.currentModelIndex
+//        console.log(test)
+//      waaa.model.saveIndex(test)//TODO
+//}
+
+//    model: tee.test
+//                                        Shortcut {
+//                                        sequence: "Ctrl+D"
+//                                        onActivated:  {
+//                                            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
+//                                                                                   you);
+//                                    //        var source1 = source.createObject(you)
+
+//                                            var   sprite = trie.createObject(tes,{model:component})
+
+
+//                                        }
+//                                        }
+//onChange: waaa.forceLayout();
+rowHeightProvider: function(row){
+//    console.log("row " + row);
+//    for (var i = 0; i < waaa.count; i ++) {
+//         // this will get list item at index i
+//         console.log(waaa.contentItem.children[i]);
+
+//         // lets set it height to 100
+//         waaa.contentItem.children[i].height=100;
+//      }
+//    for(var i =0;i<30;i++ ){
+//        if(waaa.contentItem.children[i].conHeight){
+//        console.log("index.row " + i + "  " + waaa.contentItem.children[i].conHeight);
+//        }
+//    }
+
+
+//    console.log("index " + waaa.contentItem.children[row]);
+//    console.log("row " + row);
+//    var array = [];
+//    for(var child in waaa.contentItem.children) {
+//        var o = waaa.contentItem.children[child].toString();
+
+//if(waaa.contentItem.children[i].conHeight){
+//           array.push(waaa.contentItem.children[child].conHeight)}
+//    }
+//        for(var i =0;i<waaa.contentItem.children.;i++ ){
+//            if(waaa.contentItem.children[i].conHeight){
+//                  console.log("index.row " + waaa.contentItem.children[row].conHeight);
+//                array.push(waaa.contentItem.children[i].conHeight)
+////                 console.log("index.row after " + array);
+//            }
+//        }
+
+console.log("index.row after " + array);
+//    console.log("count " + waaa.count);
+
+
+
+//    waaa.contentItem.children[row].content.height
+//    return waaa.contentItem.children[row].content.height}
+//    return waaa.contentItem.children[row].conHeight}
+
+        console.log("array " + array[row]);
+//        console.log("row " + row);
+        return waaa.contentItem.children[row].conHeight
+    }
+//    Keys.onDigit2Pressed: {
+//        waaa.forceLayout();
+
+
+//}
+//Timer{
+//running:true
+//interval:200
+
+//onTriggered:{
+////waaa.rowHeight = content.height;
+//    waaa.forceLayout();
+//    console.log("rowHeightProvider " + waaa.rowHeightProvider )
+//    console.log("content.height " + content.height )
+
+//}
+
+//}

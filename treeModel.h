@@ -91,6 +91,8 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   Q_INVOKABLE  void log();
+    void serialize2( TreeItem  &node);
+
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 //! [1]
 

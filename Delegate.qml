@@ -16,7 +16,7 @@ Component{
         id:tee
          objectName: Math.random().toString(36).substr(2, 5)
           opacity: 1.0
-
+//z:1000
         property alias test:waaa.model
         SplitView.minimumHeight: 200
         SplitView.preferredHeight:  300
@@ -40,7 +40,7 @@ Column{
     signal info(string msg)
     objectName: "search"
 
-    SplitView.preferredHeight: 100
+//    SplitView.preferredHeight: 100
     placeholderText: "Search here"
     onInfo: {
     search.insert(search.length, ">:" + msg)
@@ -56,49 +56,96 @@ Column{
     }
 
     }
+//ScrollView{
+//clip:true
+
+//contentWidth:waaa.width
+//contentHeight:waaa.height
+//            ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+//             ScrollBar.horizontal.policy: ScrollBar.AlwaysOn
 TreeView {
+//    ScrollBar.horizontal:   ScrollBar {
+//        active: ScrollBar.AlwaysOn
+//        policy: ScrollBar.AlwaysOn}
+    clip:true
+//    verticalOvershoot :0
+//   boundsBehavior : Flickable.StopAtBounds
+//    boundsMovement: Flickable.StopAtBounds
+//boundsBehavior:Flickable.StopAtBounds
     id:waaa
-    Shortcut {
-    sequence: "Ctrl+K"
-     context: Qt.ApplicationShortcut
-    onActivated: {
+    property var rowHeight:40
+    property var indexNow:waaa.currentModelIndex.row
+reuseItems:true
+rowHeightProvider: function(row){
+//    console.log("row " + row);
+//    for (var i = 0; i < waaa.count; i ++) {
+//         // this will get list item at index i
+//         console.log(waaa.contentItem.children[i]);
+
+//         // lets set it height to 100
+//         waaa.contentItem.children[i].height=100;
+//      }
+//    for(var i =0;i<30;i++ ){
+//        if(waaa.contentItem.children[i].conHeight){
+//        console.log("index.row " + i + "  " + waaa.contentItem.children[i].conHeight);
+//        }
+//    }
+
+
+//    console.log("index " + waaa.contentItem.children[row]);
+//    console.log("row " + row);
+//    var array = [];
+//    for(var child in waaa.contentItem.children) {
+//        var o = waaa.contentItem.children[child].toString();
+
+//if(waaa.contentItem.children[i].conHeight){
+//           array.push(waaa.contentItem.children[child].conHeight)}
+//    }
+//        for(var i =0;i<waaa.contentItem.children.;i++ ){
+//            if(waaa.contentItem.children[i].conHeight){
+//                  console.log("index.row " + waaa.contentItem.children[row].conHeight);
+//                array.push(waaa.contentItem.children[i].conHeight)
+////                 console.log("index.row after " + array);
+//            }
+//        }
+
+console.log("index.row after " + array);
+//    console.log("count " + waaa.count);
 
 
 
-         waaa.resizeColumnsToContents();
+//    waaa.contentItem.children[row].content.height
+//    return waaa.contentItem.children[row].content.height}
+//    return waaa.contentItem.children[row].conHeight}
+
+        console.log("array " + array[row]);
+//        console.log("row " + row);
+        return waaa.contentItem.children[row].conHeight
     }
-    }
 
-    Shortcut {
-    sequence: "Ctrl+"
-     context: Qt.ApplicationShortcut
-    onActivated: {
-
-
-
-
-    }
-    }
-
-
-
-    width:parent.width
-    height:parent.height
-
-
-//    width:100
+    width:layout.width
+     height:layout.height
+//    width:100f
     styleHints.overlay: "green"
     styleHints.indent: 25
     styleHints.columnPadding: 30
-
-
-
     property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
+        Keys.onDigit2Pressed: {
+
+            console.log(waaa.height)
+
+    }
     Keys.onPressed: {
      if((event.key == Qt.Key_P)&&(event.modifiers &Qt.ControlModifier)&&(event.modifiers &Qt.ShiftModifier)){ //acceptsCopies true Ctrl Shift P
         waaa.model.acceptsCopies(waaa.currentModelIndex,true)
          return;
      }
+     else if((event.key == Qt.Key_L)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node without transclusion
+
+       waaa.model.insertRows(0,1,waaa.currentModelIndex,false)//TODO
+//         waaa.expand(test.row);
+        return;
+    }
 
       else if((event.key == Qt.Key_N)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node as a child Ctrl Shift N
          var test4 = waaa.currentModelIndex
@@ -128,7 +175,12 @@ TreeView {
               waaa.model.removeRows(waaa.currentModelIndex.row,1,test5)//TODO
          return;
          }
-      else if((event.key == Qt.Key_A)&&(event.modifiers &Qt.ControlModifier)){ //copy a copied node Ctrl A
+     else if((event.key == Qt.Key_U)&&(event.modifiers &Qt.ControlModifier)){ //remove node Ctrl D
+
+             content.focus = true
+        return;
+        }
+      else if((event.key == Qt.Key_Q)&&(event.modifiers &Qt.ControlModifier)){ //copy a copied node Ctrl A
 
          var test3 = waaa.currentModelIndex
                  console.log(test3)
@@ -141,7 +193,7 @@ TreeView {
      }
       else if((event.key == Qt.Key_F)&&(event.modifiers &Qt.ControlModifier)){//Ctrl F
          search.focus = true
-return;
+         return;
      }
       else if((event.key == Qt.Key_D)&&(event.modifiers &Qt.AltModifier)){ // Delete view Alt D
          console.log("vcvhgvhn")
@@ -173,102 +225,27 @@ return;
     }
      }
 
-
-    Keys.onDigit4Pressed: {
-
-        event.accepted = true
-        var test = waaa.currentModelIndex.parent
-        console.log(test)
-      waaa.model.copyRows(waaa.currentModelIndex.row,1,test,myClass.getLastIndex())//TODO
-}
-    Keys.onDigit5Pressed: {
-
-//                                                event.accepted = true
-       var test = waaa.currentModelIndex
-        console.log(test)
-      waaa.model.insertRows(0,1,test)//TODO
-
-//        waaa.expand(waaa.currentModelIndex.row);
-}
-    Keys.onDigit9Pressed: {
-
-        event.accepted = true
-        var test = waaa.currentModelIndex
-        console.log(test)
-      waaa.model.copyRows(0,1,test,myClass.getLastIndex())//TODO
-}
-    Keys.onDigit6Pressed: {
-    search.focus = true
-    }
-    Keys.onDigit7Pressed: {
-     waaa.model.log()
-    }
-
-    Keys.onDigit1Pressed: {
-
-        tee.destroy();
-}
-    Keys.onDigit3Pressed: {
-
-        var test = waaa.model.parent(waaa.currentModelIndex)
-        console.log("joo" + waaa.currentModelIndex)
-     waaa.model.removeRows(waaa.currentModelIndex.row,1,test)//TODO
-}
-    Keys.onDigit2Pressed: {
-
-        event.accepted = true
-        var test = waaa.currentModelIndex.parent
-        console.log(test)
-      waaa.model.insertRows(waaa.currentModelIndex.row,1,test)//TODO
-}
-    Keys.onDigit8Pressed: {
-
-        event.accepted = true
-        var test = waaa.currentModelIndex
-        console.log(test)
-      waaa.model.saveIndex(test)//TODO
-}
-
-//    model: tee.test
-
-    onCurrentIndexChanged: console.log("current index: " + currentIndex
+onCurrentIndexChanged: console.log("current index: " + currentIndex
                                            + " current row: " + currentIndex.row)
-
-
     delegate:
-
-
 Component{
         id:ey
-
                                     Rectangle {
 
 clip:true
+//onHeightChanged: waaa.forceLayout()
 //height:content.height
 
-
-
-
-//                                        Shortcut {
-//                                        sequence: "Ctrl+D"
-//                                        onActivated:  {
-//                                            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
-//                                                                                   you);
-//                                    //        var source1 = source.createObject(you)
-
-//                                            var   sprite = trie.createObject(tes,{model:component})
-
-
-//                                        }
-//                                        }
                                         id:newId
                                         visible:true
-                                        implicitHeight: 50
+                                        property var conHeight: content.height
+                                        implicitHeight: conHeight
                                         implicitWidth: 1920
                                             focus:true
                                         property bool hasChildren: TreeView.hasChildren
                                         property bool isExpanded: TreeView.isExpanded
                                         property int depth: TreeView.depth
+
 
                                         Text {
                                             id: indicator1
@@ -290,6 +267,8 @@ clip:true
 
                                                     if (tapCount == 1)
                                                         waaa.toggleExpanded(row)
+
+
                                                 }
                                             }
                                         }
@@ -306,21 +285,29 @@ clip:true
                                         TextArea {
                                             id:content
                                             focus:true
-                                            Keys.onDigit0Pressed: {
-
-
-                                                waaa.model.getIdToClipboard(waaa.currentModelIndex)
-
-                                        }
-
+                                            objectName: "text"
                                             wrapMode:TextEdit.WordWrap
                                             textFormat: TextEdit.MarkdownText
                                             clip:true
+                                            property var hght:content.height
                                             font.pointSize: 18
+//onHeightChanged: waaa.forceLayout()
+//                                            onContentHeightChanged:
+
+//                                            onContentHeightChanged:{
+//                                                waaa.forceLayout();
+//                                            }
                                             x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
-                                           text: edit
+                                            text: edit
                                             onTextChanged:  {edit = text;
-//waaa.resizeContent();
+                                                waaa.forceLayout()
+
+//                                                waaa.rowHeight = content.height;
+//                                                    waaa.forceLayout();
+//                                                    console.log("rowHeightProvider " + waaa.rowHeightProvider )
+//                                                    console.log("content.height " + content.height )
+
+
                                             }
 
 
@@ -330,12 +317,23 @@ clip:true
                                }
 }
 
+//    MouseArea {
+//                            anchors.fill: parent
+//                            onWheel: {
+//                                if (wheel.angleDelta.y > 0) vbar.increase()
+//                                else vbar.decrease()
+//                            }
+//                        }
+    ScrollBar.horizontal: ScrollBar { id: hbar;height:20;
+        policy: ScrollBar.AlwaysOn;active: true;}
+                ScrollBar.vertical: ScrollBar { id: vbar;width:15; policy: ScrollBar.AlwaysOn;active: hovered || pressed;}
+}
+
 
 
 }
+}
 
-}
-}
                 }
 
 
