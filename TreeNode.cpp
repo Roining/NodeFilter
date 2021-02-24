@@ -68,7 +68,7 @@ TreeItem& TreeItem::operator=( TreeItem& other){
 
 //        parentItem = &other;
         parentItem = nullptr;
-        acceptsCopies = other.acceptsCopies;
+//        acceptsCopies = other.acceptsCopies;
         siblings = other.siblings;//TODO1: setParent alternative
 siblings->append(this);
         itemData = other.itemData;
@@ -85,7 +85,7 @@ TreeItem::TreeItem( TreeItem& other){
 //        parents->remove(parents->indexOf(parentItem)); //TODO is parentItem properly cleaned up?
 //    }
     parentItem = &other;
-    acceptsCopies = other.acceptsCopies;
+//    acceptsCopies = other.acceptsCopies;
     siblings = other.siblings;
     siblings->append(this);
     parents.append(other.id);
@@ -101,7 +101,6 @@ TreeItem::~TreeItem()
 
 //    }
     siblings->erase(std::find( siblings->begin(),  siblings->end(), this)); //TODO switch to siblings
-
 
     qDeleteAll(*childItems);
 //    childItems->clear();//TODO double check if valid

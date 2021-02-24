@@ -79,6 +79,8 @@ out << item.id;
 out << item.acceptsCopies;
 out << item.tempParents;
 out << item.position;
+out << item.parents;
+out << item.copyChildren;
 
 return out;
 }
@@ -91,6 +93,8 @@ in >> item->id;
 in >>item->acceptsCopies;
 in >> item->tempParents;
 in >> item->position;
+in >> item->parents;
+in >> item->copyChildren;
 return in;
 }
 
@@ -676,6 +680,37 @@ Q_INVOKABLE bool TreeModel::insertRows(int position, int rows, const QModelIndex
 
     return true; //TODO check for success of operation
 }
+Q_INVOKABLE void TreeModel::insertRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &child){
+    auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,calledId.toString(),1,Qt::MatchRecursive);
+    auto item = getItem(siblingIndex[0]);
+    if(item->acceptsCopies){
+        copyRows1(position,1,siblingIndex[0],child);
+   }
+
+    if(!item->parents.isEmpty()&&item->acceptsCopies){
+//        QVector<QUuid> siblingCopy = (item->parents);
+//        siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), item->id));
+        for(int i=0;i <item->parents.size();i++){
+            if(item->parents[i] !=  callingId){
+           insertRows12( position,calledId,item->parents[i],child);
+         }
+        }
+
+    }
+
+    if(!item->copyChildren.isEmpty()&&item
+            ->acceptsCopies){
+//        QVector<QUuid> childrenCopy = (item->copyChildren);
+//        siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), item->id));
+        for(int i=0;i <item->copyChildren.size();i++){
+            if(item->copyChildren[i] != callingId){
+           insertRows12( position,calledId,item->copyChildren[i],child);
+         }
+        }
+
+    }
+    return;
+}
 Q_INVOKABLE bool TreeModel::insertRows1(int position, int rows, const QModelIndex &parent,bool transclusion){
 TreeItem *parentItem = getItem(parent);
 if (!parentItem)
@@ -692,24 +727,45 @@ beginInsertRows(parent, position, position + rows - 1);
     this->setData(child,"Data",Qt::UserRole +2);
  endInsertRows();
 // if(transclusion){
+ if(!parentItem->parents.isEmpty()&&parentItem->acceptsCopies){
+//        QVector<QUuid> siblingCopy = (item->parents);
+//        siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), item->id));
+     for(int i=0;i <parentItem->parents.size();i++){
+//         if(item->parents[i] !=  callingId){
+        insertRows12( position,parentItem->id,parentItem->parents[i],child);
 
-if(parentItem->siblingItems().size() > 1){
-    QVector<TreeItem*> siblingCopy = (parentItem->siblingItems());
-    siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), parentItem));
-for(int i = 0; i < siblingCopy.size();i++){
+     }
 
-auto sibling =  siblingCopy[i];
-if(sibling->acceptsCopies|| !transclusion){
-auto check = sibling->id.toString();
-auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
+ }
 
-auto res = sibling->id.toString();
-copyRows1(position,1,siblingIndex[0],child);
-}
+ if(!parentItem->copyChildren.isEmpty()&&parentItem->acceptsCopies){
+//        QVector<QUuid> childrenCopy = (item->copyChildren);
+//        siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), item->id));
+     for(int i=0;i <parentItem->copyChildren.size();i++){
+//         if(parentItem->copyChildren[i] != callingId){
+        insertRows12( position,parentItem->id,parentItem->copyChildren[i],child);
+
+     }
+
+ }
+//if(parentItem->siblingItems().size() > 1){
+//    QVector<TreeItem*> siblingCopy = (parentItem->siblingItems());
+//    siblingCopy.erase(std::find( siblingCopy.begin(),  siblingCopy.end(), parentItem));
+
+//for(int i = 0; i < siblingCopy.size();i++){
+
+//auto sibling =  siblingCopy[i];
+//if(sibling->acceptsCopies|| !transclusion){
+//auto check = sibling->id.toString();
+//auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->id.toString(),1,Qt::MatchRecursive);
+
+//auto res = sibling->id.toString();
+//copyRows1(position,1,siblingIndex[0],child);
+//}
 
 
-        }
-}
+//        }
+//}
 //}
 
 
@@ -742,6 +798,7 @@ bool TreeModel::removeColumns(int position, int columns, const QModelIndex &pare
         removeRows(0, rowCount());
 
     return success;
+
 }
 
 Q_INVOKABLE bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
@@ -760,12 +817,28 @@ Q_INVOKABLE bool TreeModel::removeRows(int position, int rows, const QModelIndex
    auto res = sibling->id.toString();
    if(siblingIndex.isEmpty()){
        beginRemoveRows(QModelIndex(), position, position + rows - 1);
+
+//         sibling->copyChildren.erase(std::find( sibling->copyChildren.begin(),  sibling->copyChildren.end(),  sibling->children()[position]->id));
        const bool success = sibling->removeChildren(position, rows);
 
         endRemoveRows();
    }
    else{
    beginRemoveRows(siblingIndex[0], position, position + rows - 1);
+   for(int i = 0; i < sibling->children()[position]->copyChildren.size();i++ ){
+
+
+        auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->children()[position]->copyChildren[i].toString(),1,Qt::MatchRecursive);
+        auto item = getItem(siblingIndex[0]);
+        item->parents.erase(std::find( item->parents.begin(),  item->parents.end(),  sibling->children()[position]->id));
+}
+   for(int i = 0; i < sibling->children()[position]->parents.size();i++ ){
+
+
+                          auto siblingIndex = match(index( 0, 0 ),Qt::UserRole +2,sibling->children()[position]->parents[i].toString(),1,Qt::MatchRecursive);
+       auto item = getItem(siblingIndex[0]);
+        item->copyChildren.erase(std::find( item->copyChildren.begin(),  item->copyChildren.end(),  sibling->children()[position]->id));
+}
    const bool success = sibling->removeChildren(position, rows);
 
     endRemoveRows();
