@@ -101,6 +101,35 @@ TreeItem::~TreeItem()
 
 //    }
     siblings->erase(std::find( siblings->begin(),  siblings->end(), this)); //TODO switch to siblings
+   for(int i = 0;i <siblings->size();i++){
+if(!parents.isEmpty()){
+   if(siblingItems()[i]->id ==  parents[0]){
+//       delete siblingItems()[i];
+       siblingItems()[i]->copyChildren.erase(std::find( siblingItems()[i]->copyChildren.begin(),  siblingItems()[i]->copyChildren.end(),  id));
+     siblingItems()[i]->copyChildren.append(copyChildren);
+   }
+}
+
+   }
+   for(int i = 0;i <siblings->size();i++){
+
+      if( copyChildren.contains(siblingItems()[i]->id)){
+          siblingItems()[i]->parents.clear();
+          if(!parents.isEmpty()){
+               siblingItems()[i]->parents.append(parents[0]);
+          }
+
+
+      }
+
+
+//       delete siblingItems()[i];
+//       siblingItems()[i]->copyChildren.erase(std::find( siblingItems()[i]->copyChildren.begin(),  siblingItems()[i]->copyChildren.end(),  id));
+
+
+
+   }
+
 
     qDeleteAll(*childItems);
 //    childItems->clear();//TODO double check if valid

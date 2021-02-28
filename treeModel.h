@@ -130,6 +130,8 @@ void serialize1( TreeItem  &node );
    Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
         void acceptsCopies(const QModelIndex &index,bool acceptsCopies);
         Q_INVOKABLE void insertRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
+      void removeRows1(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
+//      void TreeModel::removeRows3(int position,QUuid callingId, QUuid calledId, const QModelIndex &child){
 
     bool isDescendantFromId(QUuid parent,QUuid child);
 //    bool result = false;

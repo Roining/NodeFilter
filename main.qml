@@ -117,7 +117,7 @@ property var viewArray: [];
     }
     }
     onClosing: {
-        myClass.log()
+//        myClass.log()
     }
     width: 1920
     height: 1024
