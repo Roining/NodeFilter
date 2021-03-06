@@ -12,18 +12,11 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-/*TreeModel myClass(nullptr);
-    Filtering my(0,&myClass);
-    Filtering my1(0,&myClass);
-    Filtering my2(0,&myClass);*///TODO: dynamically instantiate these
-//    auto m =new QAbstractItemModelTester(&myClass, QAbstractItemModelTester::FailureReportingMode::Fatal);
-//    qmlRegisterType<TreeModel>("TreeModel.com",1,0,"TreeModel");
+
     qmlRegisterType<Filtering>("TreeModel.com",1,0,"Filtering");
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("myClass",&myClass1);
-//    engine.rootContext()->setContextProperty("myProxy",&my);
-//     engine.rootContext()->setContextProperty("myProxy1",&my1);
-//      engine.rootContext()->setContextProperty("myProxy2",&my2);
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
 
 
@@ -32,9 +25,7 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
-//    QObject * item = engine.rootObjects().value(0);
-//        QObject * search= item->findChild<QObject*>("search");
-//    QObject::connect(search, SIGNAL(info(QString)), &my, SLOT(readText(QString)));
+
     engine.load(url);
 
 

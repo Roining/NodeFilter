@@ -68,7 +68,6 @@ class TreeItem;
 class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-//    Q_PROPERTY(bool cond READ Cond WRITE setCond)
 
 signals:
    void updateProxyFilter();
@@ -113,10 +112,8 @@ public:
    Q_INVOKABLE bool removeRows(int position, int rows,
                     const QModelIndex &parent = QModelIndex()) override;
     QHash<int, QByteArray> roleNames() const override ;
-//   Q_INVOKABLE void load(const QUrl &fileUrl);
    Q_INVOKABLE void saveIndex(const QModelIndex &index);
     Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent,bool transclusion = true);
-//    Q_INVOKABLE void deserializeTest( TreeItem  &node ,QDataStream &stream, bool check = false);
 bool isDescendant(TreeItem *parent,TreeItem *child, bool searchClones = false);
 TreeItem* isDescendant1(TreeItem *parent,TreeItem *child, bool searchClones = false);
 
@@ -131,11 +128,10 @@ void serialize1( TreeItem  &node );
         void acceptsCopies(const QModelIndex &index,bool acceptsCopies);
         Q_INVOKABLE void insertRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
       void removeRows1(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
-//      void TreeModel::removeRows3(int position,QUuid callingId, QUuid calledId, const QModelIndex &child){
       void copyRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &source);
 
     bool isDescendantFromId(QUuid parent,QUuid child);
-//    bool result = false;
+
     QMultiMap<QUuid,QUuid> container;
     QMap<QUuid,TreeItem*> map;
     TreeItem *rootItem;

@@ -27,22 +27,13 @@ property var viewArray: [];
             console.log(Randomnumber)
             var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
                                                    you);
-    //createObject(you)
             var Randomnumber1 = Math.random().toString(36).substr(2, 5);
             var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                    you);
             var   sprite = delegateInstance.createObject(tes,{test:component})
 
     }
-//    Shortcut {
-//    sequence: "Ctrl+J"
-////           context: Qt.ApplicationShortcut
-//    onActivated: {
 
-
-//        console.log(tee.objectName)
-//    }
-//    }
 
     SearchProxy{
     id:find
@@ -74,39 +65,7 @@ property var viewArray: [];
 
     }
     }
-//    Shortcut {
-//    sequence: "Ctrl+M"
-//    onActivated:  {
-//        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
-//                                               you);
-////        var source1 = source.createObject(you)
 
-//        var   sprite = find.createObject(tes,{test:myClass})
-
-
-//    }
-//    }
-//    Shortcut {
-//    sequence: "Ctrl+V"
-//    onActivated:  {
-//        var Randomnumber = Math.random().toString(36).substr(2, 5);
-//        console.log(Randomnumber)
-////        var tes1 = "import TreeModel.com 1.0; Filtering { id: car_; }";
-
-//        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-//                                               you);
-////        var source1 = source.createObject(you)
-
-////        var   sprite = trie.createObject(tes,{test:component})
-//        var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-//        var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
-//                                               you);
-//        var   sprite = delegateInstance.createObject(split,{test:component})
-
-
-
-//    }
-//    }
     Shortcut {
     sequence: "Ctrl+T"
     onActivated:  {
@@ -114,7 +73,6 @@ property var viewArray: [];
         console.log(Randomnumber)
         var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
                                                you);
-//createObject(you)
         var Randomnumber1 = Math.random().toString(36).substr(2, 5);
         var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                you);
@@ -146,7 +104,6 @@ handle: Rectangle {
 SplitView{
     id:split
 
-//    anchors.top:parent.bottom
     Layout.preferredWidth: parent.width / 2
             Layout.fillHeight: true
     orientation: Qt.Vertical

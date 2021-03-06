@@ -13,10 +13,7 @@ return true;
 }
 Q_INVOKABLE bool Filtering::removeRows(int position, int rows, const QModelIndex &parent)
 {
-//    setBool(false);
      sourceModel->removeRows(position,rows,mapToSource(parent));
-
-//     setBool(true);
      return true;
 }
 Q_INVOKABLE bool Filtering::getBool() const{
@@ -28,11 +25,8 @@ Q_INVOKABLE void Filtering::setBool(bool var) {
      }
 Q_INVOKABLE bool Filtering::copyRows(int position, int rows,
                                    const QModelIndex &parent, const QPersistentModelIndex &source){
-//    setBool(false);
-
      sourceModel->copyRows(position,rows,mapToSource(parent),sourceModel->getLastIndex());
 
-//     setBool(true);
      return true;
 };
 Q_INVOKABLE void Filtering::saveIndex(const QModelIndex &index){
@@ -109,7 +103,6 @@ Q_INVOKABLE QString Filtering::getId(const QModelIndex &index){
 }
 Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex &parent, bool transclusion)
 {
-//    setBool(false);
 
     if(transclusion){
     sourceModel->insertRows1(position,rows,mapToSource(parent));
@@ -119,7 +112,7 @@ Q_INVOKABLE bool Filtering::insertRows(int position, int rows, const QModelIndex
 
     }
 
-//    setBool(true);
+
     return true;
 }
 
@@ -130,7 +123,7 @@ Q_INVOKABLE void Filtering::setQuery(QString string){
 
 
 //if(query !=string){
-//    setBool(true);
+
  queryChanged = true;
     query = string;
     if(query.contains("sort")){
@@ -142,12 +135,10 @@ Q_INVOKABLE void Filtering::setQuery(QString string){
      invalidateFilter();
      queryChanged = false;
 
-//setBool(true);
-//}
     return;
 
 }
-//bool Filtering::ItemFilter(std::function<bool()>);
+
 bool Filtering::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const  {
 
 QModelIndex index = sourceModel->index(source_row, 0, source_parent);
@@ -158,9 +149,6 @@ QModelIndex index = sourceModel->index(source_row, 0, source_parent);
     return true;
  }
 
-
-//     currentItem->enabled =true;
-//QStringList container = query.split(QRegExp("\\s"));
 // QRegExp separator("[(&&|#|\|)]");
 QStringList container = query.split(QRegExp("&&"));
 
@@ -169,11 +157,7 @@ bool finalResult = true;
 
 for(int i =0;i < container.size();i++){
 bool innerResult = true;
-//if( container[i].startsWith("sort:")){
-//    sourceModel->sort(0);
-//    currentItem->enabled =true;
-//   return true;
-//}
+
  if( container[i].startsWith("r:")){
     auto string = container[i].mid(2);
     QRegularExpression regex(string);
@@ -183,7 +167,7 @@ bool innerResult = true;
         return false;
     }
 }
-//sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
+
 
  else if( container[i].startsWith(">")){
     auto query = container[i].section(":",-1);
@@ -296,11 +280,11 @@ bool innerResult = true;
    }
  else if(container[i].startsWith("q:"))  {
       auto trimmedQuery = container[i].section(":",-1);
- //     QStringList words = trimmedQuery.split("\\s");
+
       QStringList words = trimmedQuery.split(QRegExp("\\s"));
- //     TreeItem *itemPtr = currentItem;
+
           auto string = container[i].mid(2);
- //         auto u = (itemPtr)->item().toString();
+
       bool result = false;
       bool contains = false;
       for(int i = 0;i <words.size();i++){
@@ -333,7 +317,7 @@ bool innerResult = true;
       }
   }
       innerResult = result;
- //               innerResult = sourceModel->data(index,0).toString().contains(container[i].mid(2), Qt::CaseInsensitive	);
+
                 bool isInclusive = i>0 && container[i-1] == "OR";
                 bool isInversed = i>0 && container[i-1] == "NOT";
 
@@ -376,23 +360,19 @@ return finalResult;
 };
 Q_INVOKABLE void Filtering::enableFilter(bool enabled) {
        m_enabled = enabled;
-//       invalidateFilter();
+
        return;
    }
 
 Filtering::Filtering(QObject *parent):QSortFilterProxyModel(parent){
-//    setSourceModel()
+
     sourceModel = &myClass1;
    setSourceModel(&myClass1);
    setRecursiveFilteringEnabled(true);
   setDynamicSortFilter(false);
   QObject::connect(&myClass1,&TreeModel::updateProxyFilter,this,&Filtering::updateFilter);
 };
-//Filtering::Filtering(QObject *parent, TreeModel* my):QSortFilterProxyModel(parent){
-//   sourceModel = my;
-//  setSourceModel(my);
-//  setRecursiveFilteringEnabled(true);
-// setDynamicSortFilter(true);
+
 
 
 //};

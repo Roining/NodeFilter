@@ -6,8 +6,6 @@
 #include <QElapsedTimer>
 #include <QDebug>
 
-
-//#include "treeModel.h"
 class TreeModel;
 class TreeItem;
 class Filtering : public QSortFilterProxyModel{
@@ -21,8 +19,7 @@ public:
 Q_INVOKABLE void acceptsCopies(const QModelIndex &index, bool acceptsCopies);
 bool lessThan(const QModelIndex& left, const QModelIndex &right ) const override;
     Filtering(QObject *parent = nullptr);
-  //  Filtering(QObject *parent = nullptr, TreeModel* my = nullptr);
-    Q_INVOKABLE bool removeRows(int position, int rows, const QModelIndex &parent);
+    Q_INVOKABLE bool removeRows(int position, int rows, const QModelIndex &parent) override;
     Q_INVOKABLE bool copyRows(int position, int rows,
                               const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
     Q_INVOKABLE bool insertRows(int position, int rows, const QModelIndex &parent, bool transclusion = true);

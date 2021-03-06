@@ -66,26 +66,21 @@ TreeItem& TreeItem::operator=( TreeItem& other){
    if(&other !=this)
    {
 
-//        parentItem = &other;
         parentItem = nullptr;
-//        acceptsCopies = other.acceptsCopies;
+
         siblings = other.siblings;//TODO1: setParent alternative
 siblings->append(this);
         itemData = other.itemData;
-//        parents.append(other.id);
-//         other.copyChildren.append(this->id);
-        //        childItems = other.childItems;
+
 
    }
    return *this;
 }
 TreeItem::TreeItem( TreeItem& other){
     childItems = other.childItems;
-//    if(parentItem){
-//        parents->remove(parents->indexOf(parentItem)); //TODO is parentItem properly cleaned up?
-//    }
+
     parentItem = &other;
-//    acceptsCopies = other.acceptsCopies;
+
     siblings = other.siblings;
     siblings->append(this);
     parents.append(other.id);
@@ -96,15 +91,12 @@ TreeItem::TreeItem( TreeItem& other){
 //! [1]
 TreeItem::~TreeItem()
 {
-//    for(int i = 0;i< childItems->size();i++){
-//      (*childItems.get())[i]->parents->erase(std::find( (*childItems.get())[i]->parents->begin(),  (*childItems.get())[i]->parents->end(), this));
 
-//    }
     siblings->erase(std::find( siblings->begin(),  siblings->end(), this)); //TODO switch to siblings
    for(int i = 0;i <siblings->size();i++){
 if(!parents.isEmpty()){
    if(siblingItems()[i]->id ==  parents[0]){
-//       delete siblingItems()[i];
+
        siblingItems()[i]->copyChildren.erase(std::find( siblingItems()[i]->copyChildren.begin(),  siblingItems()[i]->copyChildren.end(),  id));
      siblingItems()[i]->copyChildren.append(copyChildren);
    }
@@ -123,8 +115,7 @@ if(!parents.isEmpty()){
       }
 
 
-//       delete siblingItems()[i];
-//       siblingItems()[i]->copyChildren.erase(std::find( siblingItems()[i]->copyChildren.begin(),  siblingItems()[i]->copyChildren.end(),  id));
+
 
 
 
@@ -132,33 +123,13 @@ if(!parents.isEmpty()){
 
 
     qDeleteAll(*childItems);
-//    childItems->clear();//TODO double check if valid
+
 
 
 
 }
 bool TreeItem::operator==(const TreeItem& other) const{
-    auto i1 = this->itemData;
-    auto u1 = other.itemData;
-    auto comp = this->itemData == other.itemData;
-    auto i = (*this->itemData.get());
-    auto u = (*other.itemData.get());
-    auto h = (this->itemData.get()[0]) == (other.itemData.get()[0]);
-        auto ye = (this->itemData.get()[0][0]) == (other.itemData.get()[0][0]);
-    auto t = (this->itemData.get()[0][0]);
-    auto e = (other.itemData.get()[0][0]);
-    auto t1 = (this->itemData.get()[0]);
-    auto e2 = (other.itemData.get()[0]);
-    if((this->itemData->contains("July 31"))){
-            auto rt = 45;
-}
-//    return (this->itemData.get()[0]) == (other.itemData.get()[0]);
-//    return (this->itemData.get()[0][0]) == (other.itemData.get()[0][0]);
-//    return (*this->itemData.get()) ==(*other.itemData.get());
-//    return this->itemData == other.itemData;
-    if((this->itemData.get()) == (other.itemData.get())){
-        auto ty = 8;
-    }
+
     return (this->itemData.get()) == (other.itemData.get());
 }
 //! [1]
@@ -183,12 +154,9 @@ QVector<TreeItem*>& TreeItem::children(){
     return *(childItems.get());
 }
 void TreeItem::setParent(TreeItem *parent){
-//    if(parentItem){
-//        parents->remove(parents->indexOf(parentItem)); //TODO is parentItem properly cleaned up?
-//    }
+
     parentItem = parent;
 
-//    siblings->append(parent); //TODO1
 
 }
 //! [3]
@@ -384,8 +352,7 @@ bool TreeItem::setData(int column, const QVariant &value)
     if (column < 0 || column >= itemData->size())
         return false;
 (*itemData.get())[column] = value ;
-//(*t)[column] = value;
-// this->itemData[column] = value;
+
     return true;
 }
 //! [11]
