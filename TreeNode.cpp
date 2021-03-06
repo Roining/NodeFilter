@@ -72,8 +72,8 @@ TreeItem& TreeItem::operator=( TreeItem& other){
         siblings = other.siblings;//TODO1: setParent alternative
 siblings->append(this);
         itemData = other.itemData;
-        parents.append(other.id);
-         other.copyChildren.append(this->id);
+//        parents.append(other.id);
+//         other.copyChildren.append(this->id);
         //        childItems = other.childItems;
 
    }
@@ -222,7 +222,7 @@ QVariant TreeItem::data(int column) const
     return itemData->at(column);
 }
 //! [6]
-TreeItem & TreeItem::insertChildren1(int position, int count, int columns,  TreeItem *parent)
+TreeItem & TreeItem::insertChildren12(int position, int count, int columns,  TreeItem *parent)
 {
    if (position < 0 || position > childItems->size())
        return *children()[0];
@@ -231,6 +231,25 @@ TreeItem & TreeItem::insertChildren1(int position, int count, int columns,  Tree
        QVector<QVariant> data(columns);
        TreeItem *item = new TreeItem(data, this);
        *item = *parent;
+
+       item->setParent(this);
+       childItems->insert(position, item);
+
+   }
+   return *children()[position];
+}
+
+TreeItem & TreeItem::insertChildren1(int position, int count, int columns,  TreeItem *parent)
+{
+   if (position < 0 || position > childItems->size())
+       return *children()[position];
+
+   for (int row = 0; row < count; ++row) {
+       QVector<QVariant> data(columns);
+       TreeItem *item = new TreeItem(data, this);
+       *item = *parent;
+       item->parents.append(parent->id);
+        parent->copyChildren.append(item->id);
        item->setParent(this);
        childItems->insert(position, item);
 

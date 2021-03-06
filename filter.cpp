@@ -158,9 +158,11 @@ QModelIndex index = sourceModel->index(source_row, 0, source_parent);
     return true;
  }
 
+
 //     currentItem->enabled =true;
 //QStringList container = query.split(QRegExp("\\s"));
-QStringList container = query.split("~");
+// QRegExp separator("[(&&|#|\|)]");
+QStringList container = query.split(QRegExp("&&"));
 
 
 bool finalResult = true;
@@ -292,7 +294,7 @@ bool innerResult = true;
 
         }
    }
- else {
+ else if(container[i].startsWith("q:"))  {
       auto trimmedQuery = container[i].section(":",-1);
  //     QStringList words = trimmedQuery.split("\\s");
       QStringList words = trimmedQuery.split(QRegExp("\\s"));

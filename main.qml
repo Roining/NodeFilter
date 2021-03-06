@@ -12,6 +12,7 @@ import Qt.labs.qmlmodels 1.0
 
 ApplicationWindow {
     id:you
+
     MouseArea{
             id: ma
             anchors.fill: parent
@@ -53,11 +54,15 @@ property var viewArray: [];
         id:trie
 
     }
-
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
     Shortcut {
     sequence: "Ctrl+Shift+F"
     onActivated:  {
+//        var Randomnumber = Math.random().toString(36).substr(2, 5);
         var Randomnumber = Math.random().toString(36).substr(2, 5);
+
         console.log(Randomnumber)
         var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
                                                you);
@@ -103,21 +108,22 @@ property var viewArray: [];
 //    }
 //    }
     Shortcut {
-    sequence: "Ctrl+H"
+    sequence: "Ctrl+T"
     onActivated:  {
-//        var Randomnumber = Math.random().toSrtring(36).substr(2, 5);
-//        console.log(Randomnumber)
-        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_1; }",
+        var Randomnumber = Math.random().toString(36).substr(2, 5);
+        console.log(Randomnumber)
+        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
                                                you);
+//createObject(you)
         var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-        var delegateInstance = Qt.createQmlObject("Delegate { id: car_2; }",
+        var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                you);
         var   sprite = delegateInstance.createObject(tes,{test:component})
 
     }
     }
     onClosing: {
-//        myClass.log()
+        myClass.log()
     }
     width: 1920
     height: 1024

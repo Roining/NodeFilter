@@ -24,6 +24,7 @@ public:
     TreeItem * insertChildren(int position, int count, int columns);
     TreeItem & insertChildren1(int position, int count, int columns, TreeItem *parent);
     TreeItem * insertChildrenRecursive(int position, int count, int columns, TreeItem *parent);
+    TreeItem & insertChildren12(int position, int count, int columns,  TreeItem *parent);
     bool insertColumns(int position, int columns);
     TreeItem *parent();
     bool isDescendantOfItself(TreeItem *parent,TreeItem *child);
