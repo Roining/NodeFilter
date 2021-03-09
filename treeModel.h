@@ -50,105 +50,113 @@
 
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
-#include <QMap>
-#include <QUuid>
-#include <QMultiMap>
 #include <QAbstractItemModel>
-#include <QModelIndex>
-#include <QVariant>
 #include <QFile>
 #include <QIODevice>
+#include <QMap>
+#include <QModelIndex>
+#include <QMultiMap>
 #include <QPersistentModelIndex>
+#include <QUuid>
+#include <QVariant>
 #include <filter.h>
-
 
 class TreeItem;
 
 //! [0]
-class TreeModel : public QAbstractItemModel
-{
-    Q_OBJECT
+class TreeModel : public QAbstractItemModel {
+  Q_OBJECT
 
 signals:
-   void updateProxyFilter();
+  void updateProxyFilter();
+
 public:
-    TreeModel(QObject *parent = nullptr);
+  TreeModel(QObject *parent = nullptr);
 
+  TreeModel(const QStringList &headers, const QString &data,
+            QObject *parent = nullptr);
+  ~TreeModel();
+  //! [0] //! [1]
 
-    TreeModel(const QStringList &headers, const QString &data,
-              QObject *parent = nullptr);
-    ~TreeModel();
-//! [0] //! [1]
+  Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const override;
 
-   Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const override;
+  QModelIndex index(int row, int column,
+                    const QModelIndex &parent = QModelIndex()) const override;
+  Q_INVOKABLE QModelIndex parent(const QModelIndex &index) const override;
 
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const override;
-  Q_INVOKABLE  QModelIndex parent(const QModelIndex &index) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  Q_INVOKABLE void log();
+  void serialize2(TreeItem &node);
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  Q_INVOKABLE  void log();
-    void serialize2( TreeItem  &node);
+  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  //! [1]
 
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-//! [1]
+  //! [2]
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  bool setData(const QModelIndex &index, const QVariant &value,
+               int role = Qt::EditRole) override;
+  bool setHeaderData(int section, Qt::Orientation orientation,
+                     const QVariant &value, int role = Qt::EditRole) override;
+  Q_INVOKABLE bool
+  copyRows(int position, int rows, const QModelIndex &parent = QModelIndex(),
+           const QPersistentModelIndex &source = QModelIndex());
+  bool insertColumns(int position, int columns,
+                     const QModelIndex &parent = QModelIndex()) override;
+  bool removeColumns(int position, int columns,
+                     const QModelIndex &parent = QModelIndex()) override;
+  Q_INVOKABLE QPersistentModelIndex getLastIndex();
+  Q_INVOKABLE bool
+  insertRows(int position, int rows,
+             const QModelIndex &parent = QModelIndex()) override;
+  //  Q_INVOKABLE void dataChangedSignal();
+  Q_INVOKABLE bool
+  removeRows(int position, int rows,
+             const QModelIndex &parent = QModelIndex()) override;
+  QHash<int, QByteArray> roleNames() const override;
+  Q_INVOKABLE void saveIndex(const QModelIndex &index);
+  //  Q_INVOKABLE bool insertRows1(int position, int rows,
+  //                               const QModelIndex &parent,
+  //                               bool transclusion = true);
+  bool isDescendant(TreeItem *parent, TreeItem *child,
+                    bool searchClones = false);
+  TreeItem *isDescendant1(TreeItem *parent, TreeItem *child,
+                          bool searchClones = false);
 
-//! [2]
-    Qt::ItemFlags flags(const QModelIndex &index) const override;
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) override;
-    bool setHeaderData(int section, Qt::Orientation orientation,
-                       const QVariant &value, int role = Qt::EditRole) override;
- Q_INVOKABLE   bool copyRows(int position,int rows,const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
-    bool insertColumns(int position, int columns,
-                       const QModelIndex &parent = QModelIndex()) override;
-    bool removeColumns(int position, int columns,
-                       const QModelIndex &parent = QModelIndex()) override;
-    Q_INVOKABLE QPersistentModelIndex getLastIndex();
-   Q_INVOKABLE bool insertRows(int position, int rows,
-                    const QModelIndex &parent = QModelIndex()) override;
-   Q_INVOKABLE bool removeRows(int position, int rows,
-                    const QModelIndex &parent = QModelIndex()) override;
-    QHash<int, QByteArray> roleNames() const override ;
-   Q_INVOKABLE void saveIndex(const QModelIndex &index);
-    Q_INVOKABLE bool insertRows1(int position, int rows, const QModelIndex &parent,bool transclusion = true);
-bool isDescendant(TreeItem *parent,TreeItem *child, bool searchClones = false);
-TreeItem* isDescendant1(TreeItem *parent,TreeItem *child, bool searchClones = false);
+  Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
+  Q_INVOKABLE void serialize(TreeItem &node, QDataStream &stream);
+  Q_INVOKABLE void deserialize(TreeItem &node, QDataStream &stream,
+                               bool check = false);
+  Q_INVOKABLE bool
+  copyRows1(int position, int rows, const QModelIndex &parent = QModelIndex(),
+            const QPersistentModelIndex &source = QModelIndex());
+  void serialize1(TreeItem &node);
+  TreeItem *getItemFromId(QUuid id);
+  Q_INVOKABLE QString getId(const QModelIndex &id);
+  Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
+  void acceptsCopies(const QModelIndex &index, bool acceptsCopies);
+  Q_INVOKABLE void insertrowsRecursive(int position, QUuid callingId,
+                                       QUuid calledId,
+                                       const QModelIndex &child);
+  void removeRows1(int position, QUuid callingId, QUuid calledId,
+                   const QModelIndex &child);
+  void copyRows12(int position, QUuid callingId, QUuid calledId,
+                  const QModelIndex &source);
 
-   Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
-   Q_INVOKABLE void serialize( TreeItem  &node ,QDataStream &stream);
-   Q_INVOKABLE void deserialize(TreeItem  &node ,QDataStream &stream,bool check = false);
- Q_INVOKABLE   bool copyRows1(int position,int rows,const QModelIndex &parent = QModelIndex(),const QPersistentModelIndex &source = QModelIndex());
-void serialize1( TreeItem  &node );
-    TreeItem* getItemFromId(QUuid id);
-    Q_INVOKABLE  QString getId(const QModelIndex &id);
-   Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
-        void acceptsCopies(const QModelIndex &index,bool acceptsCopies);
-        Q_INVOKABLE void insertRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
-      void removeRows1(int position,QUuid callingId, QUuid calledId, const QModelIndex &child);
-      void copyRows12(int position,QUuid callingId, QUuid calledId, const QModelIndex &source);
+  bool isDescendantFromId(QUuid parent, QUuid child);
+  Q_INVOKABLE bool hasMultipleSiblings(const QModelIndex &index);
+  QMultiMap<QUuid, QUuid> container;
+  QMap<QUuid, TreeItem *> map;
+  TreeItem *rootItem;
 
-    bool isDescendantFromId(QUuid parent,QUuid child);
-
-    QMultiMap<QUuid,QUuid> container;
-    QMap<QUuid,TreeItem*> map;
-    TreeItem *rootItem;
-
-     QPersistentModelIndex last; //TODO should it remain static? Related to copyRows
-    int f = 5;
-    TreeItem* clone;
-
-
+  QPersistentModelIndex
+      last; // TODO should it remain static? Related to copyRows
+  int f = 5;
+  TreeItem *clone;
 
 private:
-    void setupModelData(const QStringList &lines, TreeItem *parent);
-
-
-
-
-
+  void setupModelData(const QStringList &lines, TreeItem *parent);
 };
 //! [2]
 

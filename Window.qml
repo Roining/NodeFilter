@@ -12,7 +12,7 @@ import Qt.labs.qmlmodels 1.0
 
 ApplicationWindow {
     id:you
-property var arrayOfViews
+//transientParent:null
     MouseArea{
             id: ma
             anchors.fill: parent
@@ -31,6 +31,7 @@ property var viewArray: [];
             var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                    you);
             var   sprite = delegateInstance.createObject(tes,{test:component})
+        you.transientParent = null
 
     }
 
@@ -77,28 +78,9 @@ property var viewArray: [];
         var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                you);
         var   sprite = delegateInstance.createObject(tes,{test:component})
-//        sprite.focus === true;
 
     }
     }
-    Shortcut {
-    sequence: "Ctrl+K"
-    onActivated:  {
-        var component = Qt.createComponent("Window.qml")
-                    var window    = component.createObject(you)
-                    window.show()
-//        var Randomnumber = Math.random().toString(36).substr(2, 5);
-//        console.log(Randomnumber)
-//        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-//                                               you);
-//        var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-//        var delegateInstance = Qt.createQmlObject("Window { id: car_" +  Randomnumber1 + "; }",
-//                                               you);
-//        var   sprite = delegateInstance.createObject(tes,{test:component})
-
-    }
-    }
-
 //    Shortcut {
 //    sequence: "Ctrl+"
 //    onActivated:  {

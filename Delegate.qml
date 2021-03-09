@@ -10,6 +10,7 @@ import QtQuick.Layouts 1.11
 import Qt.labs.qmlmodels 1.0
 
 Component{
+
     Item{
 
         id:tee
@@ -19,7 +20,7 @@ Component{
 
         property alias test:waaa.model
         SplitView.minimumHeight: 200
-        SplitView.preferredHeight:  you.height
+        SplitView.preferredHeight:  you.height/2
         SplitView.minimumWidth:  100
         SplitView.preferredWidth: you.width/4
         SplitView.maximumWidth:   1920
@@ -39,14 +40,26 @@ height:parent.height
         selectByMouse:true
         selectionColor :"#3399FF"
 selectedTextColor:"white"
-width:tee.width
+
 clip:true
 
     id:search
     signal info(string msg)
     objectName: "search"
 Keys.onEscapePressed: {
-waaa.forceActiveFocus()}
+
+
+    var posInTreeView = mapToItem (waaa,0, 0)
+                                                    console.log("ttttt "+waaa.currentModelIndex)
+                                                   var row = waaa.rowAtY(posInTreeView, true)
+                                                   waaa.currentModelIndex = waaa.viewIndex(0, row);
+   //        waaa.forceActiveFocus()
+   waaa.itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+
+
+//itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()//focus =false
+//waaa.forceActiveFocus()
+}
 
     placeholderText: "Search here"
     onInfo: {
@@ -55,7 +68,7 @@ waaa.forceActiveFocus()}
 
     onTextChanged: {
 
-        waaa.model.setBool(true)
+//        waaa.model.setBool(true)
         waaa.model.setQuery(text)
 
 
@@ -71,6 +84,14 @@ TreeView {
     contentWidth:2000
     clip:true
 
+    Component.onCompleted: {
+        var posInTreeView = mapToItem (waaa,0, 0)
+                                                        console.log("ttttt "+waaa.currentModelIndex)
+                                                       var row = waaa.rowAtY(posInTreeView, true)
+                                                       waaa.currentModelIndex = waaa.viewIndex(0, 0);
+       //        waaa.forceActiveFocus()
+       waaa.itemAtModelIndex(waaa.currentModelIndex).forceActiveFocus()
+    }
 
     id:waaa
     property var rowHeight:40
@@ -101,7 +122,7 @@ console.log("index.row after " + array);
     }
 
     width:tee.width
-     height:tee.height
+     height:tee.height - search.height
 
     styleHints.overlay: "green"
     styleHints.indent: 25
@@ -121,7 +142,7 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
 
                 var test5 = waaa.model.parent(waaa.currentModelIndex)
                         console.log("joo" + waaa.currentModelIndex)
-                     waaa.model.removeRows(waaa.currentModelIndex.row,1,test5)//TODO
+                     myClass.removeRows(waaa.currentModelIndex.row,1,waaa.model.mapToSourceProxy(waaa.currentModelIndex).parent)//TODO
                 console.log("Selected node was deleted")
             }
 
@@ -129,7 +150,7 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
 
     Keys.onPressed: {
         if((event.key === Qt.Key_P)&&(event.modifiers &Qt.ControlModifier)&&(event.modifiers &Qt.ShiftModifier)){ //acceptsCopies true Ctrl Shift P
-           waaa.model.acceptsCopies(waaa.currentModelIndex,true)
+           myClass.acceptsCopies(waaa.model.mapToSourceProxy(waaa.currentModelIndex),true)
             return;
         }
      else if((event.key === Qt.Key_G)&&(event.modifiers &Qt.ControlModifier)&&(event.modifiers &Qt.ShiftModifier)){ //acceptsCopies true Ctrl Shift P
@@ -137,36 +158,50 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
 
          return;
      }
-     else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node without transclusion
+//     else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node without transclusion
 
-       waaa.model.insertRows(0,1,waaa.currentModelIndex,false)//TODO
-        return;
-    }
+//      myClass.insertRows(0,1,waaa.mo,false)//TODO
+//        return;
+//    }
 
       else if((event.key === Qt.Key_N)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node as a child Ctrl Shift N
-         var test4 = waaa.currentModelIndex
-          console.log(test4)
-        waaa.model.insertRows(0,1,test4)//TODO
+
+      myClass.insertRows(0,1,waaa.model.mapToSourceProxy(waaa.currentModelIndex))//TODO
             waaa.expandModelIndex(waaa.currentModelIndex)
 
          return;
      }
      else  if((event.key === Qt.Key_M)&&(event.modifiers &Qt.ControlModifier)&&(event.modifiers &Qt.ShiftModifier)){ //copy node as child Ctrl Shift M
          event.accepted = true
-             var test2 = waaa.currentModelIndex
-             console.log(test2)
-           waaa.model.copyRows(0,1,test2,myClass.getLastIndex())//TODO
+
+
+          myClass.copyRows(0,1,waaa.model.mapToSourceProxy(waaa.currentModelIndex),myClass.getLastIndex())//TODO
              waaa.expandModelIndex(waaa.currentModelIndex)
          return;
      }
      else if((event.key === Qt.Key_P)&&(event.modifiers &Qt.ControlModifier)){//acceptsCopies false Ctrl P
-           waaa.model.acceptsCopies(waaa.currentModelIndex,false)
+          myClass.acceptsCopies(waaa.model.mapToSourceProxy(waaa.currentModelIndex),false)
          return;
      }
+//        else if((event.key === Qt.MiddleButton)&&(event.modifiers &Qt.ControlModifier)){ //Ctrl M copy node
+//            if()
+
+//       }
       else if((event.key === Qt.Key_S)&&(event.modifiers &Qt.ControlModifier)){ //serialize/save Ctrl S
-         waaa.model.log()
+        myClass.log()
          return;
      }
+        else if((event.key === Qt.Key_H)&&(event.modifiers &Qt.ControlModifier)){ //serialize/save Ctrl S
+            var Randomnumber = Math.random().toString(36).substr(2, 5);
+            console.log(Randomnumber)
+            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
+                                                   you);
+            var Randomnumber1 = Math.random().toString(36).substr(2, 5);
+            var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
+                                                   you);
+            var   sprite = delegateInstance.createObject(split,{test:component})
+            return;
+       }
         else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier)){ //serialize/save Ctrl S
            var widtnewWidth = tee.width/2
             console.log("ttttttt " +widtnewWidth)
@@ -195,23 +230,21 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
 
             search.forceActiveFocus()
             search.clear()
-            search.append(">:"+waaa.model.getId(waaa.currentModelIndex))
+            search.append(">:"+myClass.getId(waaa.model.mapToSourceProxy(waaa.currentModelIndex)))
            return;
            }
       else if((event.key === Qt.Key_Q)&&(event.modifiers &Qt.ControlModifier)){ //copy a copied node Ctrl A
 
-         var test3 = waaa.currentModelIndex
-                 console.log(test3)
-               waaa.model.saveIndex(test3)//TODO
+               myClass.saveIndex(waaa.model.mapToSourceProxy(waaa.currentModelIndex))//TODO
          return;
      }
       else if((event.key === Qt.Key_E)&&(event.modifiers &Qt.ControlModifier)){ //copy Id to clipboard Ctrl E
-        waaa.model.getIdToClipboard(waaa.currentModelIndex)
+       myClass.getIdToClipboard(waaa.model.mapToSourceProxy(waaa.currentModelIndex))
          return;
      }
 
       else if((event.key === Qt.Key_F)&&(event.modifiers &Qt.ControlModifier)){//Ctrl F
-         search.focus = true
+         search.forceActiveFocus()
          return;
      }
       else if((event.key === Qt.Key_W)&&(event.modifiers &Qt.ControlModifier)){ // Delete view Alt D
@@ -220,36 +253,71 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
      }
 
       else if((event.key === Qt.Key_N)&&(event.modifiers &Qt.ControlModifier)){ //Ctrl N insert node
-         var test1 = waaa.currentModelIndex.parent
-         console.log(test1)
-       waaa.model.insertRows(waaa.currentModelIndex.row+1,1,test1)//TODO
+      myClass.insertRows(waaa.currentModelIndex.row+1,1,waaa.model.mapToSourceProxy(waaa.currentModelIndex).parent)//TODO
+
          return;
      }
+        else if((event.key === Qt.Key_J)&&(event.modifiers &Qt.ControlModifier)){ //Ctrl N insert node
+           var test1 = waaa.currentModelIndex.parent
+           console.log(test1)
+
+        waaa.currentModelIndex
+
+           return;
+       }
      else if((event.key === Qt.Key_M)&&(event.modifiers &Qt.ControlModifier)){ //Ctrl M copy node
          event.accepted = true
-                 var test6 = waaa.currentModelIndex.parent
-                 console.log(test6)
-               waaa.model.copyRows(waaa.currentModelIndex.row,1,test6,myClass.getLastIndex())//TODO
+
+               myClass.copyRows(waaa.currentModelIndex.row +1,1,waaa.model.mapToSourceProxy(waaa.currentModelIndex).parent,myClass.getLastIndex())//TODO
     }
      else if((event.key === Qt.Key_G)&&(event.modifiers &Qt.ControlModifier)){ //Ctrl M copy node
          waaa.toggleModelIndexExpanded(waaa.currentModelIndex)
+            console.log("hhhh " + waaa.currentIndex)
+            console.log("hhhhmodel " + waaa.currentModelIndex)
 
     }
 
+
      }
 
-onCurrentIndexChanged: {
-itemAtIndex(waaa.currentIndex).forceActiveFocus()}
+onCurrentItemChanged: {
+    if(myClass.hasMultipleSiblings(waaa.model.mapToSourceProxy(waaa.currentModelIndex))){
+     itemAtModelIndex(waaa.currentModelIndex).dot.color = "blue"
+
+    }
+    console.log("hhhh " + waaa.currentIndex)
+    console.log("hhhhmodel " + waaa.currentModelIndex.row)
+
+
+    if((waaa.currentModelIndex.row !== -1)&&(!search.focus) ){
+if(waaa.activeFocus){
+    itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+    console.log("77777777777 " + waaa.currentModelIndex.row)
+
+        }
+    }
+//    else{
+////        var posInTreeView = mapToItem (waaa,0, 0)
+////                                                 console.log("ttttt "+waaa.currentModelIndex)
+////                                                var row = waaa.rowAtY(0, true)
+////                                                waaa.currentModelIndex = waaa.viewIndex(0, row);
+//////        waaa.forceActiveFocus()
+////itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+////        itemAtIndex(waaa.currentIndex).item.forceActiveFocus()
+////        console.log("yyyy " +waaa.currentIndex)
+
+//    }
+}
 function allIndeces(ind) {
 
 waaa.expandModelIndex(ind)
     for(var i=0; i < waaa.model.rowCount(ind); i++) {
        waaa.expandModelIndex(ind)
         var index = waaa.model.index(i,0,ind)
-        console.log("current index: ")
+
          waaa.expandModelIndex(index)
         if (waaa.model.rowCount(index)!==0){
-            console.log(waaa.model.rowCount(index))
+
             allIndeces(index)
         }
 
@@ -261,31 +329,49 @@ waaa.expandModelIndex(ind)
 return;}
 delegate:
 Component{
+
+
         id:ey
+
                                     Rectangle {
 
 clip:true
 
                                  id:newId
+//onActiveFocusChanged: {
+//if(activeFocus){
+//            if((waaa.currentModelIndex.row !== -1)&&(!search.focus) ){
+//        if(itemAtModelIndex(waaa.currentModelIndex).focus){
+//            itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+//            console.log("77777777777 " + waaa.currentModelIndex.row)
 
-                                 onActiveFocusChanged:  {
-                                    if(activeFocus){
-                                         var posInTreeView = mapToItem (tee,0, 0)
-                                         var row = waaa.rowAtY(posInTreeView.y, true)
-                                         waaa.currentIndex = waaa.viewIndex(0, row);
-content.forceActiveFocus()
-                                         console.log("ttttt "+posInTreeView)
-}
+//                }
+//            }
+//        }
+//}
+//                                 onActiveFocusChanged:  {
+//                                    if(activeFocus&&content.focus == false){
+//                                         var posInTreeView = mapToItem (waaa,0, 0)
+//                                          console.log("ttttt "+waaa.currentModelIndex)
+//                                         var row = waaa.rowAtY(posInTreeView.y, true)
+//                                         waaa.currentIndex = waaa.viewIndex(0, row);
+////content.forceActiveFocus()
+//                                         console.log("ttttt after "+waaa.currentModelIndex)
+//}
 
 
 
-                                 }
+//                                 }
+                                property alias item:content
+                                 property alias dot:ball1
 
                                         visible:true
                                         property var conHeight: content.height
                                         implicitHeight: conHeight
-                                        implicitWidth: (tee.width ? tee.width:1920)
+//                                        implicitWidth: (tee.width ? tee.width:1920)
+                                        implicitWidth: 1920
                                             focus:true
+                                            property bool hasFocus
                                         property bool hasChildren: TreeView.hasChildren
                                         property bool isExpanded: TreeView.isExpanded
                                         property int depth: TreeView.depth
@@ -293,7 +379,7 @@ content.forceActiveFocus()
 
                                         Text {
                                             id: indicator1
-                                            x: depth * waaa.styleHints.indent
+                                            x: depth * waaa.styleHints.indent +5
 
                                             color: "black"
                                             font: waaa.styleHints.font
@@ -317,7 +403,12 @@ content.forceActiveFocus()
                                         }
                                         Text {
                                                 id: ball1
-                                                x: depth * waaa.styleHints.indent +indicator1.width*1.5
+//                                                property alias currentView
+//                                               Component.onCompleted:  {
+
+
+//                                                   }}
+                                                x: depth * waaa.styleHints.indent +15
                                                 color: "black"
                                                // anchors.left :  indicator1
                                                 anchors.leftMargin:100
@@ -336,8 +427,8 @@ content.forceActiveFocus()
                                                         if (tapCount == 1)
 
                                                                                                                     search.forceActiveFocus()
-                                                                                                                    search.clear()
-                                                                                                                    search.append(">:"+waaa.model.getId(waaa.currentModelIndex))
+                                                                                                                    search.select()
+                                                                                                                    search.insert(">:"+myClass.getId(waaa.model.mapToSourceProxy(waaa.currentModelIndex)))
 
                                                     }
                                                 }
@@ -347,7 +438,10 @@ content.forceActiveFocus()
                                             width:newId.width
                                             id:content
 
-                                            focus:true
+//                                            focus:true
+//                                            onActiveFocusChanged: {
+//                                            if(activeFocus&&focusReason === Qt.MouseFocusReason){
+//                                            newId.focus = true}}
                                             onActiveFocusChanged: {
                                                 if (activeFocus) {
                                                     var posInTreeView = content.mapToItem (waaa,0, 0)
@@ -360,24 +454,36 @@ content.forceActiveFocus()
                                                         }
                                                 else{
                                                     editingFinished()
+
                                                     console.log("iiiiiiiiiii")
 
                                                 }
                                             }
+                                            Component.onCompleted: {
+                                            content.isCompleted = 0;
+                                            console.log(content.isCompleted)}
                                             selectByMouse:true
                                             selectionColor :"#3399FF"
                                     selectedTextColor:"white"
                                             objectName: "text"
-                                               wrapMode: "WrapAnywhere"
+                                            wrapMode: "WrapAnywhere"
                                             textFormat: TextEdit.MarkdownText
                                             clip:true
+                                            property var isCompleted:1
 
                                             property var hght:content.height
                                             font.pointSize: 18
 
+anchors.left: ball1.right
+anchors.leftMargin: 5
+//                                            x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
+onHeightChanged: {
+//if(content.activeFocus){
+//    console.log("height  "+content.height)
+//    waaa.forceLayout()
 
-                                            x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
-
+//}
+}
                                             text:edit
 onEditingFinished: {
 
@@ -385,14 +491,19 @@ onEditingFinished: {
 }
                                             onTextChanged:          {
 
-                                               if(waaa.activeFocus){
-                                                   edit = text;
+                                                if(waaa.activeFocus){
+                                                    edit = text;
+
+                                                }
+                                               if(content.activeFocus){
+                                                   console.log("height  "+content.height)
+                                                   waaa.forceLayout()
 
                                                }
 
 
 
-                                            }
+                                              }
 
 
 
@@ -400,12 +511,13 @@ onEditingFinished: {
                                         }
 
                                }
+
 }
 
 
-    ScrollBar.horizontal: ScrollBar { id: hbar;height:20;
+    ScrollBar.horizontal: ScrollBar { id: hbar;height:12;
         policy: ScrollBar.AlwaysOn;active: true;}
-                ScrollBar.vertical: ScrollBar { id: vbar;width:15; policy: ScrollBar.AlwaysOn;active: true;}
+                ScrollBar.vertical: ScrollBar { id: vbar;width:12; policy: ScrollBar.AlwaysOn;active: true;}
 }
 
 
