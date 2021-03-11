@@ -122,7 +122,7 @@ Q_INVOKABLE void Filtering::setQuery(QString string) {
 
   queryChanged = true;
   query = string;
-  QStringList stringontainer1 = query.split(QRegExp("//s"));
+  QStringList stringontainer1 = query.split("&&");
   itemContainer.clear();
   //  stringontainer1 = query.split("&&");
   for (int i = 0; i < stringontainer1.size(); i++) {
@@ -165,7 +165,7 @@ bool Filtering::filterAcceptsRow(int source_row,
   }
 
   // QRegExp separator("[(&&|#|\|)]");
-  QStringList container = query.split(QRegExp("//s"));
+  QStringList container = query.split("&&");
   bool finalResult = true;
   for (int i = 0; i < container.size(); i++) {
     bool innerResult = true;

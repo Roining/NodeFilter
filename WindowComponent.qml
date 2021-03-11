@@ -8,33 +8,46 @@ import TreeModel.com 1.0
 import Qt.labs.platform 1.0
 import QtQuick.Layouts 1.11
 import Qt.labs.qmlmodels 1.0
-
+import QtQuick.Window 2.2
+import Qt.labs.settings 1.0
 
 ApplicationWindow {
-    id:you
-//transientParent:null
+    id:you1
+//    transientParent: null
+//    visibility: "FullScreen"
+property var arrayOfViews:[]
+   property Settings settings: Settings{
+//        property alias objectName: you1.objectName
+
+        property alias width:you1.width
+        property alias height:you1.height
+        property alias x:you1.x
+        property alias y:you1.y
+
+    }
     MouseArea{
             id: ma
-            anchors.fill: parent
+//            anchors.fill: parent
             onClicked: {
-               you.contentItem.childAt(mouseX, mouseY)
-                console.log(you.contentItem.childAt(mouseX, mouseY))
+               you1.contentItem.childAt(mouseX, mouseY)
+                console.log(you1.contentItem.childAt(mouseX, mouseY))
             }
         }
 property var viewArray: [];
     Component.onCompleted:{
             var Randomnumber = Math.random().toString(36).substr(2, 5);
             console.log(Randomnumber)
-            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-                                                   you);
+            var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_; }",
+                                                   you1);
             var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-            var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
-                                                   you);
-            var   sprite = delegateInstance.createObject(tes,{test:component})
-        you.transientParent = null
+            var delegateInstance = Qt.createQmlObject("Delegate { id: car_ ; }",
+                                                   you1);
+//            var   sprite = delegateInstance.createObject(tes,{test:component})
+//        you.viewArray.push(sprite)
+
+        you1.viewArray.push(delegateInstance.createObject(tes,{test:component}))
 
     }
-
 
     SearchProxy{
     id:find
@@ -46,9 +59,7 @@ property var viewArray: [];
         id:trie
 
     }
-    function getRandomArbitrary(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+
     Shortcut {
     sequence: "Ctrl+Shift+F"
     onActivated:  {
@@ -57,12 +68,12 @@ property var viewArray: [];
 
         console.log(Randomnumber)
         var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-                                               you);
+                                               you1);
         var Randomnumber1 = Math.random().toString(36).substr(2, 5);
         var delegateInstance = Qt.createQmlObject("SearchProxy { id: car_" +  Randomnumber1 + "; }",
-                                               you);
-        var   sprite = delegateInstance.createObject(tes,{test:component})
-
+                                               you1);
+//        var   sprite = delegateInstance.createObject(tes,{test:component})
+you1.viewArray.push(delegateInstance.createObject(tes,{test:component}))
 
     }
     }
@@ -73,33 +84,37 @@ property var viewArray: [];
         var Randomnumber = Math.random().toString(36).substr(2, 5);
         console.log(Randomnumber)
         var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-                                               you);
+                                               you1);
         var Randomnumber1 = Math.random().toString(36).substr(2, 5);
         var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
-                                               you);
-        var   sprite = delegateInstance.createObject(tes,{test:component})
+                                               you1);
+//        var   sprite = delegateInstance.createObject(tes,{test:component})
+//        sprite.focus === true;
+        you1.viewArray.push(delegateInstance.createObject(tes,{test:component}))
 
     }
     }
-//    Shortcut {
-//    sequence: "Ctrl+"
-//    onActivated:  {
-//        var Randomnumber = Math.random().toString(36).substr(2, 5);
-//        console.log(Randomnumber)
-//        var component = Qt.createQmlObject("import TreeModel.com 1.0; Filtering { id: car_" +  Randomnumber + "; }",
-//                                               you);
-//        var Randomnumber1 = Math.random().toString(36).substr(2, 5);
-//        var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
-//                                               you);
-//        var   sprite = delegateInstance.createObject(split,{test:component})
+    Shortcut {
+    sequence: "Ctrl+K"
+    onActivated:  {
+        var component = Qt.createComponent("WindowComponent.qml")
+                    var window    = component.createObject(you)
+        you.array.push(window)
 
-//    }
-//    }
+        window.showMaximized()
+    }
+    }
+
+
     onClosing: {
+
+
         myClass.log()
+
     }
-    width: 1920
-    height: 1024
+
+width:Screen.width
+    height: Screen.height
     visible: true
     title: qsTr("Hello World")
 

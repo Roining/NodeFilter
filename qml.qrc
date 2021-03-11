@@ -4,6 +4,6 @@
         <file>Delegate.qml</file>
         <file>SearchProxy.qml</file>
         <file>Bin.qml</file>
-        <file>Window.qml</file>
+        <file>WindowComponent.qml</file>
     </qresource>
 </RCC>

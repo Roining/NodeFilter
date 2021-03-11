@@ -10,7 +10,9 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
   QGuiApplication app(argc, argv);
-
+  app.setOrganizationName("Node Filter");
+  app.setOrganizationDomain("NodeFilter.com");
+  app.setApplicationName("Node Filter");
   qmlRegisterType<Filtering>("TreeModel.com", 1, 0, "Filtering");
   QQmlApplicationEngine engine;
   engine.rootContext()->setContextProperty("myClass", &myClass1);

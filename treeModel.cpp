@@ -499,7 +499,8 @@ Q_INVOKABLE bool TreeModel::copyRows(int position, int rows,
   return true;
 }
 
-void TreeModel::acceptsCopies(const QModelIndex &index, bool acceptsCopies) {
+Q_INVOKABLE void TreeModel::acceptsCopies(const QModelIndex &index,
+                                          bool acceptsCopies) {
   auto item = getItem(index);
   item->acceptsCopies = acceptsCopies;
 }
