@@ -13,6 +13,7 @@ import Qt.labs.settings 1.0
 
 ApplicationWindow {
     id:you1
+    objectName: Math.random().toString(36).substr(2, 5);
 //    transientParent: null
 //    visibility: "FullScreen"
 property var arrayOfViews:[]
@@ -107,9 +108,23 @@ you1.viewArray.push(delegateInstance.createObject(tes,{test:component}))
 
 
     onClosing: {
+//        console.log("yyyy  "+you.array)
 
+for(var i =0;i<you.array.length;i++){
+    console.log("[ii]  "+you.array[i].objectName.toString())
 
+console.log("yyyy  "+you1.objectName.toString())
+if(you1.objectName.toString() ==you.array[i].objectName.toString()){
+    console.log("brrrrr  ")
+
+    you.array.splice(i,1);
+break;
+}
+}
+if(you.array.length ===0){
         myClass.log()
+        Qt.quit()
+}
 
     }
 

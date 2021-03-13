@@ -739,6 +739,17 @@ void TreeModel::removeRows1(int position, QUuid callingId, QUuid calledId,
   }
   return;
 }
+Q_INVOKABLE int TreeModel::position(const QModelIndex &index) {
+  auto item = getItem(index);
+  auto parentItem = getItem(index.parent());
+
+  for (int i = 0; i < parentItem->children().size(); i++) {
+
+    if (parentItem->children()[i]->id == item->id) {
+      return i;
+    }
+  }
+}
 Q_INVOKABLE bool TreeModel::removeRows(int position, int rows,
                                        const QModelIndex &parent) {
   TreeItem *parentItem = getItem(parent);

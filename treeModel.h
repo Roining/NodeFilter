@@ -134,6 +134,7 @@ public:
   void serialize1(TreeItem &node);
   TreeItem *getItemFromId(QUuid id);
   Q_INVOKABLE QString getId(const QModelIndex &id);
+  Q_INVOKABLE int position(const QModelIndex &index);
   Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
   Q_INVOKABLE void acceptsCopies(const QModelIndex &index, bool acceptsCopies);
   Q_INVOKABLE void insertrowsRecursive(int position, QUuid callingId,

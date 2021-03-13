@@ -26,6 +26,7 @@ visible:false
 Component.onCompleted: {
     var component = Qt.createComponent("WindowComponent.qml");
                    var window    = component.createObject(you);
+      you.array.push(window)
        window.showMaximized();
 
 }
