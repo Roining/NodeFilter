@@ -386,13 +386,18 @@ Q_INVOKABLE QString TreeModel::getId(const QModelIndex &index) {
 }
 Q_INVOKABLE bool TreeModel::hasMultipleSiblings(const QModelIndex &index) {
   auto item = getItem(index);
-  if (item->siblingItems().size() > 1) {
-    return true;
-
-  } else {
+  if (!item->parent()) {
     return false;
   }
+  for (int i = 0; i < item->siblingItems().size(); i++) {
+    if (!(*(item->siblingItems()[i]->parent()) == *(item->parent()))) {
+      return true;
+    }
+  }
+
+  return false;
 }
+
 Q_INVOKABLE void TreeModel::getIdToClipboard(const QModelIndex &index) {
   QClipboard *clipboardItem = QGuiApplication::clipboard();
   clipboardItem->setText(getId(index));

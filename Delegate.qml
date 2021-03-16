@@ -13,15 +13,29 @@ Component {
 
         id: tee
         property alias tree: waaa
+//property alias parentWindow:tee.parent.parent.root
         objectName: Math.random().toString(36).substr(2, 5)
-
+ property alias ser: search
         property alias test: waaa.model
         SplitView.minimumHeight: 200
-        SplitView.preferredHeight: you1.height / 2
+        SplitView.preferredHeight: parent.height / 2
         SplitView.minimumWidth: 100
-        SplitView.preferredWidth: you1.width / 4
+        SplitView.preferredWidth: parent.width / 4
         SplitView.maximumWidth: 1920
+Component.onDestruction: {
+    for(var i =0;i<parent.parent.root.viewArray.length;i++){
+        console.log("tee.objectName  "+tee.objectName.toString())
+        console.log("parent.parent.root.viewArray[i].objectName.toString()  "+parent.parent.root.viewArray[i].objectName.toString())
 
+//    console.log("yyyy  "+you1.objectName.toString())
+    if(tee.objectName.toString() ===parent.parent.root.viewArray[i].objectName.toString()){
+        console.log("brrrrr  ")
+
+      parent.parent.root.viewArray.splice(i,1);
+    break;
+    }
+    }
+}
         Column {
             id: layout
             width: parent.width
@@ -73,6 +87,7 @@ Component {
                 clip: true
 
                 Component.onCompleted: {
+                    console.log("fgfghfgh" + tee.parent)
                     var posInTreeView = mapToItem(waaa, 0, 0)
                     console.log("ttttt " + waaa.currentModelIndex)
                     var row = waaa.rowAtY(posInTreeView, true)
@@ -113,19 +128,20 @@ Component {
                                               waaa.currentModelIndex)
                 Keys.onDigit2Pressed: {
 
-                    for (var i = 0; i < you1.viewArray.length; i++) {
-                        if (you1.viewArray[i].objectName.toString(
-                                    ) === tee.objectName.toString()) {
-                            console.log("contentHeight : " + you1.viewArray
-                                        + " tee.objectName " + you1.viewArray[i]
-                                        + "  objectName " + you1.viewArray[i + 1])
-                            if ((i + 1) < you1.viewArray.length) {
-                                you1.viewArray[i + 1].tree.itemAtModelIndex(
-                                            you1.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
-                            }
-                            break
-                        }
-                    }
+//Qt.quit()
+//                    for (var i = 0; i < you1.viewArray.length; i++) {
+//                        if (you1.viewArray[i].objectName.toString(
+//                                    ) === tee.objectName.toString()) {
+//                            console.log("contentHeight : " + you1.viewArray
+//                                        + " tee.objectName " + you1.viewArray[i]
+//                                        + "  objectName " + you1.viewArray[i + 1])
+//                            if ((i + 1) < you1.viewArray.length) {
+//                                you1.viewArray[i + 1].tree.itemAtModelIndex(
+//                                            you1.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
+//                            }
+//                            break
+//                        }
+//                    }
                 }
                 MessageDialog {
                     id: deleteDialog
@@ -161,39 +177,40 @@ Component {
                         allIndeces(waaa.currentModelIndex)
 
                         return
-                    } else if ((event.key === Qt.Key_I)
-                               && (event.modifiers & Qt.ControlModifier)) {
+                    } else if ((event.key === Qt.Key_Q)
+                          && (event.modifiers & Qt.ControlModifier)
+                          && (event.modifiers & Qt.ShiftModifier)) {
                         //acceptsCopies true Ctrl Shift P
-                        for (var i = 0; i < you1.viewArray.length; i++) {
-                            console.log("contentHeight : " + you1.viewArray
-                                        + " tee.objectName " + you1.viewArray[i]
-                                        + "  objectName " + you1.viewArray[i - 1])
+                        for (var i = 0; i < tee.parent.parent.root.viewArray.length; i++) {
+                            console.log("contentHeight : " + tee.parent.parent.root.viewArray
+                                        + " tee.objectName " + tee.parent.parent.root.viewArray[i]
+                                        + "  objectName " + tee.parent.parent.root.viewArray[i - 1])
 
-                            if (you1.viewArray[i].objectName.toString(
+                            if (tee.parent.parent.root.viewArray[i].objectName.toString(
                                         ) == tee.objectName.toString()) {
-                                console.log("contentHeight : " + you1.viewArray
-                                            + " tee.objectName " + you1.viewArray[i]
-                                            + "  objectName " + you1.viewArray[i - 1])
+                                console.log("contentHeight : " + tee.parent.parent.root.viewArray
+                                            + " tee.objectName " + tee.parent.parent.root.viewArray[i]
+                                            + "  objectName " + tee.parent.parent.root.viewArray[i - 1])
                                 if ((i - 1) > -1) {
-                                    you1.viewArray[i - 1].tree.itemAtModelIndex(
-                                                you1.viewArray[i - 1].tree.currentModelIndex).item.forceActiveFocus()
+                                    tee.parent.parent.root.viewArray[i - 1].tree.itemAtModelIndex(
+                                                tee.parent.parent.root.viewArray[i - 1].tree.currentModelIndex).item.forceActiveFocus()
                                 }
                                 break
                             }
                         }
                         return
-                    } else if ((event.key === Qt.Key_Tab)
-                               && (event.modifiers & Qt.ControlModifier)) {
+                    } else if ((event.key === Qt.Key_E)
+                               && (event.modifiers & Qt.ControlModifier)&& (event.modifiers & Qt.ShiftModifier)) {
                         //acceptsCopies true Ctrl Shift P
-                        for (var i = 0; i < you1.viewArray.length; i++) {
-                            if (you1.viewArray[i].objectName.toString(
+                        for (var i = 0; i < tee.parent.parent.root.viewArray.length; i++) {
+                            if (tee.parent.parent.root.viewArray[i].objectName.toString(
                                         ) === tee.objectName.toString()) {
-                                console.log("contentHeight : " + you1.viewArray
-                                            + " tee.objectName " + you1.viewArray[i]
-                                            + "  objectName " + you1.viewArray[i + 1])
-                                if ((i + 1) < you1.viewArray.length) {
-                                    you1.viewArray[i + 1].tree.itemAtModelIndex(
-                                                you1.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
+                                console.log("contentHeight : " + tee.parent.parent.root.viewArray
+                                            + " tee.objectName " + tee.parent.parent.root.viewArray[i]
+                                            + "  objectName " + tee.parent.parent.root.viewArray[i + 1])
+                                if ((i + 1) < tee.parent.parent.root.viewArray.length) {
+                                    tee.parent.parent.root.viewArray[i + 1].tree.itemAtModelIndex(
+                                                tee.parent.parent.root.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
                                 }
                                 break
                             }
@@ -248,7 +265,26 @@ Component {
                         //serialize/save Ctrl S
                         myClass.log()
                         return
-                    } else if ((event.key === Qt.Key_H)
+                    }
+                    else if ((event.key === Qt.Key_5)
+                             && (event.modifiers & Qt.ControlModifier)) {
+event.accepted = true;
+                        //serialize/save Ctrl S
+                        if( waaa.currentModelIndex.hasChildren){
+                            waaa.currentModelIndex  = waaa.model.index(0, 0, waaa.currentModelIndex)
+
+                        }
+//                        else if(waaa.currentModelIndex.row === waaa.model.rowCount(waaa.currentModelIndex.parent) -1){
+//                        return
+//                        }
+                        else{
+                            waaa.currentModelIndex  = waaa.model.index(waaa.currentModelIndex.row+1, 0, waaa.currentModelIndex.parent)
+                        }
+//                        itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+
+                        return
+                    }
+                    else if ((event.key === Qt.Key_H)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //serialize/save Ctrl S
                         var Randomnumber = Math.random().toString(36).substr(2,
@@ -288,7 +324,46 @@ Component {
                                                                        "width": widtnewWidth
                                                                    })
                         return
-                    } else if ((event.key === Qt.Key_D)
+
+
+                    }
+
+                    else if ((event.key === Qt.Key_7)
+                                                   && (event.modifiers & Qt.ControlModifier)) {
+                        you.arrayOfWindows.length === 0
+                        console.log("you.array   "+you.array);
+
+                         var arr = [];
+                        for(var i = 0;i < you.array.length;i++){
+
+
+                            var arr1 = [you.array[i].x,you.array[i].y,you.array[i].width, you.array[i].height];
+
+                             arr.push(arr1);
+
+
+                             for(var  j = 0;j < you.array[i].viewArray.length;j++){
+
+
+                         var json = [you.array[i].viewArray[j].parent.x,you.array[i].viewArray[j].parent.y,you.array[i].viewArray[j].parent.width,you.array[i].viewArray[j].parent.height,you.array[i].viewArray[j].ser.text]
+                                 arr[i].push(json)
+//                                 arr[i].push([you1.viewArray[j].x,you1.viewArray[j].y,you1.viewArray[j].width,you1.viewArray[j].height,you1.viewArray[j].ser.text]);
+                                                          console.log("arr[i]  "+arr[i]);
+                             }
+                        }
+
+ for(var  i = 0;i < you.array.length;i++){
+     console.log("json   "+arr[i]);
+ you.arrayOfWindows.push((arr[i]))
+         console.log("settings.arrayOfWindows   "+you.arrayOfWindows);
+ }
+ you.settings.temn = you.arrayOfWindows;
+ console.log("you.settings.temn   "+you.settings.temn);
+
+   Qt.quit();
+
+                                        }
+                    else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //remove node Ctrl D
@@ -376,58 +451,39 @@ Component {
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl M copy node
                         waaa.toggleModelIndexExpanded(waaa.currentModelIndex)
+
+//                        waaa.toggleCurrentIndexExpanded(waaa.currentIndex)
                         console.log("hhhh " + waaa.currentIndex)
                         console.log("hhhhmodel " + waaa.currentModelIndex)
                     }
                 }
-                MouseArea {
-                    anchors.fill: parent
-                    onWheel: {
 
-                        if (wheel.modifiers & Qt.ShiftModifier) {
-                            if (wheel.angleDelta.y > 0) {
-                                hbar.increase()
-                            } else if (wheel.angleDelta.y < 0) {
-                                hbar.decrease()
-                            }
-                        } else if (wheel.angleDelta.y < 0) {
+                                onCurrentModelIndexChanged: {
 
-                            vbar.increase()
-                        } else if (wheel.angleDelta.y > 0) {
-                            vbar.decrease()
-                        }
-                    }
-                }
-                onCurrentModelIndexChanged: {
-                    if (myClass.hasMultipleSiblings(
-                                waaa.model.mapToSourceProxy(
-                                    waaa.currentModelIndex))) {
-                        itemAtModelIndex(
-                                    waaa.currentModelIndex).dot.color = "blue"
-                    }
-//                    console.log("kkkkkkk " + waaa.currentIndex)
-//                    console.log("rrrrrr " + waaa.currentModelIndex.row)
+                //                    console.log("kkkkkkk " + waaa.currentIndex)
+                                    console.log("rrrrrr " + waaa.currentModelIndex)
 
-                    if ((waaa.currentModelIndex.row !== -1)
-                            && (!search.focus)) {
-                        if (waaa.activeFocus) {
-                            itemAtModelIndex(
-                                        waaa.currentModelIndex).item.forceActiveFocus()
-                            console.log("77777777777 " + waaa.currentModelIndex.row)
-                        }
-                    }
-                    //    else{
-                    ////        var posInTreeView = mapToItem (waaa,0, 0)
-                    ////                                                 console.log("ttttt "+waaa.currentModelIndex)
-                    ////                                                var row = waaa.rowAtY(0, true)
-                    ////                                                waaa.currentModelIndex = waaa.viewIndex(0, row);
-                    //////        waaa.forceActiveFocus()
-                    ////itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
-                    ////        itemAtIndex(waaa.currentIndex).item.forceActiveFocus()
-                    ////        console.log("yyyy " +waaa.currentIndex)
+//                                    if ((waaa.currentModelIndex.row !== -1)
+                                    if ((!search.focus)) {
+                                        if (waaa.activeFocus) {
+                                            itemAtModelIndex(
+                                                        waaa.currentModelIndex).item.forceActiveFocus()
+//                                            console.log("77777777777 " + waaa.currentModelIndex.row)
+                                        }
+                                    }
+                                }
+                //                    //    else{
+                //                    ////        var posInTreeView = mapToItem (waaa,0, 0)
+                //                    ////                                                 console.log("ttttt "+waaa.currentModelIndex)
+                //                    ////                                                var row = waaa.rowAtY(0, true)
+                //                    ////                                                waaa.currentModelIndex = waaa.viewIndex(0, row);
+                //                    //////        waaa.forceActiveFocus()
+                //                    ////itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+                //                    ////        itemAtIndex(waaa.currentIndex).item.forceActiveFocus()
+                //                    ////        console.log("yyyy " +waaa.currentIndex)
 
-                    //    }
-                }
+                //                    //    }
+                //                }
                 function allIndeces(ind) {
 
                     waaa.expandModelIndex(ind)
@@ -444,12 +500,110 @@ Component {
 
                     return
                 }
+                MouseArea {
+id:pos
+hoverEnabled: true
+                    onWheel: {
+
+                        if (wheel.modifiers & Qt.ShiftModifier) {
+                            if (wheel.angleDelta.y > 0) {
+                                hbar.increase()
+                            } else if (wheel.angleDelta.y < 0) {
+                                hbar.decrease()
+                            }
+                        } else if (wheel.angleDelta.y < 0) {
+
+                            vbar.increase()
+                        } else if (wheel.angleDelta.y > 0) {
+                            vbar.decrease()
+
+                        }
+                    }
+//                    onClicked: mouse.accepted = false
+//                    onReleased: mouse.accepted = false
+//                    onDoubleClicked: mouse.accepted = false
+//                    onPositionChanged: mouse.accepted = false
+//                    onPressAndHold: mouse.accepted = false
+                    anchors.fill: parent
+//                    onPressed: {
+//                        var posInTreeView = mapToItem(waaa, mouseX,
+//                                                              mouseY)
+//                        //                               if(posInTreeView.y < 0){
+//                        //                                   posInTreeView.y = 0
+//                        //                               }
+//                        console.log("posInTreeView.y  " + posInTreeView.y)
+
+//                        var row = waaa.rowAtY(posInTreeView.y, true)
+
+//                        console.log("row1  " + row)
+
+//                        waaa.currentModelIndex = waaa.mapToModel(
+//                                    waaa.viewIndex(0, row))
+//                        waaa.itemAtModelIndex(
+//                                                                               waaa.currentModelIndex).item.forceActiveFocus()
+//                        console.log("indexAfter  " + waaa.currentIndex.row)
+//                    }
+                }
                 delegate: Component {
 
                     id: ey
 
                     Rectangle {
+                        MouseArea{
+                            acceptedButtons: Qt.NoButton
+hoverEnabled: true
 
+cursorShape: Qt.IBeamCursor
+                            propagateComposedEvents: true
+                                                onClicked: mouse.accepted = false
+                                                onPressAndHold: mouse.accepted = false
+                                                onDoubleClicked: mouse.accepted = false
+                                                onPositionChanged: mouse.accepted = false
+                                                onReleased: mouse.accepted = false
+                                                onPressed: mouse.accepted = false
+
+                                                anchors.fill: parent
+                                                onEntered:  {
+                                                    if(!search.focus){
+                                                    var posInTreeView = mapToItem(waaa, 0,
+                                                                                          0)
+
+                                                    var row = waaa.rowAtY(posInTreeView.y, false)
+
+                                                    waaa.currentModelIndex = waaa.mapToModel(
+                                                                waaa.viewIndex(0, row))
+                                                    waaa.itemAtModelIndex(waaa.currentModelIndex).item.forceActiveFocus()
+
+}
+                                                }
+
+                                            }
+//MouseArea{
+//                        onClicked: mouse.accepted = false
+//                        onReleased: mouse.accepted = false
+//                        onDoubleClicked: mouse.accepted = false
+//                        onPositionChanged: mouse.accepted = false
+//                        onPressAndHold: mouse.accepted = false
+//                        anchors.fill: parent
+//                        onPressed: {
+//                            var posInTreeView = mapToItem(waaa, mouseX,
+//                                                                  mouseY)
+//                            //                               if(posInTreeView.y < 0){
+//                            //                                   posInTreeView.y = 0
+//                            //                               }
+//                            console.log("posInTreeView.y  " + posInTreeView.y)
+
+//                            var row = waaa.rowAtY(posInTreeView.y, true)
+
+//                            console.log("row1  " + row)
+
+//                            waaa.currentModelIndex = waaa.mapToModel(
+//                                        waaa.viewIndex(0, row))
+//                            waaa.itemAtModelIndex(
+//                                                                                   waaa.currentModelIndex).item.forceActiveFocus()
+//                            console.log("indexAfter  " + waaa.currentIndex.row)
+//                        }
+//                    }
                         clip: true
 
                         id: newId
@@ -482,7 +636,7 @@ Component {
                         property var conHeight: content.height
                         implicitHeight: conHeight
                         //                                        implicitWidth: (tee.width ? tee.width:1920)
-                        implicitWidth: you1.width
+                        implicitWidth: tee.parent.width
                         focus: true
                         property bool hasFocus
                         property bool hasChildren: TreeView.hasChildren
@@ -548,104 +702,88 @@ Component {
                                 }
                             }
                         }
-//                        MouseArea{
 
-//                            onClicked: mouse.accepted = false;
-//                                   onReleased: mouse.accepted = false;
-//                                   onDoubleClicked: mouse.accepted = false;
-//                                   onPositionChanged: mouse.accepted = false;
-//                                   onPressAndHold: mouse.accepted = false;
-//                            anchors.fill:parent
-//                        onPressed: {
-
-//                                                               console.log("index  " + waaa.currentIndex.row)
-
-//                                                               //                                                    content.textFormat = TextEdit.PlainText
-//                                                               var posInTreeView = content.mapToItem(waaa,
-//                                                                                                     0, 0)
-////                               if(posInTreeView.y < 0){
-////                                   posInTreeView.y = 0
-////                               }
-//                           console.log("posInTreeView.y  " + posInTreeView.y)
-
-//                                                               var row = waaa.rowAtY(posInTreeView.y, true)
-
-//                           console.log("row1  " + row)
-
-
-//                                                               waaa.currentModelIndex = waaa.mapToModel(waaa.viewIndex(0, row))
-
-//                                                               console.log("indexAfter  " + waaa.currentIndex.row)
-
-
-
-//                        }
-//                        }
 
                         TextArea {
                             width: newId.width
                             id: content
+                            MouseArea{
+                                acceptedButtons: Qt.NoButton
+hoverEnabled: true
 
+cursorShape: Qt.IBeamCursor
+                                propagateComposedEvents: true
+                                                    onClicked: mouse.accepted = false
+                                                    onPressAndHold: mouse.accepted = false
+                                                    onDoubleClicked: mouse.accepted = false
+                                                    onPositionChanged: mouse.accepted = false
+                                                    onReleased: mouse.accepted = false
+                                                    onPressed: mouse.accepted = false
 
-                            //                                            focus:true
-                            //                                            onActiveFocusChanged: {
-                            //                                            if(activeFocus&&focusReason === Qt.MouseFocusReason){
-                            //                                            newId.focus = true}}
-                            onActiveFocusChanged: {
-                                if (activeFocus) {
-                                    console.log("index  " + waaa.currentIndex.row)
+                                                    anchors.fill: parent
+                                                    onEntered:  {
 
-                                    //                                                    content.textFormat = TextEdit.PlainText
-                                    var posInTreeView = content.mapToItem(waaa,
-                                                                          0, 0)
-if(posInTreeView.y < 0){
-    posInTreeView.y = 0
+                                                        var posInTreeView = mapToItem(waaa, 0,
+                                                                                              0)
+
+                                                        var row = waaa.rowAtY(posInTreeView.y, false)
+
+                                                        waaa.currentModelIndex = waaa.mapToModel(
+                                                                    waaa.viewIndex(0, row))
+                                                          if(!search.focus){
+                                                        waaa.itemAtModelIndex(
+                                                                                                               waaa.currentModelIndex).item.forceActiveFocus()
+
 }
-console.log("posInTreeView.y  " + posInTreeView.y)
+                                                    }
 
-                                    var row = waaa.rowAtY(posInTreeView.y, true)
+                                                }
 
-console.log("row1  " + row)
+//                                                        onFocusChanged: {
+//                                                            if (focus) {
 
 
-                                    waaa.currentModelIndex = waaa.mapToModel(waaa.viewIndex(0, row))
+////cursor = Qt.point(mouseX, mouseY)
+//                                                                var posInTreeView = mapToItem(waaa,
+//                                                                                                      0, 0);
+//                                                                                                    console.log("posInTreeView "+ posInTreeView);
 
-                                    console.log("indexAfter  " + waaa.currentIndex.row)
+//                                                                var row = waaa.rowAtY(posInTreeView.y , false);
+//                                                                console.log("waaa.viewIndex(0, row) "+ waaa.viewIndex(0, row));
+//                                                                console.log("text "+ text);
 
-                                } else {
-                                    editingFinished()
+//                                                                waaa.currentIndex = waaa.viewIndex(0, row);
+//                                                                if(myClass.hasMultipleSiblings( waaa.model.mapToSourceProxy(
+//                                                                                                   waaa.currentModelIndex))){
+//                                                                    newId.dot.color = "blue";
+//                                                                }
+//                                                                else{
+//                                                                    newId.dot.color = "black";
+//                                                                }
+//                                                                console.log("currentIndex "+ waaa.currentIndex);
 
-//                                    console.log("iiiiiiiiiii")
-                                }
-                            }
-                            Component.onCompleted: {
-                                content.isCompleted = 0
-                                console.log(content.isCompleted)
-                            }
+//}
+
+
+
+//////                            //                                    editingFinished()
+
+//////                            //                                    console.log("iiiiiiiiiii")
+//////                                                            }
+//                                                        }
                             selectByMouse: true
                             selectionColor: "#3399FF"
                             selectedTextColor: "white"
                             objectName: "text"
                             wrapMode: "WrapAnywhere"
                             textFormat: TextEdit.MarkdownText
-
                             clip: true
-                            property var isCompleted: 1
-
                             property var hght: content.height
                             font.pointSize: 18
 
                             anchors.left: ball1.right
                             anchors.leftMargin: 5
-                            //                                            x: indicator1.x + Math.max(waaa.styleHints.indent, indicator1.width * 1.5)
-                            onHeightChanged: {
 
-                                //if(content.activeFocus){
-                                //    console.log("height  "+content.height)
-                                //    waaa.forceLayout()
-
-                                //}
-                            }
                             text: edit
 
                             onTextChanged: {
@@ -653,9 +791,11 @@ console.log("row1  " + row)
                                 if (waaa.activeFocus) {
                                     edit = text
                                 }
-                                if (content.activeFocus) {
+                                if (waaa.activeFocus&&content.activeFocus) {
                                     console.log("height  " + content.height)
                                     waaa.forceLayout()
+                                    heightChanged()
+                                    widthChanged()
                                 }
                             }
                         }
