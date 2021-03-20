@@ -3,7 +3,6 @@
         <file>main.qml</file>
         <file>Delegate.qml</file>
         <file>SearchProxy.qml</file>
-        <file>Bin.qml</file>
         <file>WindowComponent.qml</file>
     </qresource>
 </RCC>

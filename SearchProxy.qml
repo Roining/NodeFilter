@@ -216,7 +216,7 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
             var Randomnumber1 = Math.random().toString(36).substr(2, 5);
             var delegateInstance = Qt.createQmlObject("Delegate { id: car_" +  Randomnumber1 + "; }",
                                                    you);
-            var   sprite = delegateInstance.createObject(split,{test:component})
+            var   sprite = delegateInstance.createObject(hSplit,{test:component})
             return;
        }
         else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier)){ //serialize/save Ctrl S
@@ -230,7 +230,7 @@ property var parentIndex: waaa.model.parent(waaa.currentModelIndex)
                   var Randomnumber1 = Math.random().toString(36).substr(2, 5);
                   var delegateInstance = Qt.createQmlObject("import QtQuick 2.15;Delegate { id: car_" +  Randomnumber1 + ";}",
                                                          you);
-                  var   sprite = delegateInstance.createObject(tes,{test:component1,width:widtnewWidth})
+                  var   sprite = delegateInstance.createObject(splitViewInstance,{test:component1,width:widtnewWidth})
            return;
        }
       else if((event.key === Qt.Key_D)&&(event.modifiers &Qt.ControlModifier)){ //remove node Ctrl D
