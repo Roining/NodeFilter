@@ -254,4 +254,4 @@ void TreeItem::setParent(TreeItem *parent) { parentItem = parent; }
 QVariant &TreeItem::item() { return (itemData.get())[0][0]; }
 QVector<TreeItem *> &TreeItem::siblingItems() { return *(siblings.get()); }
 QVector<TreeItem *> &TreeItem::children() { return *(childItems.get()); }
-void TreeItem::setVisible(bool isVisible) { this->enabled = isVisible; }
+void TreeItem::setVisible(bool isVisible) { this->isVisible = isVisible; }

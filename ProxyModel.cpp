@@ -39,9 +39,27 @@ void ProxyModel::queryProcessing() {
 }
 bool ProxyModel::filterAcceptsRow(int source_row,
                                   const QModelIndex &source_parent) const {
+    QModelIndex  index = sourceModel->index(source_row, 0, source_parent);
+    TreeItem *currentItem = sourceModel->getItem(index);
 
-  QModelIndex index = sourceModel->index(source_row, 0, source_parent);
-  TreeItem *currentItem = sourceModel->getItem(index);
+   if(!queryChanged){
+return true;
+//if(sourceModel->index(source_row,0,source_parent).isValid()){
+//       if(mapFromSource(sourceModel->index(source_row, 0, source_parent)).isValid()){
+//          return   true;
+//       }
+//       else{
+//           return false;
+//       }
+
+//       }
+   }
+//    if(!mapFromSource(source_parent).isValid()){
+
+//    } //source model row is filtered;
+
+//  QModelIndex index = sourceModel->index(source_row, 0, source_parent);
+//  TreeItem *currentItem = sourceModel->getItem(index);
 
   if (query == "") {
     currentItem->setVisible(true);
@@ -229,7 +247,12 @@ Q_INVOKABLE void ProxyModel::setQuery(QString string) {
   } else {
     sort(-1);
   }
+  sourceModel->updateProxyFilter(true);
   invalidateFilter();
 
+
   return;
+}
+Q_INVOKABLE void ProxyModel::isChanged(bool condition){
+    queryChanged = condition;
 }

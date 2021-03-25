@@ -57,15 +57,16 @@
 #include <QGuiApplication>
 #include <QRandomGenerator>
 #include <QTime>
-#include <iostream>
-#include <string>
+#include <QDir>
 TreeModel::TreeModel(QObject *parent) {
-
-  QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_"
-             "MinGW_64_bit-Debug\\debug\\storage.dat");
+//QDir::setCurrent(qApp->applicationDirPath());
+qDebug() <<"QDir::current().absolutePath()" << QDir::currentPath();
+QDir::setCurrent(QDir::currentPath());
+QFile file("storage.dat");
+//  QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_"
+//             "MinGW_64_bit-Debug\\debug\\storage.dat");
   if (file.open(QIODevice::ReadWrite)) {
     QDataStream stream(&file);
-
     QVector<QVariant> rootData;
 
     rootItem = new TreeItem(rootData, nullptr);
@@ -82,7 +83,7 @@ TreeModel::TreeModel(QObject *parent) {
 //       file.open(QIODevice::ReadOnly);
 //       const QString data = file.readAll();
 ////        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO
-/// clean this up
+//// clean this up
 
 //    QVector<QVariant> rootData;
 //    for (const QString &header : headers)
@@ -145,7 +146,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const {
     return QVariant();
   if (role == Qt::UserRole + 1) {
     auto item = getItem(index);
-    return item->enabled;
+    return item->isVisible;
   }
   if (role == Qt::UserRole + 2) {
     auto item1 = getItem(index);
@@ -262,7 +263,7 @@ bool TreeModel::removeColumns(int position, int columns,
   return success;
 }
 bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
-
+updateProxyFilter(false);
   TreeItem *parentItem = getItem(parent);
   if (!parentItem) {
     return false;
@@ -281,6 +282,8 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
   this->setData(child, "Data", Qt::UserRole + 2);
 
   endInsertRows();
+//  updateProxyFilter(true);
+//  updateProxyFilter(false);
 
   if (true) { // TODO
 
@@ -302,6 +305,7 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
       }
     }
   }
+  updateProxyFilter(true);
 
   // updateProxyFilter();
   return true; // TODO check for success of operation
@@ -341,7 +345,9 @@ void TreeModel::insertRowsRecursive(int position, QUuid callingId,
 }
 
 bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
-  TreeItem *parentItem = getItem(parent);
+    updateProxyFilter(false);
+
+    TreeItem *parentItem = getItem(parent);
   if (!parentItem) {
     return false;
   }
@@ -372,7 +378,11 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
                           child);
     }
   }
+//  updateProxyFilter(true);
+
   // updateProxyFilter();
+  updateProxyFilter(true);
+
   return true;
 }
 
@@ -426,13 +436,16 @@ void TreeModel::saveIndex(const QModelIndex &index) {
   return;
 }
 void TreeModel::save() {
-  QString path = "C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_"
-                 "1_MinGW_64_bit-Debug\\debug\\";
-  QFile file(QStringLiteral("%1\\storage.dat").arg(path));
+    QDir::setCurrent(QDir::currentPath());
+    QString path = QDir::currentPath();
+    QFile file("storage.dat");
+//  QString path = "C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_"
+//                 "1_MinGW_64_bit-Debug\\debug\\";
+//  QFile file(QStringLiteral("%1\\storage.dat").arg(path));
   int value = QRandomGenerator::global()->generate();
   auto test =
       file.copy(QStringLiteral("%1\\storage.dat").arg(path),
-                QStringLiteral("%1\\SavedFilesCache\\StorageCache%2.dat")
+                QStringLiteral("%1\\StorageCache\\StorageCache%2.dat")
                     .arg(path)
                     .arg(value));
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
@@ -601,7 +614,8 @@ void TreeModel::deserialize(TreeItem &node, QDataStream &stream, bool check) {
 
 bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
                          const QPersistentModelIndex &source) {
-  TreeItem *parentItem = getItem(parent);
+    updateProxyFilter(false);
+    TreeItem *parentItem = getItem(parent);
   auto lastItem = getItem(source);
   if (!parentItem) {
     return false;
@@ -633,6 +647,7 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
       }
     }
   }
+  updateProxyFilter(true);
 
   // updateProxyFilter();
   return true;
@@ -650,6 +665,8 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
   lastItem = getItem(source);
   QElapsedTimer timer;
   timer.start();
+//  updateProxyFilter(false);
+
   beginInsertRows(parent, position, position + rows - 1);
   qDebug() << "yyyyyy4444  " << timer.elapsed();
 
@@ -658,6 +675,7 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
   this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);
 
   endInsertRows();
+//  updateProxyFilter(true);
 
   for (int i = 0; i < lastItem->childCount(); i++) {
     QPersistentModelIndex itemIndex = index(position, 0, parent);

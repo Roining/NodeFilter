@@ -56,7 +56,7 @@ private:
   QVector<QUuid> parents;
   QVector<QUuid> copyChildren;
   bool acceptsCopies = true;
-  bool enabled = true;
+  bool isVisible = true;
 };
 //! [0]
 

@@ -63,15 +63,15 @@ ApplicationWindow {
         }
     }
 
-    SearchProxy {
-        id: find
-    }
-    Filtering {
-        id: source
-    }
-    Delegate {
-        id: nodeDelegate
-    }
+//    SearchProxy {
+//        id: find
+//    }
+//    Filtering {
+//        id: source
+//    }
+//    Delegate {
+//        id: nodeDelegate
+//    }
 
     Shortcut {
         sequence: "Ctrl+Shift+F"

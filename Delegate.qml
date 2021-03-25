@@ -24,18 +24,61 @@ Component {
         SplitView.minimumWidth: 100
         SplitView.preferredWidth: parent.width / 4
         SplitView.maximumWidth: Screen.width
+
+        Keys.onPressed: {
+            if ((event.key === Qt.Key_W)
+                              && (event.modifiers & Qt.ControlModifier)
+                              && (event.modifiers & Qt.ShiftModifier)) {
+                         you.arrayOfWindows.length === 0
+                         console.log("you.array   " + you.array)
+
+                         var serializationWindowsArray = []
+                         for (var i = 0; i < you.array.length; i++) {
+
+                             var windowData = [you.array[i].x, you.array[i].y, you.array[i].width, you.array[i].height]
+
+                             serializationWindowsArray.push(windowData)
+
+                             for (var j = 0; j < you.array[i].viewArray.length; j++) {
+
+                                 var viewData = [you.array[i].viewArray[j].x, you.array[i].viewArray[j].y, you.array[i].viewArray[j].width, you.array[i].viewArray[j].height, you.array[i].viewArray[j].ser.text]
+                                 serializationWindowsArray[i].push(viewData)
+
+
+                             }
+                         }
+
+                         for (var i = 0; i < you.array.length; i++) {
+                             you.arrayOfWindows.push((serializationWindowsArray[i]))
+                         }
+                         you.settings.windows = you.arrayOfWindows
+                         myClass.save();
+                         Qt.quit()
+                         return;
+                     }
+            else if ((event.key === Qt.Key_W)
+                                           && (event.modifiers & Qt.ControlModifier)) {
+                                    // Delete view Alt D
+                                    viewInstance.destroy()
+                                    return
+                                }
+
+        }
+
         Component.onDestruction: {
             for (var i = 0; i < parent.parent.root.viewArray.length; i++) {
                 if (viewInstance.objectName.toString(
                             ) === parent.parent.root.viewArray[i].objectName.toString(
                             )) {
-                    console.log("brrrrr  ")
-
                     parent.parent.root.viewArray.splice(i, 1)
+                    if(parent.parent.root.viewArray.length ===0){
+                        parent.parent.root.destroy();
+                    }
                     break
                 }
             }
         }
+
         Column {
             id: layout
             width: parent.width
@@ -63,6 +106,7 @@ Component {
                 }
 
                 onTextChanged: {
+
                     nodeTree.model.setQuery(text)
                 }
             }
@@ -132,7 +176,38 @@ console.log("windowInstance.width: " + viewInstance.width)
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentModelIndex), true)
                         return
-                    } else if ((event.key === Qt.Key_G)
+                    }
+                   else  if ((event.key === Qt.Key_W)
+                             && (event.modifiers & Qt.ControlModifier)
+                             && (event.modifiers & Qt.ShiftModifier)) {
+                        you.arrayOfWindows.length === 0
+                        console.log("you.array   " + you.array)
+
+                        var serializationWindowsArray = []
+                        for (var i = 0; i < you.array.length; i++) {
+
+                            var windowData = [you.array[i].x, you.array[i].y, you.array[i].width, you.array[i].height]
+
+                            serializationWindowsArray.push(windowData)
+
+                            for (var j = 0; j < you.array[i].viewArray.length; j++) {
+
+                                var viewData = [you.array[i].viewArray[j].x, you.array[i].viewArray[j].y, you.array[i].viewArray[j].width, you.array[i].viewArray[j].height, you.array[i].viewArray[j].ser.text]
+                                serializationWindowsArray[i].push(viewData)
+
+
+                            }
+                        }
+
+                        for (var i = 0; i < you.array.length; i++) {
+                            you.arrayOfWindows.push((serializationWindowsArray[i]))
+                        }
+                        you.settings.windows = you.arrayOfWindows
+                        myClass.save();
+                        Qt.quit()
+                        return;
+                    }
+                    else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         allIndeces(nodeTree.currentModelIndex)
@@ -161,7 +236,9 @@ console.log("windowInstance.width: " + viewInstance.width)
                             }
                         }
                         return
-                    } else if ((event.key === Qt.Key_E)
+                    }
+
+                    else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         //acceptsCopies true Ctrl Shift P
@@ -179,6 +256,8 @@ console.log("windowInstance.width: " + viewInstance.width)
                                 break
                             }
                         }
+
+
                         return
                     } //     else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node without transclusion
 
@@ -234,6 +313,12 @@ console.log("windowInstance.width: " + viewInstance.width)
                         }
                         return
                     }
+                    else if ((event.key === Qt.Key_W)
+                                                   && (event.modifiers & Qt.ControlModifier)) {
+                                            // Delete view Alt D
+                                            viewInstance.destroy()
+                                            return
+                                        }
                     else if ((event.key === Qt.Key_8)
                                                   && (event.modifiers & Qt.ControlModifier)) {
                     you.settings.windows = [];
@@ -243,33 +328,7 @@ console.log("windowInstance.width: " + viewInstance.width)
 
                         Qt.quit();
                     }
-                    else if ((event.key === Qt.Key_7)
-                               && (event.modifiers & Qt.ControlModifier)) {
-                        you.arrayOfWindows.length === 0
-                        console.log("you.array   " + you.array)
-
-                        var arr = []
-                        for (var i = 0; i < you.array.length; i++) {
-
-                            var arr1 = [you.array[i].x, you.array[i].y, you.array[i].width, you.array[i].height]
-
-                            arr.push(arr1)
-
-                            for (var j = 0; j < you.array[i].viewArray.length; j++) {
-
-                                var json = [you.array[i].viewArray[j].x, you.array[i].viewArray[j].y, you.array[i].viewArray[j].width, you.array[i].viewArray[j].height, you.array[i].viewArray[j].ser.text]
-                                arr[i].push(json)
-
-
-                            }
-                        }
-
-                        for (var i = 0; i < you.array.length; i++) {
-                            you.arrayOfWindows.push((arr[i]))
-                        }
-                        you.settings.windows = you.arrayOfWindows
-                        Qt.quit()
-                    } else if ((event.key === Qt.Key_D)
+                    else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //remove node Ctrl D
@@ -311,12 +370,7 @@ console.log("windowInstance.width: " + viewInstance.width)
                         search.forceActiveFocus()
                         search.selectAll()
                         return
-                    } else if ((event.key === Qt.Key_W)
-                               && (event.modifiers & Qt.ControlModifier)) {
-                        // Delete view Alt D
-                        viewInstance.destroy()
-                        return
-                    } else if ((event.key === Qt.Key_N)
+                    }  else if ((event.key === Qt.Key_N)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                         var position = myClass.position(

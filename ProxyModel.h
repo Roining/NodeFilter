@@ -10,7 +10,14 @@ class TreeItem;
 class ProxyModel : public QSortFilterProxyModel {
   Q_OBJECT
 public slots:
-  void updateFilter() { invalidateFilter(); }
+  void updateFilter(bool cond) {
+      isChanged(cond);
+//      if(cond){
+//                invalidateFilter();
+
+//      }
+//      invalidateFilter();
+  }
 
 public:
   ProxyModel(QObject *parent = nullptr);
@@ -18,8 +25,10 @@ public:
   bool filterAcceptsRow(int source_row,
                         const QModelIndex &source_parent) const override;
   Q_INVOKABLE void setQuery(QString string);
+  Q_INVOKABLE void isChanged(bool condition);
 
 private:
+  bool queryChanged = true;
   QString query;
   QMap<QUuid, TreeItem *> itemContainer;
   TreeModel *sourceModel;

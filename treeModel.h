@@ -67,7 +67,7 @@ class TreeModel : public QAbstractItemModel {
   Q_OBJECT
 
 signals:
-  void updateProxyFilter();
+  void updateProxyFilter(bool cond);
 
 public:
   TreeModel(QObject *parent = nullptr);
