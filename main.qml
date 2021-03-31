@@ -3,14 +3,13 @@ import QtQuick.Controls 2.15
 import QtQuick.Window 2.12
 import QtQuick.TreeView 2.15
 import TreeModel.com 1.0
-//import TreeModel.com1 1.0
 import Qt.labs.platform 1.0
 import QtQuick.Layouts 1.11
 import Qt.labs.qmlmodels 1.0
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
-    id: you
+    id: root
 
     property var array: []
     property var arrayOfWindows: []
@@ -20,12 +19,10 @@ ApplicationWindow {
 
     visible: false
     Component.onCompleted: {
-        console.log("you.settings.windows  "+ you.settings.windows)
-        console.log(" you.array  "+  you.array)
         if (settings.windows.length === 0) {
             var component = Qt.createComponent("WindowComponent.qml")
-            var window = component.createObject(you)
-            you.array.push(window)
+            var window = component.createObject(root)
+            root.array.push(window)
             window.showMaximized()
             var Randomnumber = Math.random().toString(36).substr(2, 5)
             var component1 = Qt.createQmlObject(
@@ -44,8 +41,8 @@ ApplicationWindow {
             for (var i = 0; i < settings.windows.length; i++) {
 
                 var component = Qt.createComponent("WindowComponent.qml")
-                var window = component.createObject(you)
-                you.array.push(window)
+                var window = component.createObject(root)
+                root.array.push(window)
                 window.showMaximized()
                 window.x = settings.windows[i][0]
                 window.y = settings.windows[i][1]
@@ -71,30 +68,15 @@ ApplicationWindow {
 
                 var u = 0
                 for (var j = 4; j < settings.windows[i].length; j++,u++) {
-                    console.log("arr[i]  " + settings.windows[i][j][0])
-                    console.log("window.viewArray[u].x  " + window.viewArray[u].x)
 
                     window.viewArray[u].x = settings.windows[i][j][0]
                     window.viewArray[u].y = settings.windows[i][j][1]
                     window.viewArray[u].width = settings.windows[i][j][2]
                     window.viewArray[u].height = settings.windows[i][j][3]
                     window.viewArray[u].ser.append(settings.windows[i][j][4])
-                    console.log("window.viewArray[u].x  after " + window.viewArray[u].x)
 
                 }
-//                var u = 0
-//                for (var j = 4; j < settings.windows[i].length; j++,u++) {
-////                    console.log("arr[i]  " + settings.windows[i][j][0])
-//                    console.log("window.viewArray[u].x 1111  " + window.viewArray[u].x)
 
-////                    window.viewArray[u].x = settings.windows[i][j][0]
-////                    window.viewArray[u].y = settings.windows[i][j][1]
-////                    window.viewArray[u].width = settings.windows[i][j][2]
-////                    window.viewArray[u].height = settings.windows[i][j][3]
-////                    window.viewArray[u].ser.append(settings.windows[i][j][4])
-////                    console.log("window.viewArray[u].x  after " + window.viewArray[u].x)
-
-//                }
             }
         }
     }
@@ -104,8 +86,8 @@ ApplicationWindow {
         sequence: "Ctrl+K"
         onActivated: {
             var component = Qt.createComponent("WindowComponent.qml")
-            var window = component.createObject(you)
-            you.array.push(window)
+            var window = component.createObject(root)
+            root.array.push(window)
             window.showMaximized()
 
         }

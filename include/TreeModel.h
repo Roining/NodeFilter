@@ -1,56 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
-#include <ProxyModel.h>
 #include <QAbstractItemModel>
 #include <QFile>
 #include <QIODevice>
@@ -60,14 +9,16 @@
 #include <QPersistentModelIndex>
 #include <QUuid>
 #include <QVariant>
+#include <include/ProxyModel.h>
 
-class TreeItem;
+class TreeNode;
 
 class TreeModel : public QAbstractItemModel {
   Q_OBJECT
 
 signals:
   void updateProxyFilter(bool cond);
+  void recurionSignal();
 
 public:
   TreeModel(QObject *parent = nullptr);
@@ -117,14 +68,14 @@ public:
   Q_INVOKABLE void save();
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
 
-  bool isDescendant(TreeItem *parent, TreeItem *child,
+  bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
 
-  Q_INVOKABLE TreeItem *getItem(const QModelIndex &index) const;
-  Q_INVOKABLE void serialize(TreeItem &node, QDataStream &stream);
-  void serializeCleanUp(TreeItem &node);
-  void serializeClear(TreeItem &node);
-  Q_INVOKABLE void deserialize(TreeItem &node, QDataStream &stream,
+  Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
+  Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
+  void serializeCleanUp(TreeNode &node);
+  void serializeClear(TreeNode &node);
+  Q_INVOKABLE void deserialize(TreeNode &node, QDataStream &stream,
                                bool check = false);
   Q_INVOKABLE bool
   copyRows(int position, int rows, const QModelIndex &parent = QModelIndex(),
@@ -140,15 +91,15 @@ public:
   Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
   Q_INVOKABLE void acceptsCopies(const QModelIndex &index, bool acceptsCopies);
   Q_INVOKABLE bool hasMultipleSiblings(const QModelIndex &index);
-  void setupModelData(const QStringList &lines, TreeItem *parent);
+  void setupModelData(const QStringList &lines, TreeNode *parent);
   Q_INVOKABLE bool acceptsCopies(const QModelIndex &index);
 
 private:
   QPersistentModelIndex
       last; // TODO should it remain static? Related to copyRows
   QMultiMap<QUuid, QUuid> container;
-  QMap<QUuid, TreeItem *> map;
-  TreeItem *rootItem;
+  QMap<QUuid, TreeNode *> map;
+  TreeNode *rootItem;
 };
 //! [2]
 

@@ -1,8 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
         <file>Delegate.qml</file>
-        <file>SearchProxy.qml</file>
+        <file>main.qml</file>
         <file>WindowComponent.qml</file>
     </qresource>
 </RCC>

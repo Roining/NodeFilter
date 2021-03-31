@@ -1,7 +1,6 @@
-#include "ProxyModel.h"
-#include "TreeModel.h"
+#include "include/ProxyModel.h"
+#include "include/TreeModel.h"
 #include <QAbstractItemModelTester>
-#include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>

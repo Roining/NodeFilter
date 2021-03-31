@@ -1,100 +1,34 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
-#include "TreeModel.h"
-#include "TreeNode.h"
+#include "include/TreeModel.h"
+#include "include/TreeNode.h"
 #include <QClipboard>
 #include <QDataStream>
 #include <QDebug>
+#include <QDir>
 #include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QRandomGenerator>
 #include <QTime>
-#include <QDir>
 TreeModel::TreeModel(QObject *parent) {
-//QDir::setCurrent(qApp->applicationDirPath());
-qDebug() <<"QDir::current().absolutePath()" << QDir::currentPath();
-QDir::setCurrent(QDir::currentPath());
-QFile file("storage.dat");
-//  QFile file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_"
-//             "MinGW_64_bit-Debug\\debug\\storage.dat");
+
+  // qDebug() <<"QDir::current().absolutePath()" << QDir::currentPath();
+  QDir::setCurrent(QDir::currentPath());
+  QFile file("storage.dat");
   if (file.open(QIODevice::ReadWrite)) {
     QDataStream stream(&file);
     QVector<QVariant> rootData;
 
-    rootItem = new TreeItem(rootData, nullptr);
+    rootItem = new TreeNode(rootData, nullptr);
     deserialize(*rootItem, stream);
-
+    if (!rootItem->childCount()) {
+      beginInsertRows(QModelIndex().parent(), 0, 1);
+      rootItem->itemData.get()->append("data");
+      endInsertRows();
+      insertRows(0, 1, QModelIndex());
+    }
     file.close();
   }
 }
-// TreeModel::TreeModel(QObject *parent){
 
-//    const QStringList headers({("Title")});
-//      QFile
-//      file("C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_1_MinGW_64_bit-Debug\\debug\\default.txt");
-//       file.open(QIODevice::ReadOnly);
-//       const QString data = file.readAll();
-////        TreeModel *model = new TreeModel(headers, file.readAll()); //TODO
-//// clean this up
-
-//    QVector<QVariant> rootData;
-//    for (const QString &header : headers)
-//        rootData << header;
-
-//    rootItem = new TreeItem(rootData);
-//    setupModelData(data.split('\n'), rootItem);
-
-//    file.close();
-
-//}
 TreeModel::TreeModel(const QStringList &headers, const QString &data,
                      QObject *parent)
     : QAbstractItemModel(parent) {
@@ -102,22 +36,20 @@ TreeModel::TreeModel(const QStringList &headers, const QString &data,
   for (const QString &header : headers)
     rootData << header;
 
-  rootItem = new TreeItem(rootData);
+  rootItem = new TreeNode(rootData);
   setupModelData(data.split('\n'), rootItem);
 }
 
 TreeModel::~TreeModel() { delete rootItem; }
 
 QDataStream &operator>>(QDataStream &, TreeModel &);
-QDebug operator<<(QDebug debug, const TreeItem &c) {
+QDebug operator<<(QDebug debug, const TreeNode &c) {
   QDebugStateSaver saver(debug);
-  //  debug.nospace() << '(' << c.itemData.get() << ", " << c.childItems.get()
-  //                  << ')';
 
   return debug;
 }
 
-QDataStream &operator<<(QDataStream &out, TreeItem &item) {
+QDataStream &operator<<(QDataStream &out, TreeNode &item) {
   out << *item.itemData;
   out << item.numberOfChildren;
   out << item.id;
@@ -130,7 +62,7 @@ QDataStream &operator<<(QDataStream &out, TreeItem &item) {
   return out;
 }
 
-QDataStream &operator>>(QDataStream &in, TreeItem *item) {
+QDataStream &operator>>(QDataStream &in, TreeNode *item) {
   in >> *item->itemData;
   in >> item->numberOfChildren; // TODO move out of class members
   in >> item->id;
@@ -157,7 +89,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const {
   if (role != Qt::DisplayRole && role != Qt::EditRole)
     return QVariant();
 
-  TreeItem *item = getItem(index);
+  TreeNode *item = getItem(index);
 
   return item->data(index.column());
 }
@@ -173,11 +105,11 @@ QModelIndex TreeModel::index(int row, int column,
   if (parent.isValid() && parent.column() != 0)
     return QModelIndex();
 
-  TreeItem *parentItem = getItem(parent);
+  TreeNode *parentItem = getItem(parent);
   if (!parentItem)
     return QModelIndex();
 
-  TreeItem *childItem = parentItem->child(row);
+  TreeNode *childItem = parentItem->child(row);
   if (childItem)
     return createIndex(row, column, childItem);
   return QModelIndex();
@@ -186,8 +118,8 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const {
   if (!index.isValid())
     return QModelIndex();
 
-  TreeItem *childItem = getItem(index);
-  TreeItem *parentItem = childItem ? childItem->parent() : nullptr;
+  TreeNode *childItem = getItem(index);
+  TreeNode *parentItem = childItem ? childItem->parent() : nullptr;
 
   if (parentItem == rootItem || !parentItem)
     return QModelIndex();
@@ -195,7 +127,7 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const {
   return createIndex(parentItem->childNumber(), 0, parentItem);
 }
 int TreeModel::rowCount(const QModelIndex &parent) const {
-  const TreeItem *parentItem = getItem(parent);
+  const TreeNode *parentItem = getItem(parent);
 
   return parentItem ? parentItem->childCount() : 0;
 }
@@ -211,7 +143,7 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value,
                         int role) {
 
   if (role == Qt::UserRole + 2) {
-    TreeItem *item = getItem(index);
+    TreeNode *item = getItem(index);
     if (item->id == QUuid()) {
       item->id = item->id.createUuid();
     }
@@ -222,7 +154,7 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value,
   if (role != Qt::EditRole)
     return false;
 
-  TreeItem *item = getItem(index);
+  TreeNode *item = getItem(index);
   bool result = item->setData(index.column(), value);
 
   if (result)
@@ -263,61 +195,56 @@ bool TreeModel::removeColumns(int position, int columns,
   return success;
 }
 bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
-updateProxyFilter(false);
-  TreeItem *parentItem = getItem(parent);
+  updateProxyFilter(false);
+  TreeNode *parentItem = getItem(parent);
   if (!parentItem) {
     return false;
   }
-  QElapsedTimer timer;
-  timer.start();
+
+  //  QElapsedTimer timer;
+  //  timer.start();
   beginInsertRows(parent, position, position + rows - 1);
-  qDebug() << "yyyyyy  " << timer.elapsed();
+  //  qDebug() << "yyyyyy  " << timer.elapsed();
 
   parentItem->insertChildren(position, rows, rootItem->columnCount());
 
-  const QModelIndex &child =
-      this->index(position, 0, parent); // TODO swap this code for smth sane
+  const QModelIndex &child = this->index(position, 0, parent);
 
   this->setData(child, "", Qt::EditRole);
   this->setData(child, "Data", Qt::UserRole + 2);
 
   endInsertRows();
-//  updateProxyFilter(true);
-//  updateProxyFilter(false);
 
-  if (true) { // TODO
+  if ((!parentItem->parents.isEmpty())) {
 
-    if ((!parentItem->parents.isEmpty())) {
+    for (int i = 0; i < parentItem->parents.size(); i++) {
 
-      for (int i = 0; i < parentItem->parents.size(); i++) {
-
-        insertRowsRecursive(position, parentItem->id, parentItem->parents[i],
-                            child);
-      }
-    }
-
-    if ((!parentItem->copyChildren.isEmpty())) {
-
-      for (int i = 0; i < parentItem->copyChildren.size(); i++) {
-
-        insertRowsRecursive(position, parentItem->id,
-                            parentItem->copyChildren[i], child);
-      }
+      insertRowsRecursive(position, parentItem->id, parentItem->parents[i],
+                          child);
     }
   }
+
+  if ((!parentItem->copyChildren.isEmpty())) {
+
+    for (int i = 0; i < parentItem->copyChildren.size(); i++) {
+
+      insertRowsRecursive(position, parentItem->id, parentItem->copyChildren[i],
+                          child);
+    }
+  }
+
   updateProxyFilter(true);
 
-  // updateProxyFilter();
   return true; // TODO check for success of operation
 }
 void TreeModel::insertRowsRecursive(int position, QUuid callingId,
                                     QUuid calledId, const QModelIndex &child) {
-  QElapsedTimer timer;
-  timer.start();
+  //  QElapsedTimer timer;
+  //  timer.start();
 
   auto siblingIndex = match(index(0, 0), Qt::UserRole + 2, calledId.toString(),
                             1, Qt::MatchRecursive);
-  qDebug() << timer.elapsed();
+  //  qDebug() << timer.elapsed();
 
   auto item = getItem(siblingIndex[0]);
   if (item->acceptsCopies) {
@@ -345,9 +272,9 @@ void TreeModel::insertRowsRecursive(int position, QUuid callingId,
 }
 
 bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
-    updateProxyFilter(false);
+  updateProxyFilter(false);
 
-    TreeItem *parentItem = getItem(parent);
+  TreeNode *parentItem = getItem(parent);
   if (!parentItem) {
     return false;
   }
@@ -378,9 +305,7 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
                           child);
     }
   }
-//  updateProxyFilter(true);
 
-  // updateProxyFilter();
   updateProxyFilter(true);
 
   return true;
@@ -391,7 +316,7 @@ void TreeModel::removeRowsRecursive(int position, QUuid callingId,
 
   auto siblingIndex = match(index(0, 0), Qt::UserRole + 2, calledId.toString(),
                             1, Qt::MatchRecursive);
-  TreeItem *item;
+  TreeNode *item;
   if (siblingIndex.isEmpty()) {
     siblingIndex.append(QModelIndex());
   }
@@ -436,21 +361,22 @@ void TreeModel::saveIndex(const QModelIndex &index) {
   return;
 }
 void TreeModel::save() {
-    QDir::setCurrent(QDir::currentPath());
-    QString path = QDir::currentPath();
-    QFile file("storage.dat");
-//  QString path = "C:\\Users\\medve\\Documents\\build-untitled-Desktop_Qt_5_15_"
-//                 "1_MinGW_64_bit-Debug\\debug\\";
-//  QFile file(QStringLiteral("%1\\storage.dat").arg(path));
+  QDir::setCurrent(QDir::currentPath());
+  QString path = QDir::currentPath();
+  QFile file("storage.dat");
   int value = QRandomGenerator::global()->generate();
-  auto test =
-      file.copy(QStringLiteral("%1\\storage.dat").arg(path),
-                QStringLiteral("%1\\StorageCache\\StorageCache%2.dat")
-                    .arg(path)
-                    .arg(value));
+  qDebug() << path;
+  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+  if (!cachePath.exists()) {
+    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+  }
+  auto test = file.copy(QStringLiteral("%1/storage.dat").arg(path),
+                        QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+                            .arg(path)
+                            .arg(value));
+  qDebug() << test;
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
     QDataStream stream(&file);
-
     serializeClear(*rootItem);
     serializeCleanUp(*rootItem);
     serialize(*rootItem, stream);
@@ -458,9 +384,11 @@ void TreeModel::save() {
   }
 }
 QPersistentModelIndex TreeModel::getLastIndex() { return last; }
-bool TreeModel::isDescendant(TreeItem *parent, TreeItem *child,
+bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
                              bool searchClones) {
-
+  if (depth == 0) {
+    return false;
+  }
   if (parent == child) {
     return true;
   } else if (searchClones) {
@@ -471,12 +399,13 @@ bool TreeModel::isDescendant(TreeItem *parent, TreeItem *child,
 
   for (int i = 0; i < parent->childItems->size(); i++) {
     if (searchClones) {
-      if (isDescendant((*parent->childItems.get())[i], child, true)) {
+      if (isDescendant((*parent->childItems.get())[i], child, depth - 1,
+                       true)) {
         return true;
       }
 
     } else {
-      if (isDescendant((*parent->childItems.get())[i], child)) {
+      if (isDescendant((*parent->childItems.get())[i], child, depth - 1)) {
         return true;
       }
     }
@@ -484,18 +413,18 @@ bool TreeModel::isDescendant(TreeItem *parent, TreeItem *child,
 
   return false;
 };
-TreeItem *TreeModel::getItem(const QModelIndex &index) const {
+TreeNode *TreeModel::getItem(const QModelIndex &index) const {
   if (index.isValid()) {
-    TreeItem *item = static_cast<TreeItem *>(index.internalPointer());
+    TreeNode *item = static_cast<TreeNode *>(index.internalPointer());
     if (item)
       return item;
   }
   return rootItem;
 }
-void TreeModel::serialize(TreeItem &node, QDataStream &stream) {
+void TreeModel::serialize(TreeNode &node, QDataStream &stream) {
   stream << node;
 
-  if (node.childCount()) { // TODO replace with numberOfChildren?
+  if (node.childCount()) {
     for (int i = 0; i < node.childCount(); i++) {
 
       serialize(*(node.children()[i]), stream);
@@ -504,7 +433,7 @@ void TreeModel::serialize(TreeItem &node, QDataStream &stream) {
 
   return;
 }
-void TreeModel::serializeCleanUp(TreeItem &node) {
+void TreeModel::serializeCleanUp(TreeNode &node) {
 
   if (node.siblingItems().size() > 1) {
 
@@ -513,8 +442,8 @@ void TreeModel::serializeCleanUp(TreeItem &node) {
       node.tempParents.append(node.siblingItems()[i]->parentItem->id);
     }
   }
-  if (node.siblingItems().size() > 1) { // TODO: repeats condition above?
-    TreeItem *check = nullptr;
+  if (node.siblingItems().size() > 1) {
+    TreeNode *check = nullptr;
     for (int i = 0; i < node.siblingItems().size(); i++) {
 
       if (!(node.siblingItems()[i]->position.isEmpty())) {
@@ -531,30 +460,30 @@ void TreeModel::serializeCleanUp(TreeItem &node) {
     }
   }
 
-  if (node.childCount()) { // TODO replace with numberOfChildren?
+  if (node.childCount()) {
     for (int i = 0; i < node.childCount(); i++) {
 
       serializeCleanUp(*node.children()[i]);
     }
   }
 }
-void TreeModel::serializeClear(TreeItem &node) {
+void TreeModel::serializeClear(TreeNode &node) {
   node.tempParents.clear();
   node.position.clear();
   node.numberOfChildren = node.childCount();
-  if (node.childCount()) { // TODO replace with numberOfChildren?
+  if (node.childCount()) {
     for (int i = 0; i < node.childCount(); i++) {
 
       serializeClear(*node.children()[i]);
     }
   }
 }
-void TreeModel::deserialize(TreeItem &node, QDataStream &stream, bool check) {
+void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
   if (!check) { // if inserted node is not copied
     stream >> &node;
 
     if ((node.tempParents.size() > 1) &&
-        (!check)) { // temp stores id's of parents.if more than 1 then node is
+        (!check)) { // temp stores ids of parents.if more than 1 then node is
                     // copied further
       map.insert(
           node.id,
@@ -578,13 +507,13 @@ void TreeModel::deserialize(TreeItem &node, QDataStream &stream, bool check) {
   for (int i = 0; i < node.numberOfChildren; i++) {
 
     if (container.value(node.id) ==
-        QUuid()) { // if item is a not parent of a copied item
+        QUuid()) { // if node is a not parent of a copied item
 
-      deserialize(node.insertChildren2(i, 1, 0), stream);
+      deserialize(node.insertChildrenNew(i, 1, 0), stream);
     } else {
-      TreeItem *check1 = nullptr;
+      TreeNode *check1 = nullptr;
       auto list = container.values(
-          node.id); // list should contain id's of all potential children
+          node.id); // list should contain ids of all potential children
       for (int j = 0; j < list.size(); j++) {
 
         auto ht = map.value(list[j])->position.keys();
@@ -600,11 +529,12 @@ void TreeModel::deserialize(TreeItem &node, QDataStream &stream, bool check) {
       }
       if (check1 != nullptr) {
 
-        deserialize(node.insertChildren12(i, 1, 0, check1), stream, true);
+        deserialize(node.insertChildrenSerialization(i, 1, 0, check1), stream,
+                    true);
       } else {
 
         auto score = map.value(container.value(node.id));
-        deserialize(node.insertChildren2(i, 1, 0), stream);
+        deserialize(node.insertChildrenNew(i, 1, 0), stream);
       }
       check1 = nullptr;
     }
@@ -614,14 +544,17 @@ void TreeModel::deserialize(TreeItem &node, QDataStream &stream, bool check) {
 
 bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
                          const QPersistentModelIndex &source) {
-    updateProxyFilter(false);
-    TreeItem *parentItem = getItem(parent);
+  updateProxyFilter(false);
+  TreeNode *parentItem = getItem(parent);
   auto lastItem = getItem(source);
   if (!parentItem) {
     return false;
   }
-  if (isDescendant(lastItem, parentItem, true) && lastItem->childCount()) {
+  if ((isDescendant(lastItem, parentItem, 1000, true) &&
+       lastItem->childCount()) ||
+      ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
     qDebug() << "Parent item descends from inserted item";
+    emit recurionSignal();
     return false;
   }
   copyRowsAndChildren(position, 1, parent, source);
@@ -649,33 +582,30 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
   }
   updateProxyFilter(true);
 
-  // updateProxyFilter();
   return true;
 }
 
 bool TreeModel::copyRowsAndChildren(int position, int rows,
                                     const QModelIndex &parent,
                                     const QPersistentModelIndex &source) {
-  TreeItem *parentItem = getItem(parent);
+  TreeNode *parentItem = getItem(parent);
 
   if (!parentItem) {
     return false;
   }
-  TreeItem *lastItem = getItem(source);
+  TreeNode *lastItem = getItem(source);
   lastItem = getItem(source);
-  QElapsedTimer timer;
-  timer.start();
-//  updateProxyFilter(false);
+  //  QElapsedTimer timer;
+  //  timer.start();
 
   beginInsertRows(parent, position, position + rows - 1);
-  qDebug() << "yyyyyy4444  " << timer.elapsed();
+  //  qDebug() << "yyyyyy4444  " << timer.elapsed();
 
-  TreeItem &success = parentItem->insertChildren1(
+  TreeNode &success = parentItem->copyNodeChildren(
       position, rows, rootItem->columnCount(), lastItem);
   this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);
 
   endInsertRows();
-//  updateProxyFilter(true);
 
   for (int i = 0; i < lastItem->childCount(); i++) {
     QPersistentModelIndex itemIndex = index(position, 0, parent);
@@ -751,8 +681,8 @@ bool TreeModel::hasMultipleSiblings(const QModelIndex &index) {
   return false;
 }
 
-void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent) {
-  QVector<TreeItem *> parents;
+void TreeModel::setupModelData(const QStringList &lines, TreeNode *parent) {
+  QVector<TreeNode *> parents;
   QVector<int> indentations;
   parents << parent;
   indentations << 0;
@@ -794,7 +724,7 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent) {
       }
 
       // Append a new item to the current parent's list of children.
-      TreeItem *parent = parents.last();
+      TreeNode *parent = parents.last();
       parent->insertChildren(parent->childCount(), 1, rootItem->columnCount());
       for (int column = 0; column < columnData.size(); ++column)
         parent->child(parent->childCount() - 1)

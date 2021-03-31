@@ -1,10 +1,10 @@
-#include "ProxyModel.h"
-#include "TreeNode.h"
-#include "treeModel.h"
+#include "include/ProxyModel.h"
+#include "include/TreeModel.h"
+#include "include/TreeNode.h"
 #include <QRegularExpression>
 #include <functional>
 
-TreeModel myClass1(nullptr); // TODO
+TreeModel myClass1(nullptr);
 
 ProxyModel::ProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 
@@ -29,47 +29,29 @@ void ProxyModel::queryProcessing() {
         auto parentItem = sourceModel->getItem(itemIndex[0]);
         if (parentItem) {
           itemContainer.insert(queryTrimmed, parentItem);
-          //       return false; // check if item id is valid
         }
-
-        //       return false;
       }
     }
   }
 }
 bool ProxyModel::filterAcceptsRow(int source_row,
                                   const QModelIndex &source_parent) const {
-    QModelIndex  index = sourceModel->index(source_row, 0, source_parent);
-    TreeItem *currentItem = sourceModel->getItem(index);
+  QModelIndex index = sourceModel->index(source_row, 0, source_parent);
+  TreeNode *currentItem = sourceModel->getItem(index);
 
-   if(!queryChanged){
-return true;
-//if(sourceModel->index(source_row,0,source_parent).isValid()){
-//       if(mapFromSource(sourceModel->index(source_row, 0, source_parent)).isValid()){
-//          return   true;
-//       }
-//       else{
-//           return false;
-//       }
-
-//       }
-   }
-//    if(!mapFromSource(source_parent).isValid()){
-
-//    } //source model row is filtered;
-
-//  QModelIndex index = sourceModel->index(source_row, 0, source_parent);
-//  TreeItem *currentItem = sourceModel->getItem(index);
-
+  if (!queryChanged) {
+    return true;
+  }
   if (query == "") {
     currentItem->setVisible(true);
     return true;
   }
 
-  // QRegExp separator("[(&&|#|\|)]");
   QStringList container = query.split("&&");
+
   bool finalResult = true;
   for (int i = 0; i < container.size(); i++) {
+    int depth = 999;
     bool innerResult = true;
 
     if (container[i].startsWith("r:")) {
@@ -87,7 +69,14 @@ return true;
     }
 
     else if (container[i].startsWith(">")) {
+
       auto query1 = container[i].section(":", -1);
+      auto depthIndex = container[i].indexOf(":");
+
+      if (container[i][depthIndex - 1].digitValue() != -1) {
+        depth = container[i][depthIndex - 1].digitValue();
+      }
+
       auto queryId = itemContainer.value(query1);
       if (!queryId) {
         currentItem->setVisible(false);
@@ -98,17 +87,19 @@ return true;
       }
 
       if (container[i].startsWith(">>")) {
+        //        innerResult = sourceModel->isDescendant(queryId,
+        //        currentItem,depth, true);
         innerResult = false;
         for (int i = 0; i < queryId->siblingItems().size(); i++) {
           if (sourceModel->isDescendant(queryId->siblingItems()[i], currentItem,
-                                        true)) {
+                                        depth, true)) {
             innerResult = true;
             break;
           }
         }
 
       } else {
-        innerResult = sourceModel->isDescendant(queryId, currentItem);
+        innerResult = sourceModel->isDescendant(queryId, currentItem, depth);
       }
       bool isInclusive = i > 0 && container[i - 1] == "OR";
       bool isInversed = i > 0 && container[i - 1] == "NOT";
@@ -142,9 +133,10 @@ return true;
       }
 
       if (container[i].startsWith("<<")) {
-        innerResult = sourceModel->isDescendant(currentItem, queryId, true);
+        innerResult =
+            sourceModel->isDescendant(currentItem, queryId, depth, true);
       } else {
-        innerResult = sourceModel->isDescendant(currentItem, queryId);
+        innerResult = sourceModel->isDescendant(currentItem, queryId, depth);
       }
       bool isInclusive = i > 0 && container[i - 1] == "OR";
       bool isInversed = i > 0 && container[i - 1] == "NOT";
@@ -186,14 +178,13 @@ return true;
       }
       if (contains == true) {
         for (int i = 0; i < words.size(); i++) {
-          TreeItem *itemPtr = currentItem;
+          TreeNode *itemPtr = currentItem;
           while (true) {
 
             if ((((itemPtr)->item().toString().contains(
                     words[i], Qt::CaseInsensitive)))) {
               result = true;
               break;
-              //    if(child->parent() != parent)
             } else if (!itemPtr->parent()) {
               result = false;
               break;
@@ -250,9 +241,8 @@ Q_INVOKABLE void ProxyModel::setQuery(QString string) {
   sourceModel->updateProxyFilter(true);
   invalidateFilter();
 
-
   return;
 }
-Q_INVOKABLE void ProxyModel::isChanged(bool condition){
-    queryChanged = condition;
+Q_INVOKABLE void ProxyModel::queryIsChanged(bool condition) {
+  queryChanged = condition;
 }

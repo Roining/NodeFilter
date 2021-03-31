@@ -27,42 +27,37 @@ Component {
 
         Keys.onPressed: {
             if ((event.key === Qt.Key_W)
-                              && (event.modifiers & Qt.ControlModifier)
-                              && (event.modifiers & Qt.ShiftModifier)) {
-                         you.arrayOfWindows.length === 0
-                         console.log("you.array   " + you.array)
+                    && (event.modifiers & Qt.ControlModifier)
+                    && (event.modifiers & Qt.ShiftModifier)) {
+                root.arrayOfWindows.length === 0
 
-                         var serializationWindowsArray = []
-                         for (var i = 0; i < you.array.length; i++) {
+                var serializationWindowsArray = []
+                for (var i = 0; i < root.array.length; i++) {
 
-                             var windowData = [you.array[i].x, you.array[i].y, you.array[i].width, you.array[i].height]
+                    var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
 
-                             serializationWindowsArray.push(windowData)
+                    serializationWindowsArray.push(windowData)
 
-                             for (var j = 0; j < you.array[i].viewArray.length; j++) {
+                    for (var j = 0; j < root.array[i].viewArray.length; j++) {
 
-                                 var viewData = [you.array[i].viewArray[j].x, you.array[i].viewArray[j].y, you.array[i].viewArray[j].width, you.array[i].viewArray[j].height, you.array[i].viewArray[j].ser.text]
-                                 serializationWindowsArray[i].push(viewData)
+                        var viewData = [root.array[i].viewArray[j].x, root.array[i].viewArray[j].y, root.array[i].viewArray[j].width, root.array[i].viewArray[j].height, root.array[i].viewArray[j].ser.text]
+                        serializationWindowsArray[i].push(viewData)
+                    }
+                }
 
-
-                             }
-                         }
-
-                         for (var i = 0; i < you.array.length; i++) {
-                             you.arrayOfWindows.push((serializationWindowsArray[i]))
-                         }
-                         you.settings.windows = you.arrayOfWindows
-                         myClass.save();
-                         Qt.quit()
-                         return;
-                     }
-            else if ((event.key === Qt.Key_W)
-                                           && (event.modifiers & Qt.ControlModifier)) {
-                                    // Delete view Alt D
-                                    viewInstance.destroy()
-                                    return
-                                }
-
+                for (var i = 0; i < root.array.length; i++) {
+                    root.arrayOfWindows.push((serializationWindowsArray[i]))
+                }
+                root.settings.windows = root.arrayOfWindows
+                myClass.save()
+                Qt.quit()
+                return
+            } else if ((event.key === Qt.Key_W)
+                       && (event.modifiers & Qt.ControlModifier)) {
+                // Delete view Alt D
+                viewInstance.destroy()
+                return
+            }
         }
 
         Component.onDestruction: {
@@ -71,8 +66,8 @@ Component {
                             ) === parent.parent.root.viewArray[i].objectName.toString(
                             )) {
                     parent.parent.root.viewArray.splice(i, 1)
-                    if(parent.parent.root.viewArray.length ===0){
-                        parent.parent.root.destroy();
+                    if (parent.parent.root.viewArray.length === 0) {
+                        parent.parent.root.destroy()
                     }
                     break
                 }
@@ -98,7 +93,6 @@ Component {
                 placeholderText: "Search here"
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
-                    console.log("ttttt " + nodeTree.currentModelIndex)
                     var row = nodeTree.rowAtY(posInTreeView, true)
                     nodeTree.currentModelIndex = nodeTree.viewIndex(0, row)
                     nodeTree.itemAtModelIndex(
@@ -142,72 +136,60 @@ Component {
                 styleHints.indent: 25
                 styleHints.columnPadding: 30
                 Component.onCompleted: {
-                    console.log("fgfghfgh" + viewInstance.parent)
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
-                    console.log("ttttt " + nodeTree.currentModelIndex)
                     var row = nodeTree.rowAtY(posInTreeView, true)
                     nodeTree.currentModelIndex = nodeTree.viewIndex(0, 0)
-                    //        nodeTree.forceActiveFocus()
                     nodeTree.itemAtModelIndex(
                                 nodeTree.currentModelIndex).forceActiveFocus()
                 }
 
-Keys.onDigit2Pressed: {
-    for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
-        if (viewInstance.objectName.toString(
-                    ) === viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                    )) {
-            console.log("brrrrr  " + viewInstance.parent.parent.root.viewArray[i].x)
-
-//            parent.parent.root.viewArray.splice(i, 1)
-            break
-        }
-    }
-console.log("windowInstance.width: " + viewInstance.width)
-    console.log("windowInstance.x: " + viewInstance.x)
-    console.log("windowInstance.y: " + viewInstance.y)
-
-
-}
+                Keys.onDigit2Pressed: {
+                    for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
+                        if (viewInstance.objectName.toString(
+                                    ) === viewInstance.parent.parent.root.viewArray[i].objectName.toString(
+                                    )) {
+                            break
+                        }
+                    }
+                }
                 Keys.onPressed: {
                     if ((event.key === Qt.Key_P)
                             && (event.modifiers & Qt.ControlModifier)
                             && (event.modifiers & Qt.ShiftModifier)) {
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
-                                                  nodeTree.currentModelIndex), true)
+                                                  nodeTree.currentModelIndex),
+                                              true)
                         return
-                    }
-                   else  if ((event.key === Qt.Key_W)
-                             && (event.modifiers & Qt.ControlModifier)
-                             && (event.modifiers & Qt.ShiftModifier)) {
-                        you.arrayOfWindows.length === 0
-                        console.log("you.array   " + you.array)
+                    } else if ((event.key === Qt.Key_W)
+                               && (event.modifiers & Qt.ControlModifier)
+                               && (event.modifiers & Qt.ShiftModifier)) {
+                        root.arrayOfWindows.length === 0
 
                         var serializationWindowsArray = []
-                        for (var i = 0; i < you.array.length; i++) {
+                        for (var i = 0; i < root.array.length; i++) {
 
-                            var windowData = [you.array[i].x, you.array[i].y, you.array[i].width, you.array[i].height]
+                            var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
 
                             serializationWindowsArray.push(windowData)
+//console.log("root.array[i] " + root.array[i])
+//console.log("root.array[i].viewArray " + root.array[i].viewArray)
 
-                            for (var j = 0; j < you.array[i].viewArray.length; j++) {
+                            for (var j = 0; j < root.array[i].viewArray.length; j++) {
 
-                                var viewData = [you.array[i].viewArray[j].x, you.array[i].viewArray[j].y, you.array[i].viewArray[j].width, you.array[i].viewArray[j].height, you.array[i].viewArray[j].ser.text]
+                                var viewData = [root.array[i].viewArray[j].x, root.array[i].viewArray[j].y, root.array[i].viewArray[j].width, root.array[i].viewArray[j].height, root.array[i].viewArray[j].ser.text]
                                 serializationWindowsArray[i].push(viewData)
-
-
                             }
                         }
 
-                        for (var i = 0; i < you.array.length; i++) {
-                            you.arrayOfWindows.push((serializationWindowsArray[i]))
+                        for (var i = 0; i < root.array.length; i++) {
+                            root.arrayOfWindows.push(
+                                        (serializationWindowsArray[i]))
                         }
-                        you.settings.windows = you.arrayOfWindows
-                        myClass.save();
+                        root.settings.windows = root.arrayOfWindows
+                        myClass.save()
                         Qt.quit()
-                        return;
-                    }
-                    else if ((event.key === Qt.Key_G)
+                        return
+                    } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         allIndeces(nodeTree.currentModelIndex)
@@ -218,16 +200,11 @@ console.log("windowInstance.width: " + viewInstance.width)
                                && (event.modifiers & Qt.ShiftModifier)) {
 
                         for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
-                            console.log("contentHeight : " + viewInstance.parent.parent.root.viewArray
-                                        + " windowInstance.objectName " + viewInstance.parent.parent.root.viewArray[i]
-                                        + "  objectName " + viewInstance.parent.parent.root.viewArray[i - 1])
 
                             if (viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                                        ) == viewInstance.objectName.toString()) {
-                                console.log("contentHeight : " + viewInstance.parent.parent.root.viewArray
-                                            + " windowInstance.objectName "
-                                            + viewInstance.parent.parent.root.viewArray[i] + "  objectName "
-                                            + viewInstance.parent.parent.root.viewArray[i - 1])
+                                        ) == viewInstance.objectName.toString(
+                                        )) {
+
                                 if ((i - 1) > -1) {
                                     viewInstance.parent.parent.root.viewArray[i - 1].tree.itemAtModelIndex(
                                                 viewInstance.parent.parent.root.viewArray[i - 1].tree.currentModelIndex).item.forceActiveFocus()
@@ -236,19 +213,15 @@ console.log("windowInstance.width: " + viewInstance.width)
                             }
                         }
                         return
-                    }
-
-                    else if ((event.key === Qt.Key_E)
+                    } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         //acceptsCopies true Ctrl Shift P
                         for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
                             if (viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                                        ) === viewInstance.objectName.toString()) {
-                                console.log("contentHeight : " + viewInstance.parent.parent.root.viewArray
-                                            + " windowInstance.objectName "
-                                            + viewInstance.parent.parent.root.viewArray[i] + "  objectName "
-                                            + viewInstance.parent.parent.root.viewArray[i + 1])
+                                        ) === viewInstance.objectName.toString(
+                                        )) {
+
                                 if ((i + 1) < viewInstance.parent.parent.root.viewArray.length) {
                                     viewInstance.parent.parent.root.viewArray[i + 1].tree.itemAtModelIndex(
                                                 viewInstance.parent.parent.root.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
@@ -257,20 +230,15 @@ console.log("windowInstance.width: " + viewInstance.width)
                             }
                         }
 
-
                         return
-                    } //     else if((event.key === Qt.Key_L)&&(event.modifiers &Qt.ControlModifier) &&(event.modifiers &Qt.ShiftModifier)){ //insert new node without transclusion
-
-                    //      myClass.insertRows(0,1,nodeTree.mo,false)//TODO
-                    //        return;
-                    //    }
-                    else if ((event.key === Qt.Key_N)
-                             && (event.modifiers & Qt.ControlModifier)
-                             && (event.modifiers & Qt.ShiftModifier)) {
+                    } else if ((event.key === Qt.Key_N)
+                               && (event.modifiers & Qt.ControlModifier)
+                               && (event.modifiers & Qt.ShiftModifier)) {
 
                         //insert new node as a child Ctrl Shift N
-                        myClass.insertRows(0, 1, nodeTree.model.mapToSource(
-                                               nodeTree.currentModelIndex)) //TODO
+                        myClass.insertRows(
+                                    0, 1, nodeTree.model.mapToSource(
+                                        nodeTree.currentModelIndex)) //TODO
                         nodeTree.expandModelIndex(nodeTree.currentModelIndex)
 
                         return
@@ -292,9 +260,8 @@ console.log("windowInstance.width: " + viewInstance.width)
                                                   nodeTree.currentModelIndex),
                                               false)
                         return
-                    }
-                    else if ((event.key === Qt.Key_S)
-                             && (event.modifiers & Qt.ControlModifier)) {
+                    } else if ((event.key === Qt.Key_S)
+                               && (event.modifiers & Qt.ControlModifier)) {
                         //serialize/save Ctrl S
                         myClass.save()
                         return
@@ -305,38 +272,32 @@ console.log("windowInstance.width: " + viewInstance.width)
                         if (nodeTree.currentModelIndex.hasChildren) {
                             nodeTree.currentModelIndex = nodeTree.model.index(
                                         0, 0, nodeTree.currentModelIndex)
-                        }
-                        else {
+                        } else {
                             nodeTree.currentModelIndex = nodeTree.model.index(
                                         nodeTree.currentModelIndex.row + 1, 0,
                                         nodeTree.currentModelIndex.parent)
                         }
                         return
-                    }
-                    else if ((event.key === Qt.Key_W)
-                                                   && (event.modifiers & Qt.ControlModifier)) {
-                                            // Delete view Alt D
-                                            viewInstance.destroy()
-                                            return
-                                        }
-                    else if ((event.key === Qt.Key_8)
-                                                  && (event.modifiers & Qt.ControlModifier)) {
-                    you.settings.windows = [];
-                        you.array.length = []
-                        console.log("you.settings.windows  "+ you.settings.windows)
-                        console.log(" you.array  "+  you.array)
+                    } else if ((event.key === Qt.Key_W)
+                               && (event.modifiers & Qt.ControlModifier)) {
+                        // Delete view Alt D
+                        viewInstance.destroy()
+                        return
+                    } else if ((event.key === Qt.Key_U)
+                               && (event.modifiers & Qt.ControlModifier)
+                               && (event.modifiers & Qt.ShiftModifier)) {
+                        root.settings.windows = []
+                        root.array.length = []
 
-                        Qt.quit();
-                    }
-                    else if ((event.key === Qt.Key_D)
+                        Qt.quit()
+                    } else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //remove node Ctrl D
                         deleteDialog.open()
                         return
-                    }
-                    else if ((event.key === Qt.Key_U)
-                             && (event.modifiers & Qt.ControlModifier)) {
+                    } else if ((event.key === Qt.Key_U)
+                               && (event.modifiers & Qt.ControlModifier)) {
 
                         //remove node Ctrl D
                         hbar.decrease()
@@ -355,14 +316,16 @@ console.log("windowInstance.width: " + viewInstance.width)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //copy a copied node Ctrl A
-                        myClass.saveIndex(nodeTree.model.mapToSource(
-                                              nodeTree.currentModelIndex)) //TODO
+                        myClass.saveIndex(
+                                    nodeTree.model.mapToSource(
+                                        nodeTree.currentModelIndex)) //TODO
                         return
                     } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //copy Id to clipboard Ctrl E
-                        myClass.getIdToClipboard(nodeTree.model.mapToSource(
-                                                     nodeTree.currentModelIndex))
+                        myClass.getIdToClipboard(
+                                    nodeTree.model.mapToSource(
+                                        nodeTree.currentModelIndex))
                         return
                     } else if ((event.key === Qt.Key_F)
                                && (event.modifiers & Qt.ControlModifier)) {
@@ -370,15 +333,14 @@ console.log("windowInstance.width: " + viewInstance.width)
                         search.forceActiveFocus()
                         search.selectAll()
                         return
-                    }  else if ((event.key === Qt.Key_N)
+                    } else if ((event.key === Qt.Key_N)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
                         myClass.insertRows(
-                                    position + 1, 1,
-                                    nodeTree.model.mapToSource(
+                                    position + 1, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex).parent) //TODO
 
                         return
@@ -386,7 +348,6 @@ console.log("windowInstance.width: " + viewInstance.width)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                         var test1 = nodeTree.currentModelIndex.parent
-                        console.log(test1)
                         nodeTree.currentModelIndex
                         return
                     } else if ((event.key === Qt.Key_M)
@@ -397,14 +358,14 @@ console.log("windowInstance.width: " + viewInstance.width)
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
 
-                        myClass.copyRows(position + 1, 1,
-                                         nodeTree.model.mapToSource(
-                                             nodeTree.currentModelIndex).parent,
-                                         myClass.getLastIndex()) //TODO
+                        myClass.copyRows(
+                                    position + 1, 1, nodeTree.model.mapToSource(
+                                        nodeTree.currentModelIndex).parent,
+                                    myClass.getLastIndex()) //TODO
                     } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        nodeTree.toggleModelIndexExpanded(nodeTree.currentModelIndex)
-
+                        nodeTree.toggleModelIndexExpanded(
+                                    nodeTree.currentModelIndex)
                     }
                 }
 
@@ -414,7 +375,6 @@ console.log("windowInstance.width: " + viewInstance.width)
                         if (nodeTree.activeFocus) {
                             itemAtModelIndex(
                                         nodeTree.currentModelIndex).item.forceActiveFocus()
-                            //                                            console.log("77777777777 " + nodeTree.currentModelIndex.row)
                         }
                     }
                 }
@@ -446,7 +406,16 @@ console.log("windowInstance.width: " + viewInstance.width)
                         myClass.removeRows(
                                     position, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex).parent) //TODO
-                        console.log("Selected node was deleted")
+                    }
+
+                    standardButtons: StandardButton.Ok | StandardButton.Close
+                }
+                MessageDialog {
+                    id: copyDialog
+                    title: "Warning"
+                    text: "Infinite recursion detected, the node will not be inserted"
+                    onAccepted: {
+
                     }
 
                     standardButtons: StandardButton.Ok | StandardButton.Close
@@ -471,7 +440,12 @@ console.log("windowInstance.width: " + viewInstance.width)
                             vbar.decrease()
                         }
                     }
-
+                }
+                Connections{
+                target:myClass
+                function onRecurionSignal(){
+                copyDialog.open();
+                }
                 }
                 delegate: Component {
 
@@ -492,7 +466,7 @@ console.log("windowInstance.width: " + viewInstance.width)
                         implicitHeight: conHeight
                         implicitWidth: viewInstance.parent.width
                         focus: true
-                          clip: true
+                        clip: true
 
                         MouseArea {
                             anchors.fill: parent
@@ -508,10 +482,11 @@ console.log("windowInstance.width: " + viewInstance.width)
                             onPressed: mouse.accepted = false
                             onEntered: {
                                 if (!search.focus) {
-                                    var posInTreeView = mapToItem(nodeTree, 0, 0)
+                                    var posInTreeView = mapToItem(nodeTree, 0,
+                                                                  0)
 
                                     var row = nodeTree.rowAtY(posInTreeView.y,
-                                                          false)
+                                                              false)
 
                                     nodeTree.currentModelIndex = nodeTree.mapToModel(
                                                 nodeTree.viewIndex(0, row))
@@ -534,10 +509,10 @@ console.log("windowInstance.width: " + viewInstance.width)
                                 onTapped: {
                                     var posInTreeView = nodeTree.mapFromItem(
                                                 parent, point.position)
-                                    var row = nodeTree.rowAtY(posInTreeView.y, true)
-                                    nodeTree.currentIndex = nodeTree.viewIndex(0, row)
-                                    console.log("function row  " + row + "  index row  "
-                                                + nodeTree.currentIndex.row)
+                                    var row = nodeTree.rowAtY(posInTreeView.y,
+                                                              true)
+                                    nodeTree.currentIndex = nodeTree.viewIndex(
+                                                0, row)
 
                                     if (tapCount == 1)
                                         nodeTree.toggleExpanded(row)
@@ -549,7 +524,6 @@ console.log("windowInstance.width: " + viewInstance.width)
 
                             x: depth * nodeTree.styleHints.indent + 15
                             color: "black"
-                            // anchors.left :  indicator1
                             anchors.leftMargin: 100
                             font: nodeTree.styleHints.font
                             text: "⬤"
@@ -560,10 +534,10 @@ console.log("windowInstance.width: " + viewInstance.width)
                                 onTapped: {
                                     var posInTreeView = nodeTree.mapFromItem(
                                                 parent, point.position)
-                                    var row = nodeTree.rowAtY(posInTreeView.y, true)
-                                    nodeTree.currentIndex = nodeTree.viewIndex(0, row)
-                                    console.log("function row  " + row + "  index row  "
-                                                + nodeTree.currentIndex.row)
+                                    var row = nodeTree.rowAtY(posInTreeView.y,
+                                                              true)
+                                    nodeTree.currentIndex = nodeTree.viewIndex(
+                                                0, row)
 
                                     if (tapCount == 1)
 
@@ -593,36 +567,28 @@ console.log("windowInstance.width: " + viewInstance.width)
                             anchors.leftMargin: 5
                             text: edit
                             onActiveFocusChanged: {
-                            if(activeFocus){
-                                if(myClass.hasMultipleSiblings(nodeTree.model.mapToSource(nodeTree.currentModelIndex))){
-                                                            dot.color = "blue"
-
-                                                            }
-                                if(!myClass.acceptsCopies(nodeTree.model.mapToSource(nodeTree.currentModelIndex))){
-                                dot.color = "green"}
-
+                                if (activeFocus) {
+                                    if (myClass.hasMultipleSiblings(
+                                                nodeTree.model.mapToSource(
+                                                    nodeTree.currentModelIndex))) {
+                                        dot.color = "blue"
+                                    }
+                                    if (!myClass.acceptsCopies(
+                                                nodeTree.model.mapToSource(
+                                                    nodeTree.currentModelIndex))) {
+                                        dot.color = "green"
+                                    }
+                                } else {
+                                    dot.color = "black"
+                                }
                             }
-                            else{
-                            dot.color = "black"
-                            }
-                            }
 
-//                            Component.onCompleted: {
-//                            if(nodeTree.focus){
-
-//                            if(myClass.hasMultipleSiblings(nodeTree.currentModelIndex)){
-//                            dot.color = "blue"
-
-//                            }
-
-//                            }
-//                            }
                             onTextChanged: {
                                 if (nodeTree.activeFocus) {
                                     edit = text
                                 }
-                                if (nodeTree.activeFocus && content.activeFocus) {
-                                    console.log("height  " + content.height)
+                                if (nodeTree.activeFocus
+                                        && content.activeFocus) {
                                     nodeTree.forceLayout()
                                     heightChanged()
                                     widthChanged()
@@ -641,9 +607,10 @@ console.log("windowInstance.width: " + viewInstance.width)
                                 onPressed: mouse.accepted = false
                                 anchors.fill: parent
                                 onEntered: {
-                                    var posInTreeView = mapToItem(viewInstance, 0, 0)
+                                    var posInTreeView = mapToItem(viewInstance,
+                                                                  0, 0)
                                     var row = nodeTree.rowAtY(posInTreeView.y,
-                                                          false)
+                                                              false)
                                     nodeTree.currentModelIndex = nodeTree.mapToModel(
                                                 nodeTree.viewIndex(0, row))
                                     if (!search.focus) {
