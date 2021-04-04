@@ -10,7 +10,6 @@
 #include <QTime>
 TreeModel::TreeModel(QObject *parent) {
 
-  // qDebug() <<"QDir::current().absolutePath()" << QDir::currentPath();
   QDir::setCurrent(QDir::currentPath());
   QFile file("storage.dat");
   if (file.open(QIODevice::ReadWrite)) {
@@ -201,10 +200,7 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
     return false;
   }
 
-  //  QElapsedTimer timer;
-  //  timer.start();
   beginInsertRows(parent, position, position + rows - 1);
-  //  qDebug() << "yyyyyy  " << timer.elapsed();
 
   parentItem->insertChildren(position, rows, rootItem->columnCount());
 
@@ -365,16 +361,16 @@ void TreeModel::save() {
   QString path = QDir::currentPath();
   QFile file("storage.dat");
   int value = QRandomGenerator::global()->generate();
-  qDebug() << path;
+
   QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
   if (!cachePath.exists()) {
     cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
   }
-  auto test = file.copy(QStringLiteral("%1/storage.dat").arg(path),
-                        QStringLiteral("%1/StorageCache/StorageCache%2.dat")
-                            .arg(path)
-                            .arg(value));
-  qDebug() << test;
+  auto isSuccessful =
+      file.copy(QStringLiteral("%1/storage.dat").arg(path),
+                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+                    .arg(path)
+                    .arg(value));
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
     QDataStream stream(&file);
     serializeClear(*rootItem);
@@ -553,7 +549,6 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
   if ((isDescendant(lastItem, parentItem, 1000, true) &&
        lastItem->childCount()) ||
       ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
-    qDebug() << "Parent item descends from inserted item";
     emit recurionSignal();
     return false;
   }
@@ -595,12 +590,7 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
   }
   TreeNode *lastItem = getItem(source);
   lastItem = getItem(source);
-  //  QElapsedTimer timer;
-  //  timer.start();
-
   beginInsertRows(parent, position, position + rows - 1);
-  //  qDebug() << "yyyyyy4444  " << timer.elapsed();
-
   TreeNode &success = parentItem->copyNodeChildren(
       position, rows, rootItem->columnCount(), lastItem);
   this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);

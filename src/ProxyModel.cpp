@@ -72,9 +72,10 @@ bool ProxyModel::filterAcceptsRow(int source_row,
 
       auto query1 = container[i].section(":", -1);
       auto depthIndex = container[i].indexOf(":");
-
-      if (container[i][depthIndex - 1].digitValue() != -1) {
-        depth = container[i][depthIndex - 1].digitValue();
+      if (depthIndex > 0) {
+        if (container[i][depthIndex - 1].digitValue() != -1) {
+          depth = container[i][depthIndex - 1].digitValue();
+        }
       }
 
       auto queryId = itemContainer.value(query1);
