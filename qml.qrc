@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
         <file>Delegate.qml</file>
+        <file>main.qml</file>
+        <file>WindowComponent.qml</file>
     </qresource>
 </RCC>
