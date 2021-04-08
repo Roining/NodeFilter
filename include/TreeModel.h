@@ -70,7 +70,7 @@ public:
 
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
-
+  bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
   void serializeCleanUp(TreeNode &node);

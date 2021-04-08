@@ -731,3 +731,23 @@ bool TreeModel::acceptsCopies(const QModelIndex &index) {
     return false;
   }
 }
+bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child,
+                                   int depth) {
+
+  while (true) {
+    if (depth == 0) {
+      return false;
+    }
+    if (child->parent() == nullptr) {
+
+      return false;
+    } else if ((*child->parent() == *parent) || (*child == *parent)) {
+
+      return true;
+
+    } else {
+      child = child->parent();
+      depth--;
+    }
+  };
+}

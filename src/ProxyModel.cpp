@@ -89,8 +89,10 @@ bool ProxyModel::filterAcceptsRow(int source_row,
       if (container[i].startsWith(">>>")) {
         innerResult =
             sourceModel->isDescendant(queryId, currentItem, depth, true);
-      }
-      if (container[i].startsWith(">>")) {
+      } else if (container[i].startsWith(">^")) {
+        innerResult =
+            sourceModel->isDirectDescendant(queryId, currentItem, depth);
+      } else if (container[i].startsWith(">>")) {
 
         innerResult = false;
         for (int i = 0; i < queryId->siblingItems().size(); i++) {
