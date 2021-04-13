@@ -19,6 +19,8 @@ public:
                         const QModelIndex &source_parent) const override;
   Q_INVOKABLE void setQuery(QString string);
   Q_INVOKABLE void queryIsChanged(bool condition);
+  bool lessThan(const QModelIndex &left,
+                const QModelIndex &right) const override;
 
 private:
   bool queryChanged = true;

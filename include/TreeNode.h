@@ -15,7 +15,6 @@ public:
   TreeNode(TreeNode &other);
   ~TreeNode();
   bool operator==(const TreeNode &other) const;
-
   QVariant data(int column) const;
   bool insertColumns(int position, int columns);
   bool removeColumns(int position, int columns);
@@ -23,11 +22,11 @@ public:
   bool setData(int column, const QVariant &value);
   TreeNode *insertChildren(int position, int count, int columns);
   TreeNode &copyNodeChildren(int position, int count, int columns,
-                            TreeNode *parent);
+                             TreeNode *parent);
   TreeNode *insertChildrenRecursive(int position, int count, int columns,
                                     TreeNode *parent);
   TreeNode &insertChildrenSerialization(int position, int count, int columns,
-                             TreeNode *parent);
+                                        TreeNode *parent);
   TreeNode &insertChildrenNew(int position, int count, int columns);
   bool removeChildren(int position, int count);
 
@@ -51,13 +50,12 @@ private:
   TreeNode *parentItem;
   int numberOfChildren;
   QMultiMap<QUuid, int> position;
-  QUuid id; // TODO make data members private again
+  QUuid id;
   QVector<QUuid> tempParents;
   QVector<QUuid> parents;
   QVector<QUuid> copyChildren;
   bool acceptsCopies = true;
   bool isVisible = true;
 };
-
 
 #endif // TREENODE_H

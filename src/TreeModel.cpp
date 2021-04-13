@@ -7,7 +7,6 @@
 #include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QRandomGenerator>
-#include <QTime>
 TreeModel::TreeModel(QObject *parent) {
 
   QDir::setCurrent(QDir::currentPath());
@@ -320,12 +319,15 @@ void TreeModel::removeRowsRecursive(int position, QUuid callingId,
   item = getItem(siblingIndex[0]);
 
   if (item->acceptsCopies) {
+    if (item->childCount() && item->childCount() > position) {
+      if (*item->children()[position] == *getItem(child)) {
+        beginRemoveRows(siblingIndex[0], position, position + 1 - 1);
 
-    beginRemoveRows(siblingIndex[0], position, position + 1 - 1);
+        const bool success = item->removeChildren(position, 1);
 
-    const bool success = item->removeChildren(position, 1);
-
-    endRemoveRows();
+        endRemoveRows();
+      }
+    }
   }
 
   if ((!item->parents.isEmpty()) && (item->acceptsCopies)) {
@@ -408,6 +410,22 @@ bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
   }
 
   return false;
+};
+TreeNode *TreeModel::isDescendant1(TreeNode *parent, TreeNode *child) {
+
+  if (*parent == *child) {
+    return child;
+  }
+
+  for (int i = 0; i < parent->childItems->size(); i++) {
+    auto match = isDescendant1((*parent->childItems.get())[i], child);
+
+    if (match) {
+      return match;
+    }
+  }
+
+  return nullptr;
 };
 TreeNode *TreeModel::getItem(const QModelIndex &index) const {
   if (index.isValid()) {

@@ -1,10 +1,8 @@
 #include "include/ProxyModel.h"
 #include "include/TreeModel.h"
-#include <QAbstractItemModelTester>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);

@@ -482,8 +482,8 @@ Component {
                             onPressed: mouse.accepted = false
                             onEntered: {
                                 if (!search.focus) {
-                                    var posInTreeView = mapToItem(nodeTree, 0,
-                                                                  0)
+                                    var posInTreeView = mapToItem(nodeTree, mouseX,
+                                                                  mouseY)
 
                                     var row = nodeTree.rowAtY(posInTreeView.y,
                                                               false)
@@ -532,21 +532,27 @@ Component {
                             TapHandler {
                                 id: dotTapHandler
                                 onTapped: {
-                                    var posInTreeView = nodeTree.mapFromItem(
-                                                parent, point.position)
-                                    var row = nodeTree.rowAtY(posInTreeView.y,
-                                                              true)
-                                    nodeTree.currentIndex = nodeTree.viewIndex(
-                                                0, row)
+                                    search.forceActiveFocus()
+                                    search.clear()
+                                    search.append(">:" + myClass.getId(
+                                                      nodeTree.model.mapToSource(
+                                                          nodeTree.currentModelIndex)))
+                                    return
+//                                    var posInTreeView = nodeTree.mapFromItem(
+//                                                parent, point.position)
+//                                    var row = nodeTree.rowAtY(posInTreeView.y,
+//                                                              true)
+//                                    nodeTree.currentIndex = nodeTree.viewIndex(
+//                                                0, row)
 
-                                    if (tapCount == 1)
+//                                    if (tapCount == 1)
 
-                                        search.forceActiveFocus()
-                                    search.selectAll()
-                                    search.append(
-                                                ">:" + myClass.getId(
-                                                    nodeTree.model.mapToSource(
-                                                        nodeTree.currentModelIndex)))
+//                                        search.forceActiveFocus()
+//                                    search.selectAll()
+//                                    search.append(
+//                                                ">:" + myClass.getId(
+//                                                    nodeTree.model.mapToSource(
+//                                                        nodeTree.currentModelIndex)))
                                 }
                             }
                         }
@@ -607,8 +613,8 @@ Component {
                                 onPressed: mouse.accepted = false
                                 anchors.fill: parent
                                 onEntered: {
-                                    var posInTreeView = mapToItem(viewInstance,
-                                                                  0, 0)
+                                    var posInTreeView = mapToItem(nodeTree,
+                                                                  mouseX, mouseY)
                                     var row = nodeTree.rowAtY(posInTreeView.y,
                                                               false)
                                     nodeTree.currentModelIndex = nodeTree.mapToModel(

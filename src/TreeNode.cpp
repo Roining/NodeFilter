@@ -1,5 +1,4 @@
 #include "include/TreeNode.h"
-#include <iostream>
 
 TreeNode::TreeNode(const QVector<QVariant> data, TreeNode *parent)
     : itemData(std::make_shared<QVector<QVariant>>(data)), parentItem(parent),
@@ -40,7 +39,9 @@ TreeNode::~TreeNode() {
         siblingItems()[i]->copyChildren.erase(
             std::find(siblingItems()[i]->copyChildren.begin(),
                       siblingItems()[i]->copyChildren.end(), id));
-        siblingItems()[i]->copyChildren.append(copyChildren);
+        if (acceptsCopies) {
+          siblingItems()[i]->copyChildren.append(copyChildren);
+        }
       }
     }
   }
@@ -48,7 +49,7 @@ TreeNode::~TreeNode() {
 
     if (copyChildren.contains(siblingItems()[i]->id)) {
       siblingItems()[i]->parents.clear();
-      if (!parents.isEmpty()) {
+      if (!parents.isEmpty() && acceptsCopies) {
         siblingItems()[i]->parents.append(parents[0]);
       }
     }
@@ -102,7 +103,7 @@ TreeNode *TreeNode::insertChildren(int position, int count, int columns) {
 TreeNode &TreeNode::copyNodeChildren(int position, int count, int columns,
                                      TreeNode *parent) {
   if (position < 0 || position > childItems->size())
-    return *children()[position];
+    return *children()[0];
 
   for (int row = 0; row < count; ++row) {
     QVector<QVariant> data(columns);

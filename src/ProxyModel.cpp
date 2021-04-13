@@ -2,7 +2,6 @@
 #include "include/TreeModel.h"
 #include "include/TreeNode.h"
 #include <QRegularExpression>
-#include <functional>
 
 TreeModel myClass1(nullptr);
 
@@ -64,7 +63,8 @@ bool ProxyModel::filterAcceptsRow(int source_row,
         return false;
       }
     } else if (container[i].startsWith("NOT") ||
-               container[i].startsWith("OR")) {
+               container[i].startsWith("OR") ||
+               container[i].startsWith("sort")) {
       continue;
     }
 
@@ -250,4 +250,70 @@ Q_INVOKABLE void ProxyModel::setQuery(QString string) {
 }
 Q_INVOKABLE void ProxyModel::queryIsChanged(bool condition) {
   queryChanged = condition;
+}
+bool ProxyModel::lessThan(const QModelIndex &left,
+                          const QModelIndex &right) const {
+  auto leftItem = sourceModel->getItem(left);
+  auto rightItem = sourceModel->getItem(right);
+  QVariant leftData = sourceModel->data(left, Qt::DisplayRole);
+  QVariant rightData = sourceModel->data(right, Qt::DisplayRole);
+  auto itemId = query.mid(query.lastIndexOf(":") + 1);
+  auto itemIndex =
+      sourceModel->match(sourceModel->index(0, 0), Qt::UserRole + 2, itemId, 1,
+                         Qt::MatchRecursive);
+  if (itemIndex.isEmpty()) {
+    return false;
+  }
+  auto queryItem = sourceModel->getItem(itemIndex[0]);
+  auto leftResult = sourceModel->isDescendant1(leftItem, queryItem);
+  auto rightResult = sourceModel->isDescendant1(rightItem, queryItem);
+  if (!(sourceModel->isDescendant1(leftItem, queryItem)) ||
+      !(sourceModel->isDescendant1(rightItem, queryItem))) {
+    return false;
+  }
+  //    auto log = QString::localeAwareCompare(leftData.toString(),
+  //    rightData.toString()) < 0;
+  if (query.contains("sortNAsc:")) {
+    //    return leftData.toInt() < rightData.toInt();
+    if (leftResult->childCount() && rightResult->childCount()) {
+      return sourceModel->isDescendant1(leftItem, queryItem)
+                 ->children()[0]
+                 ->item()
+                 .toInt() < sourceModel->isDescendant1(rightItem, queryItem)
+                                ->children()[0]
+                                ->item()
+                                .toInt();
+    }
+  } else if (query.contains("sortNDesc:")) {
+    //       return leftData.toInt() > rightData.toInt();
+    if (leftResult->childCount() && rightResult->childCount()) {
+      return sourceModel->isDescendant1(leftItem, queryItem)
+                 ->children()[0]
+                 ->item()
+                 .toInt() > sourceModel->isDescendant1(rightItem, queryItem)
+                                ->children()[0]
+                                ->item()
+                                .toInt();
+    }
+  } else if (query.contains("sortAAsc:")) {
+    //        return leftData.toString() < rightData.toString();
+    if (leftResult->childCount() && rightResult->childCount()) {
+      return sourceModel->isDescendant1(leftItem, queryItem)
+                 ->children()[0]
+                 ->item() < sourceModel->isDescendant1(rightItem, queryItem)
+                                ->children()[0]
+                                ->item();
+    }
+  } else if (query.contains("sortADesc:")) {
+    //        return leftData.toString() < rightData.toString();
+    if (leftResult->childCount() && rightResult->childCount()) {
+      return sourceModel->isDescendant1(leftItem, queryItem)
+                 ->children()[0]
+                 ->item() < sourceModel->isDescendant1(rightItem, queryItem)
+                                ->children()[0]
+                                ->item();
+    }
+  } else {
+    return leftData.toString() < rightData.toString();
+  }
 }
