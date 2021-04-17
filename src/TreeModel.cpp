@@ -564,32 +564,38 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
   if (!parentItem) {
     return false;
   }
-  if ((isDescendant(lastItem, parentItem, 1000, true) &&
-       lastItem->childCount()) ||
-      ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
-    emit recurionSignal();
-    return false;
-  }
+  //  if ((isDescendant(lastItem, parentItem, 1000, true) &&
+  //       lastItem->childCount()) ||
+  //      ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
+  //    emit recurionSignal();
+  //    return false;
+  //  }
 
   copyRowsAndChildren(position, 1, parent, source);
 
-  if (parentItem->acceptsCopies) {
-
-    if ((!parentItem->parents.isEmpty()) && (parentItem->acceptsCopies)) {
-
-      for (int i = 0; i < parentItem->parents.size(); i++) {
-
-        copyRowsRecursive(position, parentItem->id, parentItem->parents[i],
-                          index(position, 0, parent));
+  if (parentItem->acceptsCopies && parentItem->siblingItems().size() < 2000) {
+    for (int i = 0; i < parentItem->copyChildren.size(); i++) {
+      if (parentItem->copyChildren[i] != parentItem->id) {
       }
     }
 
     if ((!parentItem->copyChildren.isEmpty()) && (parentItem->acceptsCopies)) {
 
       for (int i = 0; i < parentItem->copyChildren.size(); i++) {
-
+        //        if (parentItem->copyChildren[i] != parentItem->id) {
         copyRowsRecursive(position, parentItem->id, parentItem->copyChildren[i],
                           index(position, 0, parent));
+        //        }
+      }
+    }
+
+    if ((!parentItem->parents.isEmpty()) && (parentItem->acceptsCopies)) {
+
+      for (int i = 0; i < parentItem->parents.size(); i++) {
+        //        if (parentItem->parents[i] != parentItem->id) {
+        copyRowsRecursive(position, parentItem->id, parentItem->parents[i],
+                          index(position, 0, parent));
+        //        }
       }
     }
   }
@@ -634,10 +640,13 @@ void TreeModel::copyRowsRecursive(int position, QUuid callingId, QUuid calledId,
 
   auto siblingIndex = match(index(0, 0), Qt::UserRole + 2, calledId.toString(),
                             1, Qt::MatchRecursive);
+
   auto item = getItem(siblingIndex[0]);
   if (item->acceptsCopies) {
+
     copyRowsAndChildren(position, 1, siblingIndex[0], source);
   }
+
   if ((!item->copyChildren.isEmpty()) && (item->acceptsCopies)) {
     for (int i = 0; i < item->copyChildren.size(); i++) {
       if (item->copyChildren[i] != callingId) {
@@ -646,7 +655,7 @@ void TreeModel::copyRowsRecursive(int position, QUuid callingId, QUuid calledId,
     }
   }
 
-  if ((!item->parents.isEmpty()) && (item->acceptsCopies)) {
+  if ((item->parents.isEmpty()) && (item->acceptsCopies)) {
     for (int i = 0; i < item->parents.size(); i++) {
       if (item->parents[i] != callingId) {
         copyRowsRecursive(position, calledId, item->parents[i], source);
@@ -787,6 +796,10 @@ bool TreeModel::isDirectDescendant1(TreeNode *parent, TreeNode *child,
 
       return false;
     } else if ((child->parent() == parent) || (child == parent)) {
+
+      return true;
+
+    } else if (parent->copyChildren.contains(child->id)) {
 
       return true;
 
