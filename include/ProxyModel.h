@@ -9,6 +9,9 @@ class TreeModel;
 class TreeNode;
 class ProxyModel : public QSortFilterProxyModel {
   Q_OBJECT
+signals:
+  void recursionSignalProxy();
+
 public slots:
   void updateFilter(bool cond) { queryIsChanged(cond); }
 

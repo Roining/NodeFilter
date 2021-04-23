@@ -18,7 +18,7 @@ class TreeModel : public QAbstractItemModel {
 
 signals:
   void updateProxyFilter(bool cond);
-  void recurionSignal();
+  void recursionSignal();
 
 public:
   TreeModel(QObject *parent = nullptr);
@@ -73,6 +73,8 @@ public:
   TreeNode *isDescendant1(TreeNode *parent, TreeNode *child);
   bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
+  bool isDirectDescendant2(TreeNode *parent, TreeNode *child, int depth);
+
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
   void serializeCleanUp(TreeNode &node);

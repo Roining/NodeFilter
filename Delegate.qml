@@ -415,10 +415,10 @@ Component {
                     title: "Warning"
                     text: "Infinite recursion detected, the node will not be inserted"
                     onAccepted: {
-
+return;
                     }
 
-                    standardButtons: StandardButton.Ok | StandardButton.Close
+//                    standardButtons: StandardButton.Ok | StandardButton.Close
                 }
                 MouseArea {
                     id: pos
@@ -443,7 +443,7 @@ Component {
                 }
                 Connections{
                 target:myClass
-                function onRecurionSignal(){
+                function onRecursionSignal(){
                 copyDialog.open();
                 }
                 }
