@@ -273,26 +273,28 @@ bool ProxyModel::lessThan(const QModelIndex &left,
   }
 
   if (query.contains("sortNAsc:")) {
-    //    return leftData.toInt() < rightData.toInt();
+    //    return leftData.toDouble() < rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
       return sourceModel->isDescendantNode(leftItem, queryItem)
                  ->children()[0]
                  ->item()
-                 .toInt() < sourceModel->isDescendantNode(rightItem, queryItem)
-                                ->children()[0]
-                                ->item()
-                                .toInt();
+                 .toDouble() <
+             sourceModel->isDescendantNode(rightItem, queryItem)
+                 ->children()[0]
+                 ->item()
+                 .toDouble();
     }
   } else if (query.contains("sortNDesc:")) {
-    //       return leftData.toInt() > rightData.toInt();
+    //       return leftData.toDouble() > rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
       return sourceModel->isDescendantNode(leftItem, queryItem)
                  ->children()[0]
                  ->item()
-                 .toInt() > sourceModel->isDescendantNode(rightItem, queryItem)
-                                ->children()[0]
-                                ->item()
-                                .toInt();
+                 .toDouble() >
+             sourceModel->isDescendantNode(rightItem, queryItem)
+                 ->children()[0]
+                 ->item()
+                 .toDouble();
     }
   } else if (query.contains("sortAAsc:")) {
     //        return leftData.toString() < rightData.toString();
