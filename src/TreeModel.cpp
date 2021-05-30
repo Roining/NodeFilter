@@ -411,14 +411,14 @@ bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
 
   return false;
 };
-TreeNode *TreeModel::isDescendant1(TreeNode *parent, TreeNode *child) {
+TreeNode *TreeModel::isDescendantNode(TreeNode *parent, TreeNode *child) {
 
   if (*parent == *child) {
-    return child;
+    return parent;
   }
 
   for (int i = 0; i < parent->childItems->size(); i++) {
-    auto match = isDescendant1((*parent->childItems.get())[i], child);
+    auto match = isDescendantNode((*parent->childItems.get())[i], child);
 
     if (match) {
       return match;
