@@ -11,7 +11,7 @@ Hierarchical filtering can be used to emulate the bi-directional linking functio
 
 # Query syntax:  
 There are several types of filters.  
-1. Hierarchical filters:  
+1.Hierarchical filters:  
 \>:*id of node X* -  shows  only  direct descendants of node X.The filter matches if any node in the knowledge base is  either Node X or it's descendants.
  Example:  
 \>:*id of node X*&&r:[7-9]  
@@ -24,11 +24,11 @@ Example:
 Result:  
 Transclusive descendants of both node X and node Y but not node Z which contain "query"  
 
-\>>>:*id of node X* - shows only direct transclusive descendants.The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants. 
-\>^::*id of node X* - matches any node Y if node Y or any ascendant of node Y is a node X or a copy of node X.
-\<:*id of node X* - shows all ascendants of node X up to the root node.
+\>>>:*id of node X* - shows only direct transclusive descendants.The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants.   
+\>^::*id of node X* - matches any node Y if node Y or any ascendant of node Y is a node X or a copy of node X.  
+\<:*id of node X* - shows all ascendants of node X up to the root node.  
 \<<:*id of node X* -  shows transclusive ascendants of node X.I.e.  if node X or any ascendant of node X is a copy of a any node Y, then node Y matches this filter.  
-2.Regex filter: r:*regex expression*   
+2.Regex filter: r:*regex expression*     
 All nodes that match the regex expression are shown.  
 3.Default string filter(without any prefix): *any number of words separated by space*  
 Node X matches the filter if node X or any ascendant of node X contains one of the words in queried words    
