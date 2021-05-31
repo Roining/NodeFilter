@@ -31,7 +31,19 @@ Transclusive descendants of both node X and node Y but not node Z which contain 
 2.Regex filter: r:*regex expression*     
 All nodes that match the regex expression are shown.  
 3.Default string filter(without any prefix): *any number of words separated by space*  
-Node X matches the filter if node X or any ascendant of node X contains one of the words in queried words    
+Node X matches the filter if node X or any ascendant of node X contains one of the words in queried words 
+4.Sorting queries:  
+In a tree structure, only sibling nodes are compared to each other when the tree is sorted.  
+The soritng method is desinged to emulate a table functionality. Nodes are sorted by the "value" of their child node(child nodes play the role of properties, "value" of the property is just the first child node of this property ).
+
+4.1. sortNAsc:*id of a node X* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in ascending order.  
+4.2. sortNDesc:*id of a node X* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in descending order.  
+4.3. sortAAsc:*id of a node X* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in ascending order.  
+4.4. sortADesc:*id of a node X* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in descending order.  
+
+Example: Template node  "Priority" is copied as a child of two sibling nodes - node Z and node Y.Insert a child node for each created  "Priority" node (there are two new ones now, descending from node z and node Y).Set the values,for example, as 12 and 9 respectively.  
+In this case, sortNAsc:*id of a Priority node* will put node Y over node Z, since the 9 is less than 12 and the order is ascending.  
+sortNDesc:*id of a Priority node* will  put Node Z over node X.  
 Notes:  
 1.If node X matches the filter, then all of node X ascendants up to the root node will be shown in the tree   
 2.Multiple filters can be combined into one query(separated by "&&").  
