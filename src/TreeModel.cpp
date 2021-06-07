@@ -5,19 +5,49 @@
 #include <QDebug>
 #include <QDir>
 #include <QElapsedTimer>
+//#include <QFileDialog>
 #include <QGuiApplication>
 #include <QRandomGenerator>
-TreeModel::TreeModel(QObject *parent) {
 
-  QDir::setCurrent(QDir::currentPath());
+TreeModel::TreeModel(QObject *parent) {
+  //  QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+  //                                                  "/home",
+  //                                                  tr("storage.dat"));
+
+  //  QFile file(fileName);
+
+  //  if (!file.open(QIODevice::ReadOnly)) {
+  //    // handle file could not be opened...
+  //    return;
+  //  }
+
+  //  QByteArray blob = file.readAll();
+
+  qDebug() << QDir::currentPath();
+  ;
+  qDebug() << QDir("/").entryList();
+  qDebug() << QDir("/dev").entryList();
+  qDebug() << QDir("/home").entryList();
+  qDebug() << QDir("/.").entryList();
+  qDebug() << QDir("/..").entryList();
+
   QFile file("storage.dat");
+  qDebug() << "timer.elapsed()"
+              "";
+
   if (file.open(QIODevice::ReadWrite)) {
+    qDebug() << "iiiiiii";
+
     QDataStream stream(&file);
     QVector<QVariant> rootData;
 
     rootItem = new TreeNode(rootData, nullptr);
     deserialize(*rootItem, stream);
+    qDebug() << "wsssss";
+
     if (!rootItem->childCount()) {
+      qDebug() << "!childCount";
+
       beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
       endInsertRows();
@@ -200,7 +230,7 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
   }
 
   beginInsertRows(parent, position, position + rows - 1);
-
+  qDebug() << "insertRows";
   parentItem->insertChildren(position, rows, rootItem->columnCount());
 
   const QModelIndex &child = this->index(position, 0, parent);
@@ -493,6 +523,7 @@ void TreeModel::serializeClear(TreeNode &node) {
   }
 }
 void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
+
   if (!check) { // if inserted node is not copied
     stream >> &node;
 
@@ -567,7 +598,7 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
   if ((isDescendant(lastItem, parentItem, 1000, true) &&
        lastItem->childCount()) ||
       ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
-    emit recursionSignal();
+    //    emit recursionSignal();
     return false;
   }
 
@@ -600,7 +631,7 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
                                     const QModelIndex &parent,
                                     const QPersistentModelIndex &source) {
   TreeNode *parentItem = getItem(parent);
-
+  qDebug() << "copyRowsAndChildren";
   if (!parentItem) {
     return false;
   }
@@ -677,6 +708,7 @@ int TreeModel::position(const QModelIndex &index) {
   return -1;
 }
 void TreeModel::getIdToClipboard(const QModelIndex &index) {
+
   QClipboard *clipboardItem = QGuiApplication::clipboard();
   clipboardItem->setText(getId(index));
 }

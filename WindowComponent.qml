@@ -1,12 +1,13 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Window 2.12
-import QtQuick.TreeView 2.15
+import QtQuick.Controls 1.4
+//import QtQuick.Controls 2.15 as QTY
+//import QtQuick.Window 2.12
+//import QtQuick.TreeView 2.15
 import TreeModel.com 1.0
 import Qt.labs.platform 1.0
-import QtQuick.Layouts 1.11
+import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
-import QtQuick.Window 2.2
+//import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
 
 ApplicationWindow {
@@ -19,8 +20,8 @@ ApplicationWindow {
     objectName: Math.random().toString(36).substr(2, 5)
 
 
-    width: Screen.width
-    height: Screen.height
+    width: 500
+    height: 500
     visible: true
     title: qsTr("Node Filter")
 
@@ -52,7 +53,7 @@ ApplicationWindow {
 
 
     Shortcut {
-        sequence: "Ctrl+T"
+        sequence: "Ctrl+Shift+Y"
         onActivated: {
             var Randomnumber = Math.random().toString(36).substr(2, 5)
             var component = Qt.createQmlObject(
@@ -61,13 +62,18 @@ ApplicationWindow {
             var Randomnumber1 = Math.random().toString(36).substr(2, 5)
             var delegateInstance = Qt.createQmlObject(
                         "Delegate { id: car_" + Randomnumber1 + "; }", windowInstance)
-            windowInstance.viewArray.push(delegateInstance.createObject(splitViewInstance, {
-                                                                  "test": component
-                                                              }))
+//            splitViewInstance.addItem(delegateInstance)
+
+            var ut = delegateInstance.createObject(splitViewInstance, {
+                                                       "test": component
+                                                   })
+//            windowInstance.viewArray.push(delegateInstance.createObject(splitViewInstance, {
+//                                                                  "test": component
+//                                                              })) //
         }
     }
     Shortcut {
-        sequence: "Ctrl+K"
+        sequence: "Ctrl+Shift+H"
         onActivated: {
             var component = Qt.createComponent("WindowComponent.qml")
             var window = component.createObject(root)
@@ -91,31 +97,37 @@ ApplicationWindow {
     }
 
     SplitView {
-        id: splitViewInstance
+           id: splitViewInstance
 
-        property alias root: windowInstance
+           property alias root: windowInstance
 
-        anchors.fill: parent
-        orientation: Qt.Horizontal
-        handle: Rectangle {
-            implicitWidth: 4
-            implicitHeight: 4
-            color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter(
-                                                                                "#c2f4c6",
-                                                                                1.1) : "#c2f4c6")
-        }
-        SplitView {
-            id: hSplit
+           anchors.fill: parent
+           orientation: Qt.Horizontal
+//
+           Layout.minimumHeight: 200
+                            Layout.preferredHeight: parent.height / 2
+                            Layout.minimumWidth: 100
+                            Layout.preferredWidth: parent.width / 4
+                            Layout.maximumWidth: 1000
+           handleDelegate : Rectangle {
+               implicitWidth: 4
+               implicitHeight: 4
+//               color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter(
+//                                                                                   "#c2f4c6",
+//                                                                                   1.1) : "#c2f4c6")
+           }
+           SplitView {
+               id: hSplit
 
-            Layout.preferredWidth: parent.width / 2
-            Layout.fillHeight: true
-            orientation: Qt.Vertical
+   //            Layout.preferredWidth: parent.width / 2
+   //            Layout.fillHeight: true
+               orientation: Qt.Vertical
 
-            handle: Rectangle {
-                implicitWidth: 4
-                implicitHeight: 4
-                color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
-            }
-        }
-    }
+               handleDelegate : Rectangle {
+                   implicitWidth: 4
+                   implicitHeight: 4
+//                   color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
+               }
+           }
+       }
 }

@@ -2,6 +2,7 @@
 #define TREEMODEL_H
 #include <QAbstractItemModel>
 #include <QFile>
+#include <QGuiApplication>
 #include <QIODevice>
 #include <QMap>
 #include <QModelIndex>
@@ -10,6 +11,8 @@
 #include <QUuid>
 #include <QVariant>
 #include <include/ProxyModel.h>
+
+extern QApplication *a;
 
 class TreeNode;
 

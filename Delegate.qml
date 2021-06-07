@@ -1,29 +1,38 @@
 import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Window 2.12
-import QtQuick.TreeView 2.15
+//import QtQuick.Controls 2.15 as QCY
+import QtQuick.Controls 1.4
+
+//import QtQuick.Window 2.12
+//import QtQuick.TreeView 2.15
 import Qt.labs.platform 1.0
 import QtQuick.Dialogs 1.1
-import QtQuick.Layouts 1.11
+import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
+import QtQuick.Controls.Styles 1.4
 
 Component {
 
     Item {
 
         id: viewInstance
-
+width:parent.width
+height:parent.height
         property alias tree: nodeTree
         property alias ser: search
         property alias test: nodeTree.model
 
         objectName: Math.random().toString(36).substr(2, 5)
-
-        SplitView.minimumHeight: 200
-        SplitView.preferredHeight: parent.height / 2
-        SplitView.minimumWidth: 100
-        SplitView.preferredWidth: parent.width / 4
-        SplitView.maximumWidth: Screen.width
+//Layout.fillWidth:true
+//         Layout.minimumHeight: 200
+//         Layout.preferredHeight: parent.height / 2
+//         Layout.minimumWidth: 100
+//         Layout.preferredWidth: parent.width / 4
+//         Layout.maximumWidth: 1000
+//        QCY.SplitView.minimumHeight: 200
+//                   QCY.SplitView.preferredHeight: parent.height / 2
+//                   QCY.SplitView.minimumWidth: 100
+//                   QCY.SplitView.preferredWidth: parent.width / 4
+//                   QCY.SplitView.maximumWidth: 10000
 
         Keys.onPressed: {
             if ((event.key === Qt.Key_W)
@@ -76,27 +85,29 @@ Component {
 
         Column {
             id: layout
+
             width: parent.width
             height: parent.height
             anchors.fill: parent
-            spacing: 0
+            spacing: -1
             TextArea {
                 id: search
 
                 width: viewInstance.width
-                wrapMode: "WrapAnywhere"
+//                wrapMode: "WrapAnywhere"
                 selectByMouse: true
-                selectionColor: "#3399FF"
-                selectedTextColor: "white"
+//                selectionColor: "#3399FF"
+//                selectedTextColor: "white"
+                height:30
                 clip: true
                 objectName: "search"
-                placeholderText: "Search here"
+//                placeholderText: "Search here"
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
                     var row = nodeTree.rowAtY(posInTreeView, true)
-                    nodeTree.currentModelIndex = nodeTree.viewIndex(0, row)
+                    nodeTree.currentIndex = nodeTree.viewIndex(0, row)
                     nodeTree.itemAtModelIndex(
-                                nodeTree.currentModelIndex).item.forceActiveFocus()
+                                nodeTree.currentIndex).item.forceActiveFocus()
                 }
 
                 onTextChanged: {
@@ -108,39 +119,101 @@ Component {
             TreeView {
                 id: nodeTree
 
-                property var rowHeight: 40
-                property var indexNow: nodeTree.currentModelIndex.row
-                property var parentIndex: nodeTree.model.parent(
-                                              nodeTree.currentModelIndex)
-                contentHeight: 3000
-                contentWidth: 2000
-                clip: true
-                reuseItems: true
-                rowHeightProvider: function (row) {
+                MessageDialog {
+                    id: deleteDialog1
+                    title: "Warning"
+                    text: "Are you sure you want to delete the selected node? Children nodes will also be deleted"
+                   modality:Qt.ApplicationModal
+                    onAccepted: {
+                        var position = myClass.position(
+                                    nodeTree.model.mapToSource(
+                                        nodeTree.currentIndex))
 
-                    var array = []
-                    for (var child in nodeTree.contentItem.children) {
-
-                        if (nodeTree.contentItem.children[i].conHeight) {
-
-                            array.push(nodeTree.contentItem.children[child].conHeight)
-                        }
+                        myClass.removeRows(
+                                    position, 1, nodeTree.model.mapToSource(
+                                        nodeTree.currentIndex).parent) //TODO
+//                        deleteDialog.close()
                     }
 
-                    return nodeTree.contentItem.children[row].conHeight
+//                    standardButtons: StandardButton.Ok | StandardButton.Close
                 }
+                MessageDialog {
+                    id: copyDialog
+                    title: "Warning"
+                    text: "Infinite recursion detected, the node will not be inserted"
+                    onAccepted: {
+return;
+                    }
 
+//                    standardButtons: StandardButton.Ok | StandardButton.Close
+                }
+//                MouseArea {
+//                    id: pos
+
+//                    anchors.fill: parent
+//                    hoverEnabled: true
+//                    onWheel: {
+
+//                        if (wheel.modifiers & Qt.ShiftModifier) {
+//                            if (wheel.angleDelta.y > 0) {
+//                                hbar.increase()
+//                            } else if (wheel.angleDelta.y < 0) {
+//                                hbar.decrease()
+//                            }
+//                        } else if (wheel.angleDelta.y < 0) {
+
+//                            vbar.increase()
+//                        } else if (wheel.angleDelta.y > 0) {
+//                            vbar.decrease()
+//                        }
+//                    }
+//                }
+                Connections{
+                target:myClass
+                function onRecursionSignal(){
+                copyDialog.open();
+                }
+                }
+                TableViewColumn {
+                    id:ou
+//                        title: "Name"
+                        role: "edit"
+//                        width: 300
+                    }
+                property var rowHeight: 40
+//                property var indexNow: nodeTree.currentIndex.row
+                property var parentIndex: nodeTree.model.parent(
+                                              nodeTree.currentIndex) //index
+//                contentHeight: 3000
+//                contentWidth: 2000
+                clip: true
+//                reuseItems: true
+//                rowHeightProvider: function (row) {
+
+//                    var array = []
+//                    for (var child in nodeTree.contentItem.children) {
+
+//                        if (nodeTree.contentItem.children[i].conHeight) {
+
+//                            array.push(nodeTree.contentItem.children[child].conHeight)
+//                        }
+//                    }
+
+//                    return nodeTree.contentItem.children[row].conHeight
+//                }
+headerVisible: false
+//frameVisible:false
                 width: viewInstance.width
-                height: viewInstance.height - search.height
-                styleHints.overlay: "green"
-                styleHints.indent: 25
-                styleHints.columnPadding: 30
+                height: viewInstance.height -search.height
+//                styleHints.overlay: "green"
+//                styleHints.indent: 25
+//                styleHints.columnPadding: 30
                 Component.onCompleted: {
-                    var posInTreeView = mapToItem(nodeTree, 0, 0)
-                    var row = nodeTree.rowAtY(posInTreeView, true)
-                    nodeTree.currentModelIndex = nodeTree.viewIndex(0, 0)
-                    nodeTree.itemAtModelIndex(
-                                nodeTree.currentModelIndex).forceActiveFocus()
+//                    var posInTreeView = mapToItem(nodeTree, 0, 0)
+//                    var row = nodeTree.rowAtY(posInTreeView, true)
+//                    nodeTree.currentIndex = nodeTree.viewIndex(0, 0)
+//                    nodeTree.itemAtModelIndex(
+//                                nodeTree.currentIndex).forceActiveFocus()
                 }
 
                 Keys.onDigit2Pressed: {
@@ -156,8 +229,9 @@ Component {
                     if ((event.key === Qt.Key_P)
                             && (event.modifiers & Qt.ControlModifier)
                             && (event.modifiers & Qt.ShiftModifier)) {
+                             event.accepted = true
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
-                                                  nodeTree.currentModelIndex),
+                                                  nodeTree.currentIndex),
                                               true)
                         return
                     } else if ((event.key === Qt.Key_W)
@@ -192,7 +266,8 @@ Component {
                     } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
-                        allIndeces(nodeTree.currentModelIndex)
+                             event.accepted = true
+                        allIndeces(nodeTree.currentIndex)
 
                         return
                     } else if ((event.key === Qt.Key_Q)
@@ -207,57 +282,43 @@ Component {
 
                                 if ((i - 1) > -1) {
                                     viewInstance.parent.parent.root.viewArray[i - 1].tree.itemAtModelIndex(
-                                                viewInstance.parent.parent.root.viewArray[i - 1].tree.currentModelIndex).item.forceActiveFocus()
+                                                viewInstance.parent.parent.root.viewArray[i - 1].tree.currentIndex).item.forceActiveFocus()
                                 }
                                 break
                             }
                         }
                         return
-                    } else if ((event.key === Qt.Key_E)
+                    }  else if ((event.key === Qt.Key_B)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
-                        //acceptsCopies true Ctrl Shift P
-                        for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
-                            if (viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                                        ) === viewInstance.objectName.toString(
-                                        )) {
-
-                                if ((i + 1) < viewInstance.parent.parent.root.viewArray.length) {
-                                    viewInstance.parent.parent.root.viewArray[i + 1].tree.itemAtModelIndex(
-                                                viewInstance.parent.parent.root.viewArray[i + 1].tree.currentModelIndex).item.forceActiveFocus()
-                                }
-                                break
-                            }
-                        }
-
-                        return
-                    } else if ((event.key === Qt.Key_N)
-                               && (event.modifiers & Qt.ControlModifier)
-                               && (event.modifiers & Qt.ShiftModifier)) {
-
+     event.accepted = true
                         //insert new node as a child Ctrl Shift N
                         myClass.insertRows(
                                     0, 1, nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex)) //TODO
-                        nodeTree.expandModelIndex(nodeTree.currentModelIndex)
+                                        nodeTree.currentIndex)) //TODO
+                        nodeTree.expand(nodeTree.currentIndex)
 
                         return
                     } else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
+                             event.accepted = true
                         //copy node as child Ctrl Shift M
-                        event.accepted = true
+                        console.log("ctrl-shift-m")
+
+
 
                         myClass.copyRows(0, 1, nodeTree.model.mapToSource(
-                                             nodeTree.currentModelIndex),
+                                             nodeTree.currentIndex),
                                          myClass.getLastIndex()) //TODO
-                        nodeTree.expandModelIndex(nodeTree.currentModelIndex)
+                        nodeTree.expand(nodeTree.currentIndex)
                         return
                     } else if ((event.key === Qt.Key_P)
                                && (event.modifiers & Qt.ControlModifier)) {
+                             event.accepted = true
                         //acceptsCopies false Ctrl P
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
-                                                  nodeTree.currentModelIndex),
+                                                  nodeTree.currentIndex),
                                               false)
                         return
                     } else if ((event.key === Qt.Key_S)
@@ -269,16 +330,16 @@ Component {
                                && (event.modifiers & Qt.ControlModifier)) {
                         event.accepted = true
                         //serialize/save Ctrl S
-                        if (nodeTree.currentModelIndex.hasChildren) {
-                            nodeTree.currentModelIndex = nodeTree.model.index(
-                                        0, 0, nodeTree.currentModelIndex)
+                        if (nodeTree.currentIndex.hasChildren) {
+                            nodeTree.currentIndex = nodeTree.model.index(
+                                        0, 0, nodeTree.currentIndex)
                         } else {
-                            nodeTree.currentModelIndex = nodeTree.model.index(
-                                        nodeTree.currentModelIndex.row + 1, 0,
-                                        nodeTree.currentModelIndex.parent)
+                            nodeTree.currentIndex = nodeTree.model.index(
+                                        nodeTree.currentIndex.row + 1, 0,
+                                        nodeTree.currentIndex.parent)
                         }
                         return
-                    } else if ((event.key === Qt.Key_W)
+                    } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)) {
                         // Delete view Alt D
                         viewInstance.destroy()
@@ -292,9 +353,16 @@ Component {
                         Qt.quit()
                     } else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
-
+     event.accepted = true
                         //remove node Ctrl D
-                        deleteDialog.open()
+//                        deleteDialog.open()
+                        var position = myClass.position(
+                                    nodeTree.model.mapToSource(
+                                        nodeTree.currentIndex))
+
+                        myClass.removeRows(
+                                    position, 1, nodeTree.model.mapToSource(
+                                        nodeTree.currentIndex).parent) //TODO
                         return
                     } else if ((event.key === Qt.Key_U)
                                && (event.modifiers & Qt.ControlModifier)) {
@@ -310,82 +378,110 @@ Component {
                         search.clear()
                         search.append(">:" + myClass.getId(
                                           nodeTree.model.mapToSource(
-                                              nodeTree.currentModelIndex)))
+                                              nodeTree.currentIndex)))
                         return
                     } else if ((event.key === Qt.Key_Q)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //copy a copied node Ctrl A
+                        console.log("gggggg")
                         myClass.saveIndex(
                                     nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex)) //TODO
+                                        nodeTree.currentIndex)) //TODO
                         return
-                    } else if ((event.key === Qt.Key_E)
-                               && (event.modifiers & Qt.ControlModifier)) {
-                        //copy Id to clipboard Ctrl E
-                        myClass.getIdToClipboard(
-                                    nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex))
-                        return
+                    } else if ((event.key === Qt.Key_F)
+                               && (event.modifiers & Qt.ControlModifier)
+                               && (event.modifiers & Qt.ShiftModifier)) {
+
+//                        console.log("ret")
+
+//                        //copy Id to clipboard Ctrl E
+//                        myClass.getIdToClipboard(
+//                                    nodeTree.model.mapToSource(
+//                                        nodeTree.currentIndex))
+//                        return
+                        event.accepted = true
+
+                        search.forceActiveFocus()
+
+                                                search.append(myClass.getId(
+                                                                  nodeTree.model.mapToSource(
+                                                                      nodeTree.currentIndex)))
+                                                return
                     } else if ((event.key === Qt.Key_F)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl F
+                        event.accepted = true
+
                         search.forceActiveFocus()
                         search.selectAll()
                         return
-                    } else if ((event.key === Qt.Key_N)
+                    } else if ((event.key === Qt.Key_B)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
+                             event.accepted = true
+                        console.log("ytyyyyyyy")
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex))
+                                        nodeTree.currentIndex))
                         myClass.insertRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex).parent) //TODO
+                                        nodeTree.currentIndex).parent) //TODO
 
                         return
                     } else if ((event.key === Qt.Key_J)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
-                        var test1 = nodeTree.currentModelIndex.parent
-                        nodeTree.currentModelIndex
+                        var test1 = nodeTree.currentIndex.parent
+                        nodeTree.currentIndex
                         return
                     } else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl M copy node
                         event.accepted = true
+
+                        console.log("ctrl-m")
+
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex))
+                                        nodeTree.currentIndex))
 
                         myClass.copyRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex).parent,
+                                        nodeTree.currentIndex).parent,
                                     myClass.getLastIndex()) //TODO
                     } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        nodeTree.toggleModelIndexExpanded(
-                                    nodeTree.currentModelIndex)
-                    }
-                }
-
-                onCurrentModelIndexChanged: {
-
-                    if ((!search.focus)) {
-                        if (nodeTree.activeFocus) {
-                            itemAtModelIndex(
-                                        nodeTree.currentModelIndex).item.forceActiveFocus()
+     event.accepted = true
+                        if(!nodeTree.isExpanded(nodeTree.currentIndex)){
+                            console.log("ttttt")
+                        nodeTree.expand(nodeTree.currentIndex)
                         }
+                        else{
+                        nodeTree.collapse(nodeTree.currentIndex)
+                        }
+//                        nodeTree.toggleModelIndexExpanded(
+//                                    nodeTree.currentIndex)
                     }
                 }
+
+//                oncurrentIndexChanged: {
+
+//                    if ((!search.focus)) {
+//                        if (nodeTree.activeFocus) {
+//                            itemAtModelIndex(
+//                                        nodeTree.currentIndex).item.forceActiveFocus()
+//                        }
+//                    }
+//                } TODOWASM
                 function allIndeces(ind) {
 
-                    nodeTree.expandModelIndex(ind)
+                    nodeTree.expand(ind)
                     for (var i = 0; i < nodeTree.model.rowCount(ind); i++) {
-                        nodeTree.expandModelIndex(ind)
+                        nodeTree.expand(ind)
                         var index = nodeTree.model.index(i, 0, ind)
 
-                        nodeTree.expandModelIndex(index)
+                        nodeTree.expand(index)
                         if (nodeTree.model.rowCount(index) !== 0) {
 
                             allIndeces(index)
@@ -394,156 +490,136 @@ Component {
 
                     return
                 }
-                MessageDialog {
-                    id: deleteDialog
-                    title: "Warning"
-                    text: "Are you sure you want to delete the selected node? Children nodes will also be deleted"
-                    onAccepted: {
-                        var position = myClass.position(
-                                    nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex))
-
-                        myClass.removeRows(
-                                    position, 1, nodeTree.model.mapToSource(
-                                        nodeTree.currentModelIndex).parent) //TODO
-                    }
-
-                    standardButtons: StandardButton.Ok | StandardButton.Close
-                }
-                MessageDialog {
-                    id: copyDialog
-                    title: "Warning"
-                    text: "Infinite recursion detected, the node will not be inserted"
-                    onAccepted: {
-return;
-                    }
-
-//                    standardButtons: StandardButton.Ok | StandardButton.Close
-                }
-                MouseArea {
-                    id: pos
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onWheel: {
-
-                        if (wheel.modifiers & Qt.ShiftModifier) {
-                            if (wheel.angleDelta.y > 0) {
-                                hbar.increase()
-                            } else if (wheel.angleDelta.y < 0) {
-                                hbar.decrease()
+                style: TreeViewStyle {
+                        frame: Rectangle {
+                            border{
+                                color: "white" // color of the border
                             }
-                        } else if (wheel.angleDelta.y < 0) {
-
-                            vbar.increase()
-                        } else if (wheel.angleDelta.y > 0) {
-                            vbar.decrease()
                         }
                     }
-                }
-                Connections{
-                target:myClass
-                function onRecursionSignal(){
-                copyDialog.open();
-                }
-                }
-                delegate: Component {
+rowDelegate:Component{
+id:pt
+Rectangle{
+
+id:ot
+border.color: "white"
+
+height:40}
+}
+               itemDelegate: Component {
 
                     id: delegateComponent
 
                     Rectangle {
+
+                        border.color: "white"
                         id: delegateRoot
 
                         property alias item: content
                         property alias dot: dot
                         property bool hasFocus
-                        property bool hasChildren: TreeView.hasChildren
-                        property bool isExpanded: TreeView.isExpanded
-                        property int depth: TreeView.depth
+//                        property bool hasChildren: TreeView.hasChildren
+//                        property bool isExpanded: TreeView.isExpanded
+                        property int depth: styleData.depth
                         property var conHeight: content.height
 
                         visible: true
-                        implicitHeight: conHeight
+                       height:100
+//                        implicitHeight: 100
                         implicitWidth: viewInstance.parent.width
                         focus: true
                         clip: true
 
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.NoButton
-                            hoverEnabled: true
-                            cursorShape: Qt.IBeamCursor
-                            propagateComposedEvents: true
-                            onClicked: mouse.accepted = false
-                            onPressAndHold: mouse.accepted = false
-                            onDoubleClicked: mouse.accepted = false
-                            onPositionChanged: mouse.accepted = false
-                            onReleased: mouse.accepted = false
-                            onPressed: mouse.accepted = false
-                            onEntered: {
-                                if (!search.focus) {
-                                    var posInTreeView = mapToItem(nodeTree, mouseX,
-                                                                  mouseY)
+//                        MouseArea {
+//                            anchors.fill: parent
+//                            acceptedButtons: Qt.NoButton
+//                            hoverEnabled: true
+//                            cursorShape: Qt.IBeamCursor
+//                            propagateComposedEvents: true
+//                            onClicked: mouse.accepted = false
+//                            onPressAndHold: mouse.accepted = false
+//                            onDoubleClicked: mouse.accepted = false
+//                            onPositionChanged: mouse.accepted = false
+//                            onReleased: mouse.accepted = false
+//                            onPressed: mouse.accepted = false
+//                            onEntered: {
+//                                if (!search.focus) {
+//                                    var posInTreeView = mapToItem(nodeTree, mouseX,
+//                                                                  mouseY)
 
-                                    var row = nodeTree.rowAtY(posInTreeView.y,
-                                                              false)
+//                                    var row = nodeTree.rowAtY(posInTreeView.y,
+//                                                              false)
 
-                                    nodeTree.currentModelIndex = nodeTree.mapToModel(
-                                                nodeTree.viewIndex(0, row))
-                                    nodeTree.itemAtModelIndex(
-                                                nodeTree.currentModelIndex).item.forceActiveFocus()
-                                }
-                            }
-                        }
-                        Text {
-                            id: expandIndicator
+//                                    nodeTree.currentIndex = nodeTree.mapToModel(
+//                                                nodeTree.viewIndex(0, row))
+//                                    nodeTree.itemAtModelIndex(
+//                                                nodeTree.currentIndex).item.forceActiveFocus()
+//                                }
+//                            }
+//                        }
+//                        Text {
+//                            id: expandIndicator
 
-                            x: depth * nodeTree.styleHints.indent + 5
-                            color: "black"
-                            font: nodeTree.styleHints.font
-                            text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
-                            anchors.verticalCenter: parent.verticalCenter
+////                            x: depth * nodeTree.styleHints.indent + 5
+//                            x:  depth +5
 
-                            TapHandler {
-                                id: tap
-                                onTapped: {
-                                    var posInTreeView = nodeTree.mapFromItem(
-                                                parent, point.position)
-                                    var row = nodeTree.rowAtY(posInTreeView.y,
-                                                              true)
-                                    nodeTree.currentIndex = nodeTree.viewIndex(
-                                                0, row)
+//                            color: "black"
+////                            font: nodeTree.styleHints.font
+////                            text: hasChildren ? (isExpanded ? "▼" : "▶") : ""
+//                            text: "▶"
 
-                                    if (tapCount == 1)
-                                        nodeTree.toggleExpanded(row)
-                                }
-                            }
-                        }
+//                            anchors.verticalCenter: parent.verticalCenter
+
+//                            TapHandler {
+//                                id: tap
+//                                onTapped: {
+
+////                                    var posInTreeView = nodeTree.mapFromItem(
+////                                                parent, point.position)
+////                                    var row = nodeTree.rowAtY(posInTreeView.y,
+////                                                              true)
+////                                    nodeTree.currentIndex = nodeTree.viewIndex(
+////                                                0, row) //index
+
+//                                    if (tapCount == 1)
+//                                        if(!nodeTree.isExpanded(nodeTree.currentIndex)){
+//                                            console.log("ttttt")
+//                                        nodeTree.expand(nodeTree.currentIndex)
+//                                        }
+//                                        else{
+//                                        nodeTree.collapse(nodeTree.currentIndex)
+//                                        }
+//                                }
+//                            }
+//                        }
                         Text {
                             id: dot
 
-                            x: depth * nodeTree.styleHints.indent + 15
+//                            x: depth * nodeTree.styleHints.indent + 15
+                            x:  depth
+
                             color: "black"
                             anchors.leftMargin: 100
-                            font: nodeTree.styleHints.font
+                            font.pixelSize:10
+//                            font: nodeTree.styleHints.font
                             text: "⬤"
                             anchors.verticalCenter: parent.verticalCenter
 
                             TapHandler {
                                 id: dotTapHandler
                                 onTapped: {
-                                    search.forceActiveFocus()
-                                    search.clear()
+                                    search.forceActiveFocus();
+                                    search.clear();
                                     search.append(">:" + myClass.getId(
                                                       nodeTree.model.mapToSource(
-                                                          nodeTree.currentModelIndex)))
-                                    return
+                                                          nodeTree.currentIndex)));
+                                    return;
 //                                    var posInTreeView = nodeTree.mapFromItem(
 //                                                parent, point.position)
 //                                    var row = nodeTree.rowAtY(posInTreeView.y,
 //                                                              true)
 //                                    nodeTree.currentIndex = nodeTree.viewIndex(
-//                                                0, row)
+//                                                0, row) //index
 
 //                                    if (tapCount == 1)
 
@@ -552,36 +628,41 @@ return;
 //                                    search.append(
 //                                                ">:" + myClass.getId(
 //                                                    nodeTree.model.mapToSource(
-//                                                        nodeTree.currentModelIndex)))
+//                                                        nodeTree.currentIndex)))
                                 }
                             }
                         }
 
                         TextArea {
                             id: content
-
+//style: TextAreaStyle{
+//Rectangle{
+//border.color:"white"
+//}
+//}
+//backgroundVisible :false
                             width: delegateRoot.width
                             selectByMouse: true
-                            selectionColor: "#3399FF"
-                            selectedTextColor: "white"
+//                            selectionColor: "#3399FF"
+//                            selectedTextColor: "white"
                             objectName: "text"
-                            wrapMode: "WrapAnywhere"
+//                            wrapMode: "WrapAnywhere"
                             textFormat: TextEdit.MarkdownText
                             clip: true
                             font.pointSize: 18
                             anchors.left: dot.right
                             anchors.leftMargin: 5
-                            text: edit
+                            text: model.edit
                             onActiveFocusChanged: {
                                 if (activeFocus) {
                                     if (myClass.hasMultipleSiblings(
                                                 nodeTree.model.mapToSource(
-                                                    nodeTree.currentModelIndex))) {
+                                                    nodeTree.currentIndex))) {
                                         dot.color = "blue"
                                     }
                                     if (!myClass.acceptsCopies(
                                                 nodeTree.model.mapToSource(
-                                                    nodeTree.currentModelIndex))) {
+                                                    nodeTree.currentIndex))) {
                                         dot.color = "green"
                                     }
                                 } else {
@@ -590,59 +671,60 @@ return;
                             }
 
                             onTextChanged: {
+                                console.log(nodeTree.model)
                                 if (nodeTree.activeFocus) {
-                                    edit = text
+                                   model.edit = text
                                 }
                                 if (nodeTree.activeFocus
                                         && content.activeFocus) {
-                                    nodeTree.forceLayout()
+//                                    nodeTree.forceLayout()
                                     heightChanged()
                                     widthChanged()
                                 }
                             }
-                            MouseArea {
-                                acceptedButtons: Qt.NoButton
-                                hoverEnabled: true
-                                cursorShape: Qt.IBeamCursor
-                                propagateComposedEvents: true
-                                onClicked: mouse.accepted = false
-                                onPressAndHold: mouse.accepted = false
-                                onDoubleClicked: mouse.accepted = false
-                                onPositionChanged: mouse.accepted = false
-                                onReleased: mouse.accepted = false
-                                onPressed: mouse.accepted = false
-                                anchors.fill: parent
-                                onEntered: {
-                                    var posInTreeView = mapToItem(nodeTree,
-                                                                  mouseX, mouseY)
-                                    var row = nodeTree.rowAtY(posInTreeView.y,
-                                                              false)
-                                    nodeTree.currentModelIndex = nodeTree.mapToModel(
-                                                nodeTree.viewIndex(0, row))
-                                    if (!search.focus) {
-                                        nodeTree.itemAtModelIndex(
-                                                    nodeTree.currentModelIndex).item.forceActiveFocus()
-                                    }
-                                }
-                            }
+//                            MouseArea {
+//                                acceptedButtons: Qt.NoButton
+//                                hoverEnabled: true
+//                                cursorShape: Qt.IBeamCursor
+//                                propagateComposedEvents: true
+//                                onClicked: mouse.accepted = false
+//                                onPressAndHold: mouse.accepted = false
+//                                onDoubleClicked: mouse.accepted = false
+//                                onPositionChanged: mouse.accepted = false
+//                                onReleased: mouse.accepted = false
+//                                onPressed: mouse.accepted = false
+//                                anchors.fill: parent
+//                                onEntered: {
+//                                    var posInTreeView = mapToItem(nodeTree,
+//                                                                  mouseX, mouseY)
+//                                    var row = nodeTree.rowAtY(posInTreeView.y,
+//                                                              false)
+//                                    nodeTree.currentIndex = nodeTree.mapToModel(
+//                                                nodeTree.viewIndex(0, row))
+//                                    if (!search.focus) {
+//                                        nodeTree.itemAtModelIndex(
+//                                                    nodeTree.currentIndex).item.forceActiveFocus()
+//                                    }
+//                                }
+//                            }
                         }
                     }
                 }
 
-                ScrollBar.horizontal: ScrollBar {
-                    id: hbar
+//                ScrollBar.horizontal: ScrollBar {
+//                    id: hbar
 
-                    height: 12
-                    policy: ScrollBar.AlwaysOn
-                    active: true
-                }
-                ScrollBar.vertical: ScrollBar {
-                    id: vbar
+//                    height: 12
+//                    policy: ScrollBar.AlwaysOn
+//                    active: true
+//                }
+//                ScrollBar.vertical: ScrollBar {
+//                    id: vbar
 
-                    width: 12
-                    policy: ScrollBar.AlwaysOn
-                    active: true
-                }
+//                    width: 12
+//                    policy: ScrollBar.AlwaysOn
+//                    active: true
+//                }
             }
         }
     }

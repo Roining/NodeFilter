@@ -3,9 +3,14 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+
+//#include <QtPlugin>
+
+// Q_IMPORT_PLUGIN(QQuickTreeViewPlugin);
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
+  //  a = &app;
   app.setQuitOnLastWindowClosed(false);
   app.setOrganizationName("Node Filter");
   app.setOrganizationDomain("NodeFilter.com");
