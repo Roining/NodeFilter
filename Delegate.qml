@@ -1,6 +1,6 @@
 import QtQuick 2.15
-//import QtQuick.Controls 2.15 as QCY
-import QtQuick.Controls 1.4
+import QtQuick.Controls 2.15
+import QtQuick.Controls 1.4 as QCY
 
 //import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
@@ -28,11 +28,11 @@ height:parent.height
 //         Layout.minimumWidth: 100
 //         Layout.preferredWidth: parent.width / 4
 //         Layout.maximumWidth: 1000
-//        QCY.SplitView.minimumHeight: 200
-//                   QCY.SplitView.preferredHeight: parent.height / 2
-//                   QCY.SplitView.minimumWidth: 100
-//                   QCY.SplitView.preferredWidth: parent.width / 4
-//                   QCY.SplitView.maximumWidth: 10000
+        SplitView.minimumHeight: 200
+                   SplitView.preferredHeight: parent.height / 2
+                   SplitView.minimumWidth: 100
+                   SplitView.preferredWidth: parent.width / 4
+                   SplitView.maximumWidth: 10000
 
         Keys.onPressed: {
             if ((event.key === Qt.Key_W)
@@ -116,7 +116,7 @@ height:parent.height
                 }
             }
 
-            TreeView {
+            QCY.TreeView {
                 id: nodeTree
 
                 MessageDialog {
@@ -174,7 +174,7 @@ return;
                 copyDialog.open();
                 }
                 }
-                TableViewColumn {
+                QCY.TableViewColumn {
                     id:ou
 //                        title: "Name"
                         role: "edit"

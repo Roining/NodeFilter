@@ -1,6 +1,6 @@
 import QtQuick 2.15
-import QtQuick.Controls 1.4
-//import QtQuick.Controls 2.15 as QTY
+//import QtQuick.Controls 1.4
+import QtQuick.Controls 2.15
 //import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
 import TreeModel.com 1.0
@@ -62,7 +62,6 @@ ApplicationWindow {
             var Randomnumber1 = Math.random().toString(36).substr(2, 5)
             var delegateInstance = Qt.createQmlObject(
                         "Delegate { id: car_" + Randomnumber1 + "; }", windowInstance)
-//            splitViewInstance.addItem(delegateInstance)
 
             var ut = delegateInstance.createObject(splitViewInstance, {
                                                        "test": component
@@ -70,6 +69,8 @@ ApplicationWindow {
 //            windowInstance.viewArray.push(delegateInstance.createObject(splitViewInstance, {
 //                                                                  "test": component
 //                                                              })) //
+//            splitViewInstance.addItem(ut)
+
         }
     }
     Shortcut {
@@ -104,17 +105,17 @@ ApplicationWindow {
            anchors.fill: parent
            orientation: Qt.Horizontal
 //
-           Layout.minimumHeight: 200
-                            Layout.preferredHeight: parent.height / 2
-                            Layout.minimumWidth: 100
-                            Layout.preferredWidth: parent.width / 4
-                            Layout.maximumWidth: 1000
-           handleDelegate : Rectangle {
+//           Layout.minimumHeight: 200
+//                            Layout.preferredHeight: parent.height / 2
+//                            Layout.minimumWidth: 100
+//                            Layout.preferredWidth: parent.width / 4
+//                            Layout.maximumWidth: 1000
+           handle : Rectangle {
                implicitWidth: 4
                implicitHeight: 4
-//               color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter(
-//                                                                                   "#c2f4c6",
-//                                                                                   1.1) : "#c2f4c6")
+               color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter(
+                                                                                   "#c2f4c6",
+                                                                                   1.1) : "#c2f4c6")
            }
            SplitView {
                id: hSplit
@@ -123,7 +124,7 @@ ApplicationWindow {
    //            Layout.fillHeight: true
                orientation: Qt.Vertical
 
-               handleDelegate : Rectangle {
+               handle : Rectangle {
                    implicitWidth: 4
                    implicitHeight: 4
 //                   color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")

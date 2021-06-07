@@ -4,9 +4,11 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-//#include <QtPlugin>
+#include <QtPlugin>
 
-// Q_IMPORT_PLUGIN(QQuickTreeViewPlugin);
+// Q_IMPORT_PLUGIN(QtQuickControls1Plugin);
+// Q_IMPORT_PLUGIN(QtQuickControls2Plugin);
+
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
