@@ -15,8 +15,8 @@ Component {
     Item {
 
         id: viewInstance
-width:parent.width
-height:parent.height
+//width:parent.width
+//height:parent.height
         property alias tree: nodeTree
         property alias ser: search
         property alias test: nodeTree.model
@@ -35,7 +35,7 @@ height:parent.height
                    SplitView.maximumWidth: 10000
 
         Keys.onPressed: {
-            if ((event.key === Qt.Key_W)
+           /* if ((event.key === Qt.Key_W)
                     && (event.modifiers & Qt.ControlModifier)
                     && (event.modifiers & Qt.ShiftModifier)) {
                 root.arrayOfWindows.length === 0
@@ -61,27 +61,27 @@ height:parent.height
                 myClass.save()
                 Qt.quit()
                 return
-            } else if ((event.key === Qt.Key_W)
+            } *//*else if ((event.key === Qt.Key_W)
                        && (event.modifiers & Qt.ControlModifier)) {
                 // Delete view Alt D
                 viewInstance.destroy()
                 return
-            }
+            }*/
         }
 
-        Component.onDestruction: {
-            for (var i = 0; i < parent.parent.root.viewArray.length; i++) {
-                if (viewInstance.objectName.toString(
-                            ) === parent.parent.root.viewArray[i].objectName.toString(
-                            )) {
-                    parent.parent.root.viewArray.splice(i, 1)
-                    if (parent.parent.root.viewArray.length === 0) {
-                        parent.parent.root.destroy()
-                    }
-                    break
-                }
-            }
-        }
+//        Component.onDestruction: {
+//            for (var i = 0; i < parent.parent.root.viewArray.length; i++) {
+//                if (viewInstance.objectName.toString(
+//                            ) === parent.parent.root.viewArray[i].objectName.toString(
+//                            )) {
+//                    parent.parent.root.viewArray.splice(i, 1)
+//                    if (parent.parent.root.viewArray.length === 0) {
+//                        parent.parent.root.destroy()
+//                    }
+//                    break
+//                }
+//            }
+//        }
 
         Column {
             id: layout
@@ -89,19 +89,19 @@ height:parent.height
             width: parent.width
             height: parent.height
             anchors.fill: parent
-            spacing: -1
+            spacing: 0
             TextArea {
                 id: search
 
                 width: viewInstance.width
-//                wrapMode: "WrapAnywhere"
+                wrapMode: "WrapAnywhere"
                 selectByMouse: true
-//                selectionColor: "#3399FF"
-//                selectedTextColor: "white"
-                height:30
+                selectionColor: "#3399FF"
+                selectedTextColor: "white"
+//                height:30
                 clip: true
                 objectName: "search"
-//                placeholderText: "Search here"
+                placeholderText: "Search here"
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
                     var row = nodeTree.rowAtY(posInTreeView, true)
@@ -118,6 +118,12 @@ height:parent.height
 
             QCY.TreeView {
                 id: nodeTree
+                property int  currentRow
+                property int  coHeight
+
+                onCoHeightChanged: {
+                cHeight(coHeight,currentRow)}
+signal cHeight(var height,var row)
 
                 MessageDialog {
                     id: deleteDialog1
@@ -149,10 +155,16 @@ return;
                 }
 //                MouseArea {
 //                    id: pos
-
+//                                                onClicked: mouse.accepted = false
+//                                                onPressAndHold: mouse.accepted = false
+//                                                onDoubleClicked: mouse.accepted = false
+//                                                onPositionChanged: mouse.accepted = false
+//                                                onReleased: mouse.accepted = false
+//                                                onPressed: mouse.accepted = false
 //                    anchors.fill: parent
-//                    hoverEnabled: true
+////                    hoverEnabled: true
 //                    onWheel: {
+////                        event.accepted = true
 
 //                        if (wheel.modifiers & Qt.ShiftModifier) {
 //                            if (wheel.angleDelta.y > 0) {
@@ -179,6 +191,9 @@ return;
 //                        title: "Name"
                         role: "edit"
 //                        width: 300
+                        width: viewInstance.parent.width
+
+
                     }
                 property var rowHeight: 40
 //                property var indexNow: nodeTree.currentIndex.row
@@ -201,6 +216,7 @@ return;
 
 //                    return nodeTree.contentItem.children[row].conHeight
 //                }
+
 headerVisible: false
 //frameVisible:false
                 width: viewInstance.width
@@ -217,13 +233,7 @@ headerVisible: false
                 }
 
                 Keys.onDigit2Pressed: {
-                    for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
-                        if (viewInstance.objectName.toString(
-                                    ) === viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                                    )) {
-                            break
-                        }
-                    }
+
                 }
                 Keys.onPressed: {
                     if ((event.key === Qt.Key_P)
@@ -233,6 +243,8 @@ headerVisible: false
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentIndex),
                                               true)
+
+
                         return
                     } else if ((event.key === Qt.Key_W)
                                && (event.modifiers & Qt.ControlModifier)
@@ -340,7 +352,8 @@ headerVisible: false
                         }
                         return
                     } else if ((event.key === Qt.Key_E)
-                               && (event.modifiers & Qt.ControlModifier)) {
+                               && (event.modifiers & Qt.ControlModifier)
+                               && (event.modifiers & Qt.ShiftModifier)) {
                         // Delete view Alt D
                         viewInstance.destroy()
                         return
@@ -364,21 +377,22 @@ headerVisible: false
                                     position, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex).parent) //TODO
                         return
-                    } else if ((event.key === Qt.Key_U)
+                    } /*else if ((event.key === Qt.Key_U)
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //remove node Ctrl D
                         hbar.decrease()
                         return
-                    } else if ((event.key === Qt.Key_O)
+                    }*/ else if ((event.key === Qt.Key_O)
                                && (event.modifiers & Qt.ControlModifier)) {
-
+                             event.accepted = true
+var query =">:" + myClass.getId(
+    nodeTree.model.mapToSource(
+        nodeTree.currentIndex))
                         //remove node Ctrl D
                         search.forceActiveFocus()
                         search.clear()
-                        search.append(">:" + myClass.getId(
-                                          nodeTree.model.mapToSource(
-                                              nodeTree.currentIndex)))
+                        search.append(query)
                         return
                     } else if ((event.key === Qt.Key_Q)
                                && (event.modifiers & Qt.ControlModifier)) {
@@ -402,11 +416,13 @@ headerVisible: false
 //                        return
                         event.accepted = true
 
+                        var id = myClass.getId(
+                                    nodeTree.model.mapToSource(
+                                        nodeTree.currentIndex))
+
                         search.forceActiveFocus()
 
-                                                search.append(myClass.getId(
-                                                                  nodeTree.model.mapToSource(
-                                                                      nodeTree.currentIndex)))
+                                                search.append(id)
                                                 return
                     } else if ((event.key === Qt.Key_F)
                                && (event.modifiers & Qt.ControlModifier)) {
@@ -429,13 +445,13 @@ headerVisible: false
                                         nodeTree.currentIndex).parent) //TODO
 
                         return
-                    } else if ((event.key === Qt.Key_J)
+                    } /*else if ((event.key === Qt.Key_J)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                         var test1 = nodeTree.currentIndex.parent
                         nodeTree.currentIndex
                         return
-                    } else if ((event.key === Qt.Key_M)
+                    }*/ else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl M copy node
                         event.accepted = true
@@ -503,8 +519,49 @@ Rectangle{
 
 id:ot
 border.color: "white"
+visible:false
+height:box.contentHeight +10
 
-height:40}
+
+TextArea{
+id:box
+Connections{
+target: nodeTree
+function onCHeight(coHeight,row){
+if(styleData.row === row ){
+    console.log("Connections " +styleData.row)
+
+    console.log("coHeight b  " +coHeight)
+ot.height = coHeight +10
+    console.log("ttttrrrrr " +box.height)
+
+}
+}
+}
+Keys.onEnterPressed: {
+//model.edit = model.edit +"\n"
+    console.log("before " +contentHeight)
+    console.log("after " +contentHeight)
+
+}
+width: nodeTree.width
+selectByMouse: true
+//                            selectionColor: "#3399FF"
+//                            selectedTextColor: "white"
+//objectName: "text"
+//                            wrapMode: "WrapAnywhere"
+textFormat: TextEdit.PlainText
+clip: true
+font.pointSize: 18
+//anchors.left: dot.right
+anchors.leftMargin: 5
+text: model.edit
+//onTextChanged: {
+//console.log("hhhhhhhhhhhhhhhhh")
+//    model.edit = text
+//}
+}
+}
 }
                itemDelegate: Component {
 
@@ -641,13 +698,17 @@ height:40}
 //}
 //}
 //backgroundVisible :false
+                            onContentHeightChanged: {
+                               nodeTree.currentRow = styleData.row
+                            nodeTree.coHeight = contentHeight}
                             width: delegateRoot.width
                             selectByMouse: true
-//                            selectionColor: "#3399FF"
-//                            selectedTextColor: "white"
+                            selectionColor: "#3399FF"
+                            selectedTextColor: "white"
                             objectName: "text"
 //                            wrapMode: "WrapAnywhere"
-                            textFormat: TextEdit.MarkdownText
+                            textFormat: TextEdit.PlainText
+
                             clip: true
                             font.pointSize: 18
                             anchors.left: dot.right
@@ -670,10 +731,19 @@ height:40}
                                 }
                             }
 
+
                             onTextChanged: {
-                                console.log(nodeTree.model)
+
+
                                 if (nodeTree.activeFocus) {
+                                    console.log("before1 " +contentHeight)
+
                                    model.edit = text
+
+                                    console.log("after1 " +contentHeight)
+
+                                    console.log(model.edit)
+
                                 }
                                 if (nodeTree.activeFocus
                                         && content.activeFocus) {

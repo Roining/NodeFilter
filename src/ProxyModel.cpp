@@ -55,12 +55,18 @@ bool ProxyModel::filterAcceptsRow(int source_row,
 
     if (container[i].startsWith("r:")) {
       auto string = container[i].mid(2);
+      auto m = currentItem->item().toString();
+      auto p = sourceModel->data(index, 0).toString();
       QRegularExpression regex(string);
       QRegularExpressionMatch match =
-          regex.match(sourceModel->data(index, 0).toString());
+          //          regex.match(sourceModel->data(index, 0).toString());
+          regex.match(currentItem->item().toString());
+
       if (!match.hasMatch()) {
         currentItem->setVisible(false);
         return false;
+      } else {
+        return true;
       }
     } else if (container[i].startsWith("NOT") ||
                container[i].startsWith("OR") ||
