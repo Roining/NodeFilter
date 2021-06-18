@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../NodeFilter/include/ProxyModel.h"
+#include "include/ProxyModel.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)

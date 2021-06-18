@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <RCC>
     <qresource prefix="/">
-        <file alias="Delegate.qml">../NodeFilter/Delegate.qml</file>
-        <file alias="main.qml">../NodeFilter/main.qml</file>
-        <file alias="WindowComponent.qml">../NodeFilter/WindowComponent.qml</file>
+        <file alias="Delegate.qml">Delegate.qml</file>
+        <file alias="main.qml">main.qml</file>
+        <file alias="WindowComponent.qml">WindowComponent.qml</file>
     </qresource>
 </RCC>
