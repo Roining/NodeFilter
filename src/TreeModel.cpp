@@ -235,11 +235,9 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
 
   const QModelIndex &child = this->index(position, 0, parent);
 
+  endInsertRows();
   this->setData(child, "", Qt::EditRole);
   this->setData(child, "Data", Qt::UserRole + 2);
-
-  endInsertRows();
-
   if ((!parentItem->parents.isEmpty())) {
 
     for (int i = 0; i < parentItem->parents.size(); i++) {
