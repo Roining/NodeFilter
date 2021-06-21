@@ -20,7 +20,7 @@ SOURCES += \
     src/main.cpp
 
 #QTPLUGIN += C:/Qt/5.15.2/wasm_32/qml/QtQuick/TreeView/libqquicktreeviewplugin.a
-LIBS += C:\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.a
+#LIBS += C:\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.a
 
 #QTPLUGIN += QQuickTreeViewPlugin
 #LIBS += C:/Qt/5.15.2/wasm_32/qml/QtQuick/TreeView/libqquicktreeviewplugin.a

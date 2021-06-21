@@ -40,7 +40,7 @@ DISTNAME      = NodeFilter.js1.0.0
 DISTDIR = C:\Users\medve\Documents\NodeFilter\.tmp\NodeFilter.js1.0.0
 LINK          = em++
 LFLAGS        = -s WASM=1 -s FULL_ES2=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s EXIT_RUNTIME=1 -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=["UTF16ToString","stringToUTF16"] --bind -s FETCH=1 -O2 -s ALLOW_MEMORY_GROWTH=1
-LIBS          = $(SUBLIBS) C:\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.a C:/Qt/5.15.2/wasm_32/plugins/platforms/libqwasm.a C:/Qt/5.15.2/wasm_32/lib/libQt5EventDispatcherSupport.a C:/Qt/5.15.2/wasm_32/lib/libQt5FontDatabaseSupport.a C:/Qt/5.15.2/wasm_32/lib/libqtfreetype.a C:/Qt/5.15.2/wasm_32/lib/libQt5EglSupport.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqgif.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqicns.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqico.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqjpeg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtga.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtiff.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwbmp.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwebp.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/platform/libqtlabsplatformplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/libdialogplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/qmlmodels/liblabsmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Layouts/libqquicklayoutsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQml/libqmlplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/folderlistmodel/libqmlfolderlistmodelplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/settings/libqmlsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/Private/libdialogsprivateplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls/libqtquickcontrolsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/PrivateWidgets/libwidgetsplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5Widgets.a C:/Qt/5.15.2/wasm_32/qml/QtQml/Models.2/libmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick.2/libqtquick2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Templates.2/libqtquicktemplates2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/libqtquickcontrols2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Fusion/libqtquickcontrols2fusionstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/private/libqtgraphicaleffectsprivate.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Window.2/libwindowplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/libqtgraphicaleffectsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Imagine/libqtquickcontrols2imaginestyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Material/libqtquickcontrols2materialstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Universal/libqtquickcontrols2universalstyleplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickControls2.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickTemplates2.a C:/Qt/5.15.2/wasm_32/lib/libQt5Quick.a C:/Qt/5.15.2/wasm_32/lib/libQt5Gui.a C:/Qt/5.15.2/wasm_32/lib/libqtlibpng.a C:/Qt/5.15.2/wasm_32/lib/libqtharfbuzz.a C:/Qt/5.15.2/wasm_32/lib/libQt5QmlModels.a C:/Qt/5.15.2/wasm_32/lib/libQt5Qml.a C:/Qt/5.15.2/wasm_32/lib/libQt5Network.a C:/Qt/5.15.2/wasm_32/lib/libQt5Core.a C:/Qt/5.15.2/wasm_32/lib/libqtpcre2.a   
+LIBS          = $(SUBLIBS) C:/Qt/5.15.2/wasm_32/plugins/platforms/libqwasm.a C:/Qt/5.15.2/wasm_32/lib/libQt5EventDispatcherSupport.a C:/Qt/5.15.2/wasm_32/lib/libQt5FontDatabaseSupport.a C:/Qt/5.15.2/wasm_32/lib/libqtfreetype.a C:/Qt/5.15.2/wasm_32/lib/libQt5EglSupport.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqgif.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqicns.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqico.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqjpeg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtga.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtiff.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwbmp.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwebp.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/platform/libqtlabsplatformplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/libdialogplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/qmlmodels/liblabsmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Layouts/libqquicklayoutsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQml/libqmlplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/folderlistmodel/libqmlfolderlistmodelplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/settings/libqmlsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/Private/libdialogsprivateplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls/libqtquickcontrolsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/PrivateWidgets/libwidgetsplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5Widgets.a C:/Qt/5.15.2/wasm_32/qml/QtQml/Models.2/libmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick.2/libqtquick2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Templates.2/libqtquicktemplates2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/libqtquickcontrols2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Fusion/libqtquickcontrols2fusionstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/private/libqtgraphicaleffectsprivate.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Window.2/libwindowplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/libqtgraphicaleffectsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Imagine/libqtquickcontrols2imaginestyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Material/libqtquickcontrols2materialstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Universal/libqtquickcontrols2universalstyleplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickControls2.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickTemplates2.a C:/Qt/5.15.2/wasm_32/lib/libQt5Quick.a C:/Qt/5.15.2/wasm_32/lib/libQt5Gui.a C:/Qt/5.15.2/wasm_32/lib/libqtlibpng.a C:/Qt/5.15.2/wasm_32/lib/libqtharfbuzz.a C:/Qt/5.15.2/wasm_32/lib/libQt5QmlModels.a C:/Qt/5.15.2/wasm_32/lib/libQt5Qml.a C:/Qt/5.15.2/wasm_32/lib/libQt5Network.a C:/Qt/5.15.2/wasm_32/lib/libQt5Core.a C:/Qt/5.15.2/wasm_32/lib/libqtpcre2.a   
 AR            = emar cqs
 RANLIB        = 
 SED           = $(QMAKE) -install sed
@@ -226,7 +226,6 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\lex.prf \
 		NodeFilter.pro \
 		qml_qmlcache.qrc \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\plugins\platforms\libqwasm.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqgif.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqicns.prl \
@@ -243,6 +242,7 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Network.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Core.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick.2\libqtquick2plugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls\libqtquickcontrolsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\libdialogplugin.prl \
@@ -393,7 +393,6 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\lex.prf:
 NodeFilter.pro:
 qml_qmlcache.qrc:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\plugins\platforms\libqwasm.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqgif.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqicns.prl:
@@ -410,6 +409,7 @@ qml_qmlcache.qrc:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Network.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Core.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick.2\libqtquick2plugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls\libqtquickcontrolsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\libdialogplugin.prl:
