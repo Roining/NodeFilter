@@ -6,6 +6,8 @@ Node Filter is a knowledge management tool  which relies on the concepts of tran
 WebAssembly port of NodeFilter with a guide to NodeFilter's functionality as well as examples of usage: https://github.com/Roining/NodeFilter  
 Web version of NodeFilter is meant to be used only as a demo, it is not identical to the desktop application and has several limitations which are explained in the demo.  
 
+# Community
+[Discord](https://discord.gg/sNbVChHX)
 # Filtering  
 Hierarchical filtering shows the descendants(or ascendants) of a certain node. However, if a node is copied, then if at least one instance of the node matches the filter(i.e. is a descendant of  a queried node), then all its other instances will also match the filter(if using >> and << operators). There are several types of hierarchical filters(see query syntax).  
 Hierarchical filtering can   be  used to build a  hierarchy(or multiple linked hierarchies) of abstractions  of arbitrary depth that can be used as a transitive tagging system. A hierarchy of abstractions can be defined by the user. 	 Hierarchies can be built going from specific things up to abstract concepts.   
