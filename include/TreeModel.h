@@ -100,6 +100,8 @@ public:
   Q_INVOKABLE bool hasMultipleSiblings(const QModelIndex &index);
   void setupModelData(const QStringList &lines, TreeNode *parent);
   Q_INVOKABLE bool acceptsCopies(const QModelIndex &index);
+  Q_INVOKABLE void kok();
+  Q_INVOKABLE void kok1();
 
 private:
   QPersistentModelIndex

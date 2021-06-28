@@ -27,19 +27,11 @@ ApplicationWindow {
 
     onClosing: {
 
-        for (var i = 0; i < root.array.length; i++) {
 
-            if (windowInstance.objectName.toString(
-                        ) === root.array[i].objectName.toString()) {
 
-                root.array.splice(i, 1)
-                break
-            }
-        }
-        if (root.array.length === 0) {
             myClass.save()
             Qt.quit()
-        }
+
     }
     MouseArea {
         id: ma
@@ -49,7 +41,20 @@ ApplicationWindow {
     }
 
 
+    Shortcut {
+        sequence: "Ctrl+Shift+Q"
+        onActivated: {
 
+myClass.kok();
+        }
+    }
+    Shortcut {
+        sequence: "Ctrl+Shift+J"
+        onActivated: {
+
+myClass.kok1();
+        }
+    }
 
 
     Shortcut {

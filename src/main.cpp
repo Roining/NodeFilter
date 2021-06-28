@@ -1,6 +1,6 @@
 #include "include/ProxyModel.h"
 #include "include/TreeModel.h"
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-  QGuiApplication app(argc, argv);
+  QApplication app(argc, argv);
   //  a = &app;
   app.setQuitOnLastWindowClosed(false);
   app.setOrganizationName("Node Filter");
@@ -28,8 +28,7 @@ int main(int argc, char *argv[]) {
           QCoreApplication::exit(-1);
       },
       Qt::QueuedConnection);
-  QObject::connect(&engine, &QQmlApplicationEngine::quit,
-                   &QGuiApplication::quit);
+  QObject::connect(&engine, &QQmlApplicationEngine::quit, &QApplication::quit);
   engine.load(url);
 
   return app.exec();

@@ -18,7 +18,11 @@ ApplicationWindow {
 //    property Settings settings: Settings {
 //        property var windows: []
 //    }
+onClosing: {
 
+    myClass.save()
+
+}
     visible: false
     Component.onCompleted: {
 //        if (settings.windows.length === 0) {

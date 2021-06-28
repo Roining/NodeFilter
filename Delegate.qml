@@ -335,6 +335,8 @@ headerVisible: false
                         return
                     } else if ((event.key === Qt.Key_S)
                                && (event.modifiers & Qt.ControlModifier)) {
+                        event.accepted = true
+
                         //serialize/save Ctrl S
                         myClass.save()
                         return

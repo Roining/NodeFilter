@@ -6,9 +6,14 @@
 #include <QDir>
 #include <QElapsedTimer>
 //#include <QFileDialog>
+#include <QFileDialog>
 #include <QGuiApplication>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QRandomGenerator>
+#include <QThread>
 
+#include <emscripten.h>
 TreeModel::TreeModel(QObject *parent) {
   //  QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
   //                                                  "/home",
@@ -30,23 +35,103 @@ TreeModel::TreeModel(QObject *parent) {
   qDebug() << QDir("/home").entryList();
   qDebug() << QDir("/.").entryList();
   qDebug() << QDir("/..").entryList();
+  qDebug() << "offline before " << QDir("/offline").entryList();
+  qDebug() << "IDBFS before " << QDir("/IDBFS").entryList();
 
-  QFile file("storage.dat");
-  qDebug() << "timer.elapsed()"
-              "";
+  EM_ASM(
+      // Make a directory other than '/'
+      FS.mkdir('/IDBFS'); console.log("YYYYY  ");
+      // Then mount with IDBFS type
+      FS.mount(IDBFS, {}, '/IDBFS'); console.log("eeeeeeee  ");
+
+      // Then sync
+      FS.syncfs(true,
+                function(err){
+                    // Error
+                    console.log("ssssssssss  " + err)
+
+                    //                ccall('callback3', 'v', '', []);
+                });
+      console.log("22222  ");
+
+  );
+
+  //  QFile::remove("IDBFS")
+}
+Q_INVOKABLE void TreeModel::kok1() {
+  auto fileContentReady = [this](const QString &fileName,
+                                 const QByteArray &fileContent) {
+    if (fileName.isEmpty()) {
+      // No file was selected
+    } else {
+      // Use fileName and fileContent
+      map.clear();
+      container.clear();
+      delete rootItem;
+      beginResetModel();
+
+      //            QFile file("IDBFS/storage.dat");
+      qDebug() << "ttttttttt";
+
+      //            if (file.open(QIODevice::ReadWrite)) {
+      qDebug() << "aaa ";
+
+      QDataStream stream(fileContent);
+      QVector<QVariant> rootData;
+
+      rootItem = new TreeNode(rootData, nullptr);
+      deserialize(*rootItem, stream);
+      qDebug() << "aaa ";
+
+      if (!rootItem->childCount()) {
+        qDebug() << "aa44444a ";
+
+        beginInsertRows(QModelIndex().parent(), 0, 1);
+        rootItem->itemData.get()->append("data");
+        endInsertRows();
+        insertRows(0, 1, QModelIndex());
+      }
+      //              file.close();
+      //            }
+
+      qDebug() << "offline after " << QDir("/offline").entryList();
+      qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
+
+      qDebug() << "/ after " << QDir("/").entryList();
+      endResetModel();
+    }
+  };
+  QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",
+                                  fileContentReady);
+}
+
+Q_INVOKABLE void TreeModel::kok() {
+  //  if (!QDir("IDBFS").exists()) {
+  //    qDebug() << "777";
+
+  //    QDir(QDir::currentPath()).mkdir("IDBFS");
+  //    qDebug() << "777";
+  //  }
+  map.clear();
+  container.clear();
+  delete rootItem;
+  beginResetModel();
+
+  QFile file("IDBFS/storage.dat");
+  qDebug() << "ttttttttt";
 
   if (file.open(QIODevice::ReadWrite)) {
-    qDebug() << "iiiiiii";
+    qDebug() << "aaa ";
 
     QDataStream stream(&file);
     QVector<QVariant> rootData;
 
     rootItem = new TreeNode(rootData, nullptr);
     deserialize(*rootItem, stream);
-    qDebug() << "wsssss";
+    qDebug() << "aaa ";
 
     if (!rootItem->childCount()) {
-      qDebug() << "!childCount";
+      qDebug() << "aa44444a ";
 
       beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
@@ -55,6 +140,12 @@ TreeModel::TreeModel(QObject *parent) {
     }
     file.close();
   }
+
+  qDebug() << "offline after " << QDir("/offline").entryList();
+  qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
+
+  qDebug() << "/ after " << QDir("/").entryList();
+  endResetModel();
 }
 
 TreeModel::TreeModel(const QStringList &headers, const QString &data,
@@ -67,7 +158,6 @@ TreeModel::TreeModel(const QStringList &headers, const QString &data,
   rootItem = new TreeNode(rootData);
   setupModelData(data.split('\n'), rootItem);
 }
-
 TreeModel::~TreeModel() { delete rootItem; }
 
 QDataStream &operator>>(QDataStream &, TreeModel &);
@@ -262,12 +352,9 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
 }
 void TreeModel::insertRowsRecursive(int position, QUuid callingId,
                                     QUuid calledId, const QModelIndex &child) {
-  //  QElapsedTimer timer;
-  //  timer.start();
 
   auto siblingIndex = match(index(0, 0), Qt::UserRole + 2, calledId.toString(),
                             1, Qt::MatchRecursive);
-  //  qDebug() << timer.elapsed();
 
   auto item = getItem(siblingIndex[0]);
   if (item->acceptsCopies) {
@@ -382,6 +469,7 @@ QHash<int, QByteArray> TreeModel::roleNames() const {
           {Qt::UserRole + 2, "id"}};
 }
 void TreeModel::saveIndex(const QModelIndex &index) {
+  qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
 
   last = index;
   return;
@@ -389,7 +477,8 @@ void TreeModel::saveIndex(const QModelIndex &index) {
 void TreeModel::save() {
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
-  QFile file("storage.dat");
+  QFile file("IDBFS/storage.dat");
+
   int value = QRandomGenerator::global()->generate();
 
   QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
@@ -401,14 +490,92 @@ void TreeModel::save() {
                 QStringLiteral("%1/StorageCache/StorageCache%2.dat")
                     .arg(path)
                     .arg(value));
-  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+  QByteArray ba;
+  if (file.open(QIODevice::WriteOnly)) {
+
     QDataStream stream(&file);
     serializeClear(*rootItem);
     serializeCleanUp(*rootItem);
     serialize(*rootItem, stream);
+    qDebug() << file.readAll();
+
+    //    qDebug() << file.readAll();
+    //    qDebug() << "10  " << ba;
+
     file.close();
   }
+  if (file.open(QIODevice::ReadOnly)) {
+    qDebug() << "ba " << file.readAll();
+
+    ba = file.readAll();
+
+    file.close();
+  }
+
+  if (file.open(QIODevice::ReadWrite)) {
+    //    qDebug() << "1  " << ba;
+    ba = file.readAll();
+    qDebug() << "1  " << ba;
+
+    QFileDialog::saveFileContent(ba, "storage.dat");
+
+    file.close();
+  }
+  //  QFile::remove("IDBFS/storage.dat");
+  //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
+  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
 }
+// void TreeModel::save() {
+//  QDir::setCurrent(QDir::currentPath());
+//  QString path = QDir::currentPath();
+//  QFile file("IDBFS/storage.json");
+
+//  int value = QRandomGenerator::global()->generate();
+
+//  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+//  if (!cachePath.exists()) {
+//    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+//  }
+//  auto isSuccessful =
+//      file.copy(QStringLiteral("%1/storage.json").arg(path),
+//                QStringLiteral("%1/StorageCache/StorageCache%2.json")
+//                    .arg(path)
+//                    .arg(value));
+//  QByteArray ba;
+//  if (file.open(QIODevice::WriteOnly)) {
+
+//    QDataStream stream(&file);
+//    serializeClear(*rootItem);
+//    serializeCleanUp(*rootItem);
+//    serialize(*rootItem, stream);
+//    qDebug() << file.readAll();
+
+//    //    qDebug() << file.readAll();
+//    //    qDebug() << "10  " << ba;
+
+//    file.close();
+//  }
+//  if (file.open(QIODevice::ReadOnly)) {
+//    qDebug() << "ba " << file.readAll();
+
+//    ba = file.readAll();
+
+//    file.close();
+//  }
+
+//  if (file.open(QIODevice::ReadWrite)) {
+//    //    qDebug() << "1  " << ba;
+//    ba = file.readAll();
+//    qDebug() << "1  " << ba;
+
+//    QFileDialog::saveFileContent(ba, "storage.json");
+
+//    file.close();
+//  }
+//  //  QFile::remove("IDBFS/storage.dat");
+//  //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
+//  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+//}
 QPersistentModelIndex TreeModel::getLastIndex() { return last; }
 bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
                              bool searchClones) {
