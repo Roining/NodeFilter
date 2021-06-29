@@ -114,6 +114,7 @@ Component {
 
                     nodeTree.model.setQuery(text)
                 }
+
             }
 
             QCY.TreeView {
@@ -667,39 +668,30 @@ text: model.edit
                             TapHandler {
                                 id: dotTapHandler
                                 onTapped: {
-                                    search.forceActiveFocus();
-                                    search.clear();
-                                    search.append(">:" + myClass.getId(
-                                                      nodeTree.model.mapToSource(
-                                                          nodeTree.currentIndex)));
-                                    return;
-//                                    var posInTreeView = nodeTree.mapFromItem(
-//                                                parent, point.position)
-//                                    var row = nodeTree.rowAtY(posInTreeView.y,
-//                                                              true)
-//                                    nodeTree.currentIndex = nodeTree.viewIndex(
-//                                                0, row) //index
+                                    if(content.text == "Examples"){
+                                    myClass.save()
+                                        return;
+                                    }
+                                    if(content.text == "Tags"){
 
-//                                    if (tapCount == 1)
+                                        myClass.kok1();
+                                        return;
+                                    }
 
-//                                        search.forceActiveFocus()
-//                                    search.selectAll()
-//                                    search.append(
-//                                                ">:" + myClass.getId(
-//                                                    nodeTree.model.mapToSource(
-//                                                        nodeTree.currentIndex)))
+//                                    search.forceActiveFocus();
+//                                    search.clear();
+//                                    search.append(">:" + myClass.getId(
+//                                                      nodeTree.model.mapToSource(
+//                                                          nodeTree.currentIndex)));
+//                                    return;
+
                                 }
                             }
                         }
 
                         TextArea {
                             id: content
-//style: TextAreaStyle{
-//Rectangle{
-//border.color:"white"
-//}
-//}
-//backgroundVisible :false
+
                             onContentHeightChanged: {
                                nodeTree.currentRow = styleData.row
                             nodeTree.coHeight = contentHeight}

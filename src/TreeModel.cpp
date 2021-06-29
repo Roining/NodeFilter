@@ -13,7 +13,7 @@
 #include <QRandomGenerator>
 #include <QThread>
 
-#include <emscripten.h>
+//#include <emscripten.h>
 TreeModel::TreeModel(QObject *parent) {
   //  QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
   //                                                  "/home",
@@ -38,23 +38,23 @@ TreeModel::TreeModel(QObject *parent) {
   qDebug() << "offline before " << QDir("/offline").entryList();
   qDebug() << "IDBFS before " << QDir("/IDBFS").entryList();
 
-  EM_ASM(
-      // Make a directory other than '/'
-      FS.mkdir('/IDBFS'); console.log("YYYYY  ");
-      // Then mount with IDBFS type
-      FS.mount(IDBFS, {}, '/IDBFS'); console.log("eeeeeeee  ");
+  //  EM_ASM(
+  //      // Make a directory other than '/'
+  //      FS.mkdir('/IDBFS'); console.log("YYYYY  ");
+  //      // Then mount with IDBFS type
+  //      FS.mount(IDBFS, {}, '/IDBFS'); console.log("eeeeeeee  ");
 
-      // Then sync
-      FS.syncfs(true,
-                function(err){
-                    // Error
-                    console.log("ssssssssss  " + err)
+  //      // Then sync
+  //      FS.syncfs(true,
+  //                function(err){
+  //                    // Error
+  //                    console.log("ssssssssss  " + err)
 
-                    //                ccall('callback3', 'v', '', []);
-                });
-      console.log("22222  ");
+  //                    //                ccall('callback3', 'v', '', []);
+  //                });
+  //      console.log("22222  ");
 
-  );
+  //  );
 
   //  QFile::remove("IDBFS")
 }
@@ -168,6 +168,7 @@ QDebug operator<<(QDebug debug, const TreeNode &c) {
 }
 
 QDataStream &operator<<(QDataStream &out, TreeNode &item) {
+
   out << *item.itemData;
   out << item.numberOfChildren;
   out << item.id;
@@ -177,10 +178,22 @@ QDataStream &operator<<(QDataStream &out, TreeNode &item) {
   out << item.parents;
   out << item.copyChildren;
 
+  //  qDebug() << *item.itemData;
+  //  qDebug() << item.numberOfChildren;
+  //  qDebug() << item.id;
+  //  qDebug() << item.acceptsCopies;
+  //  qDebug() << item.tempParents;
+  //  qDebug() << item.position;
+  //  qDebug() << item.parents;
+  //  qDebug() << item.copyChildren;
   return out;
 }
 
 QDataStream &operator>>(QDataStream &in, TreeNode *item) {
+  //  QChar data;
+  //  in >> data;
+  //  qDebug() << "ghghh   " << data;
+  //  item->itemData.get()[0].append(QString(data));
   in >> *item->itemData;
   in >> item->numberOfChildren; // TODO move out of class members
   in >> item->id;
@@ -189,6 +202,7 @@ QDataStream &operator>>(QDataStream &in, TreeNode *item) {
   in >> item->position;
   in >> item->parents;
   in >> item->copyChildren;
+
   return in;
 }
 QVariant TreeModel::data(const QModelIndex &index, int role) const {
@@ -497,7 +511,7 @@ void TreeModel::save() {
     serializeClear(*rootItem);
     serializeCleanUp(*rootItem);
     serialize(*rootItem, stream);
-    qDebug() << file.readAll();
+    //    qDebug() << file.readAll();
 
     //    qDebug() << file.readAll();
     //    qDebug() << "10  " << ba;
@@ -505,7 +519,7 @@ void TreeModel::save() {
     file.close();
   }
   if (file.open(QIODevice::ReadOnly)) {
-    qDebug() << "ba " << file.readAll();
+    //    qDebug() << "ba " << file.readAll();
 
     ba = file.readAll();
 
@@ -515,7 +529,7 @@ void TreeModel::save() {
   if (file.open(QIODevice::ReadWrite)) {
     //    qDebug() << "1  " << ba;
     ba = file.readAll();
-    qDebug() << "1  " << ba;
+    //    qDebug() << "1  " << ba;
 
     QFileDialog::saveFileContent(ba, "storage.dat");
 
@@ -523,7 +537,7 @@ void TreeModel::save() {
   }
   //  QFile::remove("IDBFS/storage.dat");
   //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
-  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+  //  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
 }
 // void TreeModel::save() {
 //  QDir::setCurrent(QDir::currentPath());
@@ -646,10 +660,10 @@ void TreeModel::serializeCleanUp(TreeNode &node) {
 
   if (node.siblingItems().size() > 1) {
 
-    for (int i = 0; i < node.siblingItems().size(); i++) {
+    //    for (int i = 0; i < node.siblingItems().size(); i++) {
 
-      node.tempParents.append(node.siblingItems()[i]->parentItem->id);
-    }
+    //      node.tempParents.append(node.siblingItems()[i]->parentItem->id);
+    //    }
   }
   if (node.siblingItems().size() > 1) {
     TreeNode *check = nullptr;
@@ -664,6 +678,10 @@ void TreeModel::serializeCleanUp(TreeNode &node) {
                              node.parent()->children().indexOf(&node));
 
     } else {
+      for (int i = 0; i < node.siblingItems().size(); i++) {
+
+        node.tempParents.append(node.siblingItems()[i]->parentItem->id);
+      }
       node.position.insert(node.parentItem->id,
                            node.parent()->children().indexOf(&node));
     }
