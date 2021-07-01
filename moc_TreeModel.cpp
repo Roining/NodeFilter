@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_TreeModel_t {
-    QByteArrayData data[39];
-    char stringdata0[393];
+    QByteArrayData data[41];
+    char stringdata0[406];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -70,7 +70,9 @@ QT_MOC_LITERAL(34, 333, 5), // "getId"
 QT_MOC_LITERAL(35, 339, 2), // "id"
 QT_MOC_LITERAL(36, 342, 16), // "getIdToClipboard"
 QT_MOC_LITERAL(37, 359, 13), // "acceptsCopies"
-QT_MOC_LITERAL(38, 373, 19) // "hasMultipleSiblings"
+QT_MOC_LITERAL(38, 373, 19), // "hasMultipleSiblings"
+QT_MOC_LITERAL(39, 393, 3), // "kok"
+QT_MOC_LITERAL(40, 397, 8) // "loadFile"
 
     },
     "TreeModel\0updateProxyFilter\0\0cond\0"
@@ -83,7 +85,7 @@ QT_MOC_LITERAL(38, 373, 19) // "hasMultipleSiblings"
     "node\0QDataStream&\0stream\0deserialize\0"
     "check\0copyRows\0source\0copyRowsAndChildren\0"
     "getId\0id\0getIdToClipboard\0acceptsCopies\0"
-    "hasMultipleSiblings"
+    "hasMultipleSiblings\0kok\0loadFile"
 };
 #undef QT_MOC_LITERAL
 
@@ -93,7 +95,7 @@ static const uint qt_meta_data_TreeModel[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      28,   14, // methods
+      30,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -101,36 +103,38 @@ static const uint qt_meta_data_TreeModel[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  154,    2, 0x06 /* Public */,
-       4,    0,  157,    2, 0x06 /* Public */,
+       1,    1,  164,    2, 0x06 /* Public */,
+       4,    0,  167,    2, 0x06 /* Public */,
 
  // methods: name, argc, parameters, tag, flags
-       5,    2,  158,    2, 0x02 /* Public */,
-       9,    1,  163,    2, 0x02 /* Public */,
-      10,    3,  166,    2, 0x02 /* Public */,
-      10,    2,  173,    2, 0x22 /* Public | MethodCloned */,
-      13,    4,  178,    2, 0x02 /* Public */,
-      17,    3,  187,    2, 0x02 /* Public */,
-      17,    2,  194,    2, 0x22 /* Public | MethodCloned */,
-      18,    1,  199,    2, 0x02 /* Public */,
-      19,    0,  202,    2, 0x02 /* Public */,
-      20,    0,  203,    2, 0x02 /* Public */,
-      22,    1,  204,    2, 0x02 /* Public */,
-      24,    2,  207,    2, 0x02 /* Public */,
-      29,    3,  212,    2, 0x02 /* Public */,
-      29,    2,  219,    2, 0x22 /* Public | MethodCloned */,
-      31,    4,  224,    2, 0x02 /* Public */,
-      31,    3,  233,    2, 0x22 /* Public | MethodCloned */,
-      31,    2,  240,    2, 0x22 /* Public | MethodCloned */,
-      33,    4,  245,    2, 0x02 /* Public */,
-      33,    3,  254,    2, 0x22 /* Public | MethodCloned */,
-      33,    2,  261,    2, 0x22 /* Public | MethodCloned */,
-      34,    1,  266,    2, 0x02 /* Public */,
-      11,    1,  269,    2, 0x02 /* Public */,
-      36,    1,  272,    2, 0x02 /* Public */,
-      37,    2,  275,    2, 0x02 /* Public */,
-      38,    1,  280,    2, 0x02 /* Public */,
-      37,    1,  283,    2, 0x02 /* Public */,
+       5,    2,  168,    2, 0x02 /* Public */,
+       9,    1,  173,    2, 0x02 /* Public */,
+      10,    3,  176,    2, 0x02 /* Public */,
+      10,    2,  183,    2, 0x22 /* Public | MethodCloned */,
+      13,    4,  188,    2, 0x02 /* Public */,
+      17,    3,  197,    2, 0x02 /* Public */,
+      17,    2,  204,    2, 0x22 /* Public | MethodCloned */,
+      18,    1,  209,    2, 0x02 /* Public */,
+      19,    0,  212,    2, 0x02 /* Public */,
+      20,    0,  213,    2, 0x02 /* Public */,
+      22,    1,  214,    2, 0x02 /* Public */,
+      24,    2,  217,    2, 0x02 /* Public */,
+      29,    3,  222,    2, 0x02 /* Public */,
+      29,    2,  229,    2, 0x22 /* Public | MethodCloned */,
+      31,    4,  234,    2, 0x02 /* Public */,
+      31,    3,  243,    2, 0x22 /* Public | MethodCloned */,
+      31,    2,  250,    2, 0x22 /* Public | MethodCloned */,
+      33,    4,  255,    2, 0x02 /* Public */,
+      33,    3,  264,    2, 0x22 /* Public | MethodCloned */,
+      33,    2,  271,    2, 0x22 /* Public | MethodCloned */,
+      34,    1,  276,    2, 0x02 /* Public */,
+      11,    1,  279,    2, 0x02 /* Public */,
+      36,    1,  282,    2, 0x02 /* Public */,
+      37,    2,  285,    2, 0x02 /* Public */,
+      38,    1,  290,    2, 0x02 /* Public */,
+      37,    1,  293,    2, 0x02 /* Public */,
+      39,    0,  296,    2, 0x02 /* Public */,
+      40,    0,  297,    2, 0x02 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -163,6 +167,8 @@ static const uint qt_meta_data_TreeModel[] = {
     QMetaType::Void, 0x80000000 | 6, QMetaType::Bool,    7,   37,
     QMetaType::Bool, 0x80000000 | 6,    7,
     QMetaType::Bool, 0x80000000 | 6,    7,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -219,6 +225,8 @@ void TreeModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 27: { bool _r = _t->acceptsCopies((*reinterpret_cast< const QModelIndex(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 28: _t->kok(); break;
+        case 29: _t->loadFile(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -269,13 +277,13 @@ int TreeModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 28)
+        if (_id < 30)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 28;
+        _id -= 30;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 28)
+        if (_id < 30)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 28;
+        _id -= 30;
     }
     return _id;
 }

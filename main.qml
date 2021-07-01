@@ -19,12 +19,16 @@ ApplicationWindow {
 //        property var windows: []
 //    }
 onClosing: {
+//    close.accepted = false
+//            onTriggered:  copyDialog1.open();
 
-    myClass.save()
+
+//    myClass.save()
 
 }
     visible: false
     Component.onCompleted: {
+
 //        if (settings.windows.length === 0) {
             var component = Qt.createComponent("WindowComponent.qml")
             var window = component.createObject(root)

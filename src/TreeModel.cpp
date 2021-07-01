@@ -11,33 +11,33 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
-#include <QThread>
 
 //#include <emscripten.h>
 TreeModel::TreeModel(QObject *parent) {
-  //  QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
-  //                                                  "/home",
-  //                                                  tr("storage.dat"));
 
-  //  QFile file(fileName);
+  //  QFile file("IDBFS/storage.dat");
+  QFile file("storage.dat");
 
-  //  if (!file.open(QIODevice::ReadOnly)) {
-  //    // handle file could not be opened...
-  //    return;
-  //  }
+  if (file.open(QIODevice::ReadWrite)) {
+    qDebug() << "aaa ";
 
-  //  QByteArray blob = file.readAll();
+    QDataStream stream(&file);
+    QVector<QVariant> rootData;
 
-  qDebug() << QDir::currentPath();
-  ;
-  qDebug() << QDir("/").entryList();
-  qDebug() << QDir("/dev").entryList();
-  qDebug() << QDir("/home").entryList();
-  qDebug() << QDir("/.").entryList();
-  qDebug() << QDir("/..").entryList();
-  qDebug() << "offline before " << QDir("/offline").entryList();
-  qDebug() << "IDBFS before " << QDir("/IDBFS").entryList();
+    rootItem = new TreeNode(rootData, nullptr);
+    deserialize(*rootItem, stream);
+    qDebug() << "aaa ";
 
+    if (!rootItem->childCount()) {
+      qDebug() << "aa44444a ";
+
+      beginInsertRows(QModelIndex().parent(), 0, 1);
+      rootItem->itemData.get()->append("data");
+      endInsertRows();
+      insertRows(0, 1, QModelIndex());
+    }
+    file.close();
+  }
   //  EM_ASM(
   //      // Make a directory other than '/'
   //      FS.mkdir('/IDBFS'); console.log("YYYYY  ");
@@ -55,10 +55,8 @@ TreeModel::TreeModel(QObject *parent) {
   //      console.log("22222  ");
 
   //  );
-
-  //  QFile::remove("IDBFS")
 }
-Q_INVOKABLE void TreeModel::kok1() {
+Q_INVOKABLE void TreeModel::loadFile() {
   auto fileContentReady = [this](const QString &fileName,
                                  const QByteArray &fileContent) {
     if (fileName.isEmpty()) {
@@ -105,6 +103,18 @@ Q_INVOKABLE void TreeModel::kok1() {
                                   fileContentReady);
 }
 
+// void TreeModel::syncStorage() {
+
+//  EM_ASM(FS.syncfs(true,
+//                   function(err){
+//                       // Error
+//                       console.log("ssssssssss  " + err)
+
+//                       //                ccall('callback3', 'v', '', []);
+//                   });
+
+//  );
+//}
 Q_INVOKABLE void TreeModel::kok() {
   //  if (!QDir("IDBFS").exists()) {
   //    qDebug() << "777";
@@ -491,7 +501,8 @@ void TreeModel::saveIndex(const QModelIndex &index) {
 void TreeModel::save() {
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
-  QFile file("IDBFS/storage.dat");
+  //  QFile file("IDBFS/storage.dat");
+  QFile file("storage.dat");
 
   int value = QRandomGenerator::global()->generate();
 
@@ -539,6 +550,40 @@ void TreeModel::save() {
   //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
   //  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
 }
+// void TreeModel::saveIDBFS() {
+//  QDir::setCurrent(QDir::currentPath());
+//  QString path = QDir::currentPath();
+//  QFile file("IDBFS/storage.dat");
+
+//  int value = QRandomGenerator::global()->generate();
+
+//  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+//  if (!cachePath.exists()) {
+//    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+//  }
+//  auto isSuccessful =
+//      file.copy(QStringLiteral("%1/storage.dat").arg(path),
+//                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+//                    .arg(path)
+//                    .arg(value));
+//  QByteArray ba;
+//  if (file.open(QIODevice::WriteOnly)) {
+
+//    QDataStream stream(&file);
+//    serializeClear(*rootItem);
+//    serializeCleanUp(*rootItem);
+//    serialize(*rootItem, stream);
+//    //    qDebug() << file.readAll();
+
+//    //    qDebug() << file.readAll();
+//    //    qDebug() << "10  " << ba;
+
+//    file.close();
+//  }
+//  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+
+//  std::this_thread::sleep_for(std::chrono::milliseconds(200));
+//}
 // void TreeModel::save() {
 //  QDir::setCurrent(QDir::currentPath());
 //  QString path = QDir::currentPath();

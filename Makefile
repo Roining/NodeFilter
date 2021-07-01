@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = emcc
 CXX           = em++
-DEFINES       = -DQT_NO_DEBUG -DQT_QUICK_LIB -DQT_GUI_LIB -DQT_QMLMODELS_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_QUICK_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_QMLMODELS_LIB -DQT_QML_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -O2 -s ALLOW_MEMORY_GROWTH=1 -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -v -O2 -std=gnu++11 -s ALLOW_MEMORY_GROWTH=1 -Wall -Wextra $(DEFINES)
-INCPATH       = -I. -I..\..\..\..\Qt\5.15.2\wasm_32\include -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQuick -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQmlModels -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtNetwork -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore -I. -I/.emscripten_ports/openssl/include -I..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten
+INCPATH       = -I. -I..\..\..\..\Qt\5.15.2\wasm_32\include -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQuick -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQmlModels -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtNetwork -I..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore -I. -I/.emscripten_ports/openssl/include -I..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten
 QMAKE         = C:\Qt\5.15.2\wasm_32\bin\qmake.exe
 DEL_FILE      = del
 CHK_DIR_EXISTS= if not exist
@@ -93,7 +93,7 @@ TARGET        = NodeFilter.js
 first: all
 ####### Build rules
 
-NodeFilter.js: C:\Qt\5.15.2\wasm_32\lib\libQt5Quick.a C:\Qt\5.15.2\wasm_32\lib\libQt5Gui.a C:\Qt\5.15.2\wasm_32\lib\libQt5QmlModels.a C:\Qt\5.15.2\wasm_32\lib\libQt5Qml.a C:\Qt\5.15.2\wasm_32\lib\libQt5Network.a C:\Qt\5.15.2\wasm_32\lib\libQt5Core.a $(OBJECTS)  apphtml appjs appsvg
+NodeFilter.js: C:\Qt\5.15.2\wasm_32\lib\libQt5Quick.a C:\Qt\5.15.2\wasm_32\lib\libQt5Widgets.a C:\Qt\5.15.2\wasm_32\lib\libQt5Gui.a C:\Qt\5.15.2\wasm_32\lib\libQt5QmlModels.a C:\Qt\5.15.2\wasm_32\lib\libQt5Qml.a C:\Qt\5.15.2\wasm_32\lib\libQt5Network.a C:\Qt\5.15.2\wasm_32\lib\libQt5Core.a $(OBJECTS)  apphtml appjs appsvg
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\qmake.conf ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\spec_pre.prf \
@@ -218,6 +218,7 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\resources.prf \
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\moc.prf \
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\unix\opengl.prf \
+		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\uic.prf \
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\qmake_use.prf \
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\file_copies.prf \
 		..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\testcase_targets.prf \
@@ -236,6 +237,7 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 		..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqwbmp.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqwebp.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Quick.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Widgets.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Gui.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5QmlModels.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Qml.prl \
@@ -385,6 +387,7 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\resources.prf:
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\moc.prf:
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\unix\opengl.prf:
+..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\uic.prf:
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\qmake_use.prf:
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\file_copies.prf:
 ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\features\testcase_targets.prf:
@@ -403,6 +406,7 @@ qml_qmlcache.qrc:
 ..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqwbmp.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\plugins\imageformats\libqwebp.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Quick.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Widgets.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Gui.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5QmlModels.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\lib\libQt5Qml.prl:
@@ -607,7 +611,7 @@ moc_ProxyModel.cpp: include\ProxyModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\quuid.h \
 		moc_predefs.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\bin\moc.exe
-	C:\Qt\5.15.2\wasm_32\bin\moc.exe $(DEFINES) --include C:/Users/medve/Documents/NodeFilter/moc_predefs.h -IC:/Qt/5.15.2/wasm_32/mkspecs/wasm-emscripten -IC:/Users/medve/Documents/NodeFilter -IC:/Qt/5.15.2/wasm_32/include -IC:/Qt/5.15.2/wasm_32/include/QtQuick -IC:/Qt/5.15.2/wasm_32/include/QtGui -IC:/Qt/5.15.2/wasm_32/include/QtQmlModels -IC:/Qt/5.15.2/wasm_32/include/QtQml -IC:/Qt/5.15.2/wasm_32/include/QtNetwork -IC:/Qt/5.15.2/wasm_32/include/QtCore include\ProxyModel.h -o moc_ProxyModel.cpp
+	C:\Qt\5.15.2\wasm_32\bin\moc.exe $(DEFINES) --include C:/Users/medve/Documents/NodeFilter/moc_predefs.h -IC:/Qt/5.15.2/wasm_32/mkspecs/wasm-emscripten -IC:/Users/medve/Documents/NodeFilter -IC:/Qt/5.15.2/wasm_32/include -IC:/Qt/5.15.2/wasm_32/include/QtQuick -IC:/Qt/5.15.2/wasm_32/include/QtWidgets -IC:/Qt/5.15.2/wasm_32/include/QtGui -IC:/Qt/5.15.2/wasm_32/include/QtQmlModels -IC:/Qt/5.15.2/wasm_32/include/QtQml -IC:/Qt/5.15.2/wasm_32/include/QtNetwork -IC:/Qt/5.15.2/wasm_32/include/QtCore include\ProxyModel.h -o moc_ProxyModel.cpp
 
 moc_TreeModel.cpp: include\TreeModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QAbstractItemModel \
@@ -705,12 +709,14 @@ moc_TreeModel.cpp: include\TreeModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qregularexpression.h \
 		moc_predefs.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\bin\moc.exe
-	C:\Qt\5.15.2\wasm_32\bin\moc.exe $(DEFINES) --include C:/Users/medve/Documents/NodeFilter/moc_predefs.h -IC:/Qt/5.15.2/wasm_32/mkspecs/wasm-emscripten -IC:/Users/medve/Documents/NodeFilter -IC:/Qt/5.15.2/wasm_32/include -IC:/Qt/5.15.2/wasm_32/include/QtQuick -IC:/Qt/5.15.2/wasm_32/include/QtGui -IC:/Qt/5.15.2/wasm_32/include/QtQmlModels -IC:/Qt/5.15.2/wasm_32/include/QtQml -IC:/Qt/5.15.2/wasm_32/include/QtNetwork -IC:/Qt/5.15.2/wasm_32/include/QtCore include\TreeModel.h -o moc_TreeModel.cpp
+	C:\Qt\5.15.2\wasm_32\bin\moc.exe $(DEFINES) --include C:/Users/medve/Documents/NodeFilter/moc_predefs.h -IC:/Qt/5.15.2/wasm_32/mkspecs/wasm-emscripten -IC:/Users/medve/Documents/NodeFilter -IC:/Qt/5.15.2/wasm_32/include -IC:/Qt/5.15.2/wasm_32/include/QtQuick -IC:/Qt/5.15.2/wasm_32/include/QtWidgets -IC:/Qt/5.15.2/wasm_32/include/QtGui -IC:/Qt/5.15.2/wasm_32/include/QtQmlModels -IC:/Qt/5.15.2/wasm_32/include/QtQml -IC:/Qt/5.15.2/wasm_32/include/QtNetwork -IC:/Qt/5.15.2/wasm_32/include/QtCore include\TreeModel.h -o moc_TreeModel.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
+compiler_uic_make_all:
+compiler_uic_clean:
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
@@ -926,6 +932,46 @@ TreeModel.obj: src\TreeModel.cpp include\TreeModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qfileinfo.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QElapsedTimer \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qelapsedtimer.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\QFileDialog \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qfiledialog.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qtwidgetsglobal.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qtwidgets-config.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurl.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurlquery.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qdialog.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qwidget.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpaintdevice.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qrect.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpalette.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qcolor.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qrgb.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qrgba64.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qbrush.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qmatrix.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpolygon.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qregion.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qline.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qtransform.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qimage.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpixelformat.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpixmap.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfont.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfontmetrics.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfontinfo.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qsizepolicy.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qcursor.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qkeysequence.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qevent.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qvector2d.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qtouchdevice.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonDocument \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsondocument.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsonvalue.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qcborvalue.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qdatetime.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qcborcommon.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonObject \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsonobject.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QRandomGenerator \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qrandom.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o TreeModel.obj src\TreeModel.cpp
@@ -1122,11 +1168,42 @@ main.obj: src\main.cpp include\ProxyModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QMultiMap \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QPersistentModelIndex \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QVariant \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\QApplication \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qapplication.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qtwidgetsglobal.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qtwidgets-config.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qcursor.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qdesktopwidget.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qwidget.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpaintdevice.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qrect.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpalette.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qcolor.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qrgb.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qrgba64.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qbrush.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qmatrix.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpolygon.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qregion.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qdatastream.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qline.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qtransform.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qimage.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpixelformat.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qpixmap.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfont.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfontmetrics.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qfontinfo.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtWidgets\qsizepolicy.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qkeysequence.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qevent.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurl.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurlquery.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qvector2d.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qtouchdevice.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\QQmlApplicationEngine \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\qqmlapplicationengine.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\qqmlengine.h \
-		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurl.h \
-		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qurlquery.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\qjsengine.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\qjsvalue.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtQml\qtqmlglobal.h \

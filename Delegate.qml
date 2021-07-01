@@ -101,7 +101,7 @@ Component {
 //                height:30
                 clip: true
                 objectName: "search"
-                placeholderText: "Search here"
+                placeholderText: "Find"
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
                     var row = nodeTree.rowAtY(posInTreeView, true)
@@ -226,6 +226,7 @@ headerVisible: false
 //                styleHints.indent: 25
 //                styleHints.columnPadding: 30
                 Component.onCompleted: {
+
 //                    var posInTreeView = mapToItem(nodeTree, 0, 0)
 //                    var row = nodeTree.rowAtY(posInTreeView, true)
 //                    nodeTree.currentIndex = nodeTree.viewIndex(0, 0)
@@ -334,14 +335,14 @@ headerVisible: false
                                                   nodeTree.currentIndex),
                                               false)
                         return
-                    } else if ((event.key === Qt.Key_S)
+                    } /*else if ((event.key === Qt.Key_S)
                                && (event.modifiers & Qt.ControlModifier)) {
                         event.accepted = true
 
                         //serialize/save Ctrl S
                         myClass.save()
                         return
-                    } else if ((event.key === Qt.Key_5)
+                    }*/ else if ((event.key === Qt.Key_5)
                                && (event.modifiers & Qt.ControlModifier)) {
                         event.accepted = true
                         //serialize/save Ctrl S
@@ -674,7 +675,7 @@ text: model.edit
                                     }
                                     if(content.text == "Tags"){
 
-                                        myClass.kok1();
+                                        myClass.loadFile();
                                         return;
                                     }
 
@@ -746,6 +747,8 @@ text: model.edit
                                     widthChanged()
                                 }
                             }
+
+
 //                            MouseArea {
 //                                acceptedButtons: Qt.NoButton
 //                                hoverEnabled: true

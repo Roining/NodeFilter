@@ -69,6 +69,8 @@ public:
   QHash<int, QByteArray> roleNames() const override;
   Q_INVOKABLE void saveIndex(const QModelIndex &index);
   Q_INVOKABLE void save();
+  //  Q_INVOKABLE void saveIDBFS();
+
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
 
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
@@ -101,7 +103,8 @@ public:
   void setupModelData(const QStringList &lines, TreeNode *parent);
   Q_INVOKABLE bool acceptsCopies(const QModelIndex &index);
   Q_INVOKABLE void kok();
-  Q_INVOKABLE void kok1();
+  Q_INVOKABLE void loadFile();
+  //  Q_INVOKABLE void syncStorage();
 
 private:
   QPersistentModelIndex

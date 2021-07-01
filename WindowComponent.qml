@@ -41,21 +41,30 @@ ApplicationWindow {
     }
 
 
+//    Shortcut {
+//        sequence: "Ctrl+Shift+Q"
+//        onActivated: {
+//            console.log("khjkhk")
+
+//myClass.kok();
+//        }
+//    }
+
     Shortcut {
-        sequence: "Ctrl+Shift+Q"
+        sequence: "Ctrl+Shift+O"
         onActivated: {
 
-myClass.kok();
+myClass.loadFile();
         }
     }
+
     Shortcut {
-        sequence: "Ctrl+Shift+J"
+        sequence: "Ctrl+Shift+S"
         onActivated: {
 
-myClass.kok1();
+myClass.save();
         }
     }
-
 
     Shortcut {
         sequence: "Ctrl+Shift+Y"
@@ -78,29 +87,7 @@ myClass.kok1();
 
         }
     }
-    Shortcut {
-        sequence: "Ctrl+Shift+H"
-        onActivated: {
-            var component = Qt.createComponent("WindowComponent.qml")
-            var window = component.createObject(root)
-            root.array.push(window)
 
-            window.showMaximized()
-            var Randomnumber = Math.random().toString(36).substr(2, 5)
-            var component1 = Qt.createQmlObject(
-                        "import TreeModel.com 1.0; Filtering { id: car_"
-                        + Randomnumber + "; }", window)
-            var Randomnumber1 = Math.random().toString(36).substr(2, 5)
-            var delegateInstance = Qt.createQmlObject(
-                        "Delegate { id: car_" + Randomnumber1 + "; }",
-                        window)
-
-            window.viewArray.push(delegateInstance.createObject(
-                                      window.splitView, {
-                                          "test": component1
-                                      }))
-        }
-    }
 
     SplitView {
            id: splitViewInstance
