@@ -3,7 +3,7 @@ Node Filter is a knowledge management tool  which relies on the concepts of tran
  
  User input  is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
 # Demo
-WebAssembly port of NodeFilter with a guide to NodeFilter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/
+WebAssembly port of NodeFilter with a guide to NodeFilter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
 Web version of NodeFilter is meant to be used only as a demo, it is not identical to the desktop application and has several limitations which are explained in the demo.  
 
 # Community
