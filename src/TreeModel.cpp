@@ -449,13 +449,7 @@ void TreeModel::serialize(TreeNode &node, QDataStream &stream) {
 }
 void TreeModel::serializeCleanUp(TreeNode &node) {
 
-  if (node.siblingItems().size() > 1) {
 
-    for (int i = 0; i < node.siblingItems().size(); i++) {
-
-      node.tempParents.append(node.siblingItems()[i]->parentItem->id);
-    }
-  }
   if (node.siblingItems().size() > 1) {
     TreeNode *check = nullptr;
     for (int i = 0; i < node.siblingItems().size(); i++) {
@@ -469,6 +463,10 @@ void TreeModel::serializeCleanUp(TreeNode &node) {
                              node.parent()->children().indexOf(&node));
 
     } else {
+        for (int i = 0; i < node.siblingItems().size(); i++) {
+
+          node.tempParents.append(node.siblingItems()[i]->parentItem->id);
+        }
       node.position.insert(node.parentItem->id,
                            node.parent()->children().indexOf(&node));
     }
