@@ -2,16 +2,22 @@ QT += quick
 QT += widgets
 
 
-
+CONFIG+=disable-desktop
 
 CONFIG += c++11
-#QMAKE_CXXFLAGS += --preload-file storage.dat
+#QMAKE_LFLAGS_WINDOWS += --preload-file storage.dat
+#QMAKE_LFLAGS_WINDOWS += -s TOTAL_MEMORY=32MB
+#QMAKE_CXXFLAGS += NO_EXIT_RUNTIME=1
 #CONFIG += debug
 #DESTDIR = $$PWD
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 TARGET = NodeFilter
+
+    QTPLUGIN += qtvirtualkeyboardplugin
+    QT += svg
+
 
 SOURCES += \
     src/ProxyModel.cpp \

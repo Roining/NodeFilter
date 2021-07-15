@@ -1,35 +1,83 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 //import QtQuick.Controls 1.4
-
-//import QtQuick.Window 2.12
+import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
 import TreeModel.com 1.0
 import Qt.labs.platform 1.0
 import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
 import Qt.labs.settings 1.0
+//import QtQuick.Controls.Styles 1.4
+import QtQuick.VirtualKeyboard 2.15
+import QtQuick.VirtualKeyboard.Styles 2.15
+import QtQuick.VirtualKeyboard.Settings 2.15
+
+Item{
+    id:ur
 
 ApplicationWindow {
+
     id: root
 
+    function isDevice() {
+        console.log("pcisDevice4444")
+
+//        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(navigator.userAgent);
+    }
     property var array: []
     property var arrayOfWindows: []
 //    property Settings settings: Settings {
 //        property var windows: []
 //    }
+    Component.onDestruction: {
+        console.log("destrooooy")
+
+    }
+    InputPanel {
+        id: inputPanel
+                y: parent.height - inputPanel.height -50
+                width: parent.width
+                             Component.onCompleted: {
+
+
+
+if(!myClass.isMobile()){
+                                  console.log("non-mobile")
+
+ inputPanel.destroy();
+}
+
+
+
+                             }
+
+        }
+
+
 onClosing: {
-//    close.accepted = false
+    console.log("cloooose")
+    close.accepted = false
 //            onTriggered:  copyDialog1.open();
 
 
 //    myClass.save()
 
 }
-    visible: false
+    visible: true
     Component.onCompleted: {
 
+//        if(!root.isDevice()){
+//                                          console.log("pc")
+
+////            inputPanel.destroy();
+//        }
+
 //        if (settings.windows.length === 0) {
+        Qt.inputMethod.visibleChanged.connect(function () {
+            if (Qt.inputMethod.visible)
+                Qt.inputMethod.hide()
+        })
             var component = Qt.createComponent("WindowComponent.qml")
             var window = component.createObject(root)
             root.array.push(window)
@@ -102,4 +150,27 @@ onClosing: {
 
         }
     }
+
+}
+//InputPanel {
+//        id: inputPanel
+//        y: Screen.orientation === Qt.LandscapeOrientation ? parent.height : parent.width + (parent.height-parent.width) / 2
+////        y: Qt.inputMethod.visible ? parent.height - inputPanel.height : parent.height
+
+//        anchors.left: parent.left
+//        anchors.right: parent.right
+//    }
+//InputPanel {
+//    id: inputPanel
+//                z: 89
+//                y: yPositionWhenHidden
+//                x: Screen.orientation === Qt.LandscapeOrientation ? 0 : (parent.width-parent.height) / 2
+//                width: Screen.orientation === Qt.LandscapeOrientation ? parent.width : parent.height
+
+//                keyboard.shadowInputControl.height: (Screen.orientation === Qt.LandscapeOrientation ? parent.height : parent.width) - keyboard.height
+
+//                property real yPositionWhenHidden: Screen.orientation === Qt.LandscapeOrientation ? parent.height : parent.width + (parent.height-parent.width) / 2
+//    }
+
+
 }

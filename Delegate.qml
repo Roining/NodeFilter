@@ -4,16 +4,149 @@ import QtQuick.Controls 1.4 as QCY
 
 //import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
-import Qt.labs.platform 1.0
+//import Qt.labs.platform 1.0
 import QtQuick.Dialogs 1.1
 import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
+//import Qt.labs.platform 1.1
 import QtQuick.Controls.Styles 1.4
+//import QtQuick.VirtualKeyboard 2.15
+//import QtQuick.VirtualKeyboard.Styles 2.15
+//import QtQuick.VirtualKeyboard.Settings 2.15
 
 Component {
 
     Item {
 
+        Menu {
+                 id:uniqueid1
+
+
+
+                 MenuItem { text: "Insert a node"
+                 onTriggered: {
+                     console.log("ytyyyyyyy")
+                     var position = myClass.position(
+                                 nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex))
+                     myClass.insertRows(
+                                 position + 1, 1, nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex).parent) //TODO
+
+                 }
+                 }
+                 MenuItem { text: "Insert a node as a child"
+                 onTriggered: {
+                     myClass.insertRows(
+                                 0, 1, nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex)) //TODO
+                     nodeTree.expand(nodeTree.currentIndex)
+
+                 }
+                 }
+                 MenuItem { text: "Copy the Id of the node"
+                 onTriggered: {
+                     var id = myClass.getId(
+                                 nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex))
+
+                     search.forceActiveFocus()
+
+                                             search.append(id)
+                 }}
+
+                 MenuItem { text: "Copy a node"
+                 onTriggered: {
+                     myClass.saveIndex(
+                                                        nodeTree.model.mapToSource(
+                                                            nodeTree.currentIndex)) //TODO
+                 }
+                 }
+
+                 MenuItem { text: "Paste a copied node"
+                 onTriggered: {
+                     console.log("ctrl-m")
+
+                     var position = myClass.position(
+                                 nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex))
+
+                     myClass.copyRows(
+                                 position + 1, 1, nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex).parent,
+                                 myClass.getLastIndex()) //TODO
+                 }
+                 }
+                 MenuItem { text: "Paste a copied node as a child"
+                 onTriggered: {
+                     myClass.copyRows(0, 1, nodeTree.model.mapToSource(
+                                          nodeTree.currentIndex),
+                                      myClass.getLastIndex()) //TODO
+                     nodeTree.expand(nodeTree.currentIndex)
+
+                 }
+                 }
+                 MenuItem { text: "Delete a node"
+                 onTriggered: {
+                     var position = myClass.position(
+                                 nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex))
+
+                     myClass.removeRows(
+                                 position, 1, nodeTree.model.mapToSource(
+                                     nodeTree.currentIndex).parent) //TODO
+                 }
+                 }
+                 MenuItem { text: "Save the storage"
+                 onTriggered: {
+        myClass.save();
+                 }
+                 }
+                 MenuItem { text: "Load the storage"
+                 onTriggered: {
+        myClass.loadFile();
+                 }
+                 }
+                 MenuItem { text: "Open a new pane"
+                 onTriggered: {
+
+
+        //                     var Randomnumber = Math.random().toString(36).substr(2, 5)
+        //                                var component = Qt.createQmlObject(
+        //                                            "import TreeModel.com 1.0; Filtering { id: car_" + Randomnumber + "; }",
+        //                                            viewInstance.parent.parent.root)
+        //                                var Randomnumber1 = Math.random().toString(36).substr(2, 5)
+        //                                var delegateInstance = Qt.createQmlObject(
+        //                                            "Delegate { id: car_" + Randomnumber1 + "; }", viewInstance.parent.parent.root)
+
+        //                                var ut = delegateInstance.createObject(viewInstance.parent.parent, {
+        //                                                                           "test": component
+        //                                                                       })
+                    viewInstance.parent.parent.root.newPane();
+                 }
+                 }
+                 MenuItem { text: "Close a pane"
+                               onTriggered: {
+                                   viewInstance.destroy()
+
+                               }
+                               }
+                 MenuItem { text: "Mark as a template"
+                 onTriggered: {
+                     myClass.acceptsCopies(nodeTree.model.mapToSource(
+                                                                     nodeTree.currentIndex),
+                                                                 false)
+                 }
+                 }
+                 MenuItem { text: "Unmark as a template"
+                 onTriggered: {
+                     myClass.acceptsCopies(nodeTree.model.mapToSource(
+                                                                       nodeTree.currentIndex),
+                                                                   true)
+                 }
+                 }
+
+             }
         id: viewInstance
 //width:parent.width
 //height:parent.height
@@ -90,6 +223,32 @@ Component {
             height: parent.height
             anchors.fill: parent
             spacing: 0
+//            Button{
+//                id:button
+//            width: viewInstance.width
+//            height:100
+//            text: "Save"
+//                     onClicked: {
+//                     console.log("button")
+//                         myClass.save()
+
+
+//                     }
+
+//            }
+//            Button{
+//                id:button1
+//            width: viewInstance.width
+//            height:100
+//            text: "Load"
+//                     onClicked: {
+//                     console.log("button1")
+//                         myClass.loadFile();
+
+
+//                     }
+
+//            }
             TextArea {
                 id: search
 
@@ -113,6 +272,9 @@ Component {
                 onTextChanged: {
 
                     nodeTree.model.setQuery(text)
+//                    myClass.save()
+
+
                 }
 
             }
@@ -241,7 +403,11 @@ headerVisible: false
                     if ((event.key === Qt.Key_P)
                             && (event.modifiers & Qt.ControlModifier)
                             && (event.modifiers & Qt.ShiftModifier)) {
+
                              event.accepted = true
+
+
+
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentIndex),
                                               true)
@@ -617,6 +783,7 @@ text: model.edit
 //                                                nodeTree.currentIndex).item.forceActiveFocus()
 //                                }
 //                            }
+
 //                        }
 //                        Text {
 //                            id: expandIndicator
@@ -653,41 +820,60 @@ text: model.edit
 //                                }
 //                            }
 //                        }
-                        Text {
+
+
+
+                        Button {
                             id: dot
 
 //                            x: depth * nodeTree.styleHints.indent + 15
                             x:  depth
+width:20
+background: Rectangle {
+                color:  "white"
+        }
 
-                            color: "black"
+//                            color: "black"
                             anchors.leftMargin: 100
-                            font.pixelSize:10
-//                            font: nodeTree.styleHints.font
-                            text: "⬤"
+
+
                             anchors.verticalCenter: parent.verticalCenter
 
-                            TapHandler {
-                                id: dotTapHandler
-                                onTapped: {
-                                    if(content.text == "Examples"){
-                                    myClass.save()
-                                        return;
-                                    }
-                                    if(content.text == "Tags"){
+                            Text{
+                                id:textDot
+                                anchors.fill:parent
+                                 text: "⬤"
+                                   font.pixelSize:10
+                                   //                            font: nodeTree.styleHints.font
 
-                                        myClass.loadFile();
-                                        return;
-                                    }
-
-//                                    search.forceActiveFocus();
-//                                    search.clear();
-//                                    search.append(">:" + myClass.getId(
-//                                                      nodeTree.model.mapToSource(
-//                                                          nodeTree.currentIndex)));
-//                                    return;
-
-                                }
                             }
+onClicked: {
+
+    uniqueid1.open();}
+//                            TapHandler {
+//                                id: dotTapHandler
+
+//                                onTapped: {
+
+//                                    if(content.text == "Examples"){
+//                                    myClass.save()
+//                                        return;
+//                                    }
+//                                    if(content.text == "Tags"){
+
+//                                        myClass.loadFile();
+//                                        return;
+//                                    }
+
+////                                    search.forceActiveFocus();
+////                                    search.clear();
+////                                    search.append(">:" + myClass.getId(
+////                                                      nodeTree.model.mapToSource(
+////                                                          nodeTree.currentIndex)));
+////                                    return;
+
+//                                }
+//                            }
                         }
 
                         TextArea {
@@ -703,7 +889,10 @@ text: model.edit
                             objectName: "text"
 //                            wrapMode: "WrapAnywhere"
                             textFormat: TextEdit.PlainText
-
+//                            background: Rectangle {
+//                                            color: uniqueid1.activeFocus ? "white" :
+//                                                     "green"
+//                                    }
                             clip: true
                             font.pointSize: 18
                             anchors.left: dot.right
@@ -711,18 +900,19 @@ text: model.edit
                             text: model.edit
                             onActiveFocusChanged: {
                                 if (activeFocus) {
+
                                     if (myClass.hasMultipleSiblings(
                                                 nodeTree.model.mapToSource(
                                                     nodeTree.currentIndex))) {
-                                        dot.color = "blue"
+                                        textDot.color = "blue"
                                     }
                                     if (!myClass.acceptsCopies(
                                                 nodeTree.model.mapToSource(
                                                     nodeTree.currentIndex))) {
-                                        dot.color = "green"
+                                        textDot.color = "green"
                                     }
                                 } else {
-                                    dot.color = "black"
+                                    textDot.color = "black"
                                 }
                             }
 
@@ -774,6 +964,21 @@ text: model.edit
 //                                    }
 //                                }
 //                            }
+
+
+                            Shortcut {
+                                sequence: "Ctrl+Shift+B"
+                                onActivated: {
+//                                    event.accepted = true
+                                                       //insert new node as a child Ctrl Shift N
+                                                       myClass.insertRows(
+                                                                   0, 1, nodeTree.model.mapToSource(
+                                                                       nodeTree.currentIndex)) //TODO
+                                                       nodeTree.expand(nodeTree.currentIndex)
+
+                                }
+                            }
+
                         }
                     }
                 }

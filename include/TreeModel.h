@@ -10,6 +10,7 @@
 #include <QPersistentModelIndex>
 #include <QUuid>
 #include <QVariant>
+//#include <emscripten.h>
 #include <include/ProxyModel.h>
 
 extern QApplication *a;
@@ -104,14 +105,18 @@ public:
   Q_INVOKABLE bool acceptsCopies(const QModelIndex &index);
   Q_INVOKABLE void kok();
   Q_INVOKABLE void loadFile();
+  Q_INVOKABLE bool isMobile();
+  Q_INVOKABLE void setPlatform(bool isMobile);
+
   //  Q_INVOKABLE void syncStorage();
+  TreeNode *rootItem;
 
 private:
+  bool isPlatformMobile = false;
   QPersistentModelIndex
       last; // TODO should it remain static? Related to copyRows
   QMultiMap<QUuid, QUuid> container;
   QMap<QUuid, TreeNode *> map;
-  TreeNode *rootItem;
 };
 //! [2]
 

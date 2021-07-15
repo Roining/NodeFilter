@@ -3,16 +3,34 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
 #include <QtPlugin>
+
+#include <emscripten.h>
 
 // Q_IMPORT_PLUGIN(QtQuickControls1Plugin);
 // Q_IMPORT_PLUGIN(QtQuickControls2Plugin);
 
 int main(int argc, char *argv[]) {
+  qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
+
+  //  app.setAutoSipEnabled(false);
+  //  QInputMethod *input;
+  //  input = QGuiApplication::inputMethod();
+
+  ////  input->setVisible(false);
+
   //  a = &app;
+  // clang-format off
+  EM_ASM(
+             window.onbeforeunload = function (e) {
+                  e = e || window.event;
+                  return 'Sure';
+              };
+      );
+  // clang-format on
   app.setQuitOnLastWindowClosed(false);
   app.setOrganizationName("Node Filter");
   app.setOrganizationDomain("NodeFilter.com");
@@ -21,6 +39,7 @@ int main(int argc, char *argv[]) {
   QQmlApplicationEngine engine;
   engine.rootContext()->setContextProperty("myClass", &myClass1);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
+
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,
       [url](QObject *obj, const QUrl &objUrl) {
@@ -30,6 +49,10 @@ int main(int argc, char *argv[]) {
       Qt::QueuedConnection);
   QObject::connect(&engine, &QQmlApplicationEngine::quit, &QApplication::quit);
   engine.load(url);
+  qDebug() << "file.readAll()";
 
+  //  emscripten_exit_with_live_runtime();
   return app.exec();
+
+  //  emscripten_exit_with_live_runtime();
 }

@@ -7,14 +7,28 @@
 #include <QElapsedTimer>
 //#include <QFileDialog>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QGuiApplication>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
 
-//#include <emscripten.h>
-TreeModel::TreeModel(QObject *parent) {
+#include <emscripten.h>
 
+// const char *QWasmIntegration::beforeunloadCallback(int eventType,
+//                                                   const void *reserved,
+//                                                   void *userData)
+
+//{
+//  return "Do you really want to leave the page?";
+//}
+extern TreeModel myClass1;
+TreeModel::TreeModel(QObject *parent) {
+  //  EM_ASM(console.log("bbbbbb"); window.onbeforeunload = function(e) {
+  //    e = e || window.event;
+  //    console.log("aaaaaa");
+  //    return 'Sure';
+  //  };);
   //  QFile file("IDBFS/storage.dat");
   QFile file("storage.dat");
 
@@ -44,23 +58,57 @@ TreeModel::TreeModel(QObject *parent) {
   //      // Then mount with IDBFS type
   //      FS.mount(IDBFS, {}, '/IDBFS'); console.log("eeeeeeee  ");
 
-  //      // Then sync
-  //      FS.syncfs(true,
-  //                function(err){
-  //                    // Error
-  //                    console.log("ssssssssss  " + err)
+  //          // Then sync
+  //          //        FS.syncfs(true,
+  //          //                  function(err){
+  //          //                      // Error
+  //          //                      console.log("ssssssssss  " + err)
 
-  //                    //                ccall('callback3', 'v', '', []);
-  //                });
-  //      console.log("22222  ");
+  //          //                      //                ccall('callback3', 'v',
+  //          '',
+  //          []);
+  //  //                  });
+  //  console.log("22222  ");
 
-  //  );
+  //    ); //TODO
+  // clang-format off
+// clang-format off
+  EM_ASM(/*if (typeof window.orientation == 'undefined') {
+    console.log("true")
+  } else {console.log("false")
+
+  }*/
+
+
+         var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  console.log("heeeeeeeeeeey1"); /* your code here */
+
+         if(isMobile) {
+           console.log("MOBILE"); /* your code here */
+               Module._setPlatform(true);
+         } else {
+           console.log("PC"); /* your code here */
+               Module._setPlatform(false);
+         }
+
+         console.log("tttttt");
+        window.onbeforeunload = function (e) {
+             e = e || window.event;
+             return 'Sure';
+         };
+
+  ); // TODO
+  // clang-format on
 }
+// clang-format on
+
 Q_INVOKABLE void TreeModel::loadFile() {
   auto fileContentReady = [this](const QString &fileName,
                                  const QByteArray &fileContent) {
     if (fileName.isEmpty()) {
       // No file was selected
+    } else if (QFileInfo(fileName).completeSuffix() != "dat") {
+      qDebug() << "dataString";
     } else {
       // Use fileName and fileContent
       map.clear();
@@ -99,7 +147,7 @@ Q_INVOKABLE void TreeModel::loadFile() {
       endResetModel();
     }
   };
-  QFileDialog::getOpenFileContent("Images (*.png *.xpm *.jpg)",
+  QFileDialog::getOpenFileContent("Image Files (*.png *.jpg *.bmp)",
                                   fileContentReady);
 }
 
@@ -499,22 +547,13 @@ void TreeModel::saveIndex(const QModelIndex &index) {
   return;
 }
 void TreeModel::save() {
+
+  // void EMSCRIPTEN_KEEPALIVE TreeModel::save() {
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
   //  QFile file("IDBFS/storage.dat");
   QFile file("storage.dat");
 
-  int value = QRandomGenerator::global()->generate();
-
-  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
-  if (!cachePath.exists()) {
-    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
-  }
-  auto isSuccessful =
-      file.copy(QStringLiteral("%1/storage.dat").arg(path),
-                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
-                    .arg(path)
-                    .arg(value));
   QByteArray ba;
   if (file.open(QIODevice::WriteOnly)) {
 
@@ -530,7 +569,7 @@ void TreeModel::save() {
     file.close();
   }
   if (file.open(QIODevice::ReadOnly)) {
-    //    qDebug() << "ba " << file.readAll();
+    qDebug() << "baaaaaaa";
 
     ba = file.readAll();
 
@@ -541,14 +580,64 @@ void TreeModel::save() {
     //    qDebug() << "1  " << ba;
     ba = file.readAll();
     //    qDebug() << "1  " << ba;
-
+    //    EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
     QFileDialog::saveFileContent(ba, "storage.dat");
 
     file.close();
   }
   //  QFile::remove("IDBFS/storage.dat");
   //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
-  //  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+}
+
+bool TreeModel::isMobile() { return isPlatformMobile; }
+void TreeModel::setPlatform(bool isMobile) { isPlatformMobile = isMobile; }
+extern "C" {
+void EMSCRIPTEN_KEEPALIVE setPlatform(bool isMobile) {
+
+  myClass1.setPlatform(isMobile);
+}
+}
+extern "C" {
+void EMSCRIPTEN_KEEPALIVE save1() {
+  QDir::setCurrent(QDir::currentPath());
+  QString path = QDir::currentPath();
+  //  QFile file("IDBFS/storage.dat");
+  QFile file("storage.dat");
+
+  QByteArray ba;
+  if (file.open(QIODevice::WriteOnly)) {
+
+    QDataStream stream(&file);
+    myClass1.serializeClear(*myClass1.rootItem);
+    myClass1.serializeCleanUp(*myClass1.rootItem);
+    myClass1.serialize(*myClass1.rootItem, stream);
+    //    qDebug() << file.readAll();
+
+    //    qDebug() << file.readAll();
+    //    qDebug() << "10  " << ba;
+
+    file.close();
+  }
+  if (file.open(QIODevice::ReadOnly)) {
+    qDebug() << "baaaaaaa";
+
+    ba = file.readAll();
+
+    file.close();
+  } // TODO: remove this from all functions
+
+  if (file.open(QIODevice::ReadWrite)) {
+    //    qDebug() << "1  " << ba;
+    ba = file.readAll();
+    //    qDebug() << "1  " << ba;
+    //    EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+    QFileDialog::saveFileContent(ba, "storage.dat");
+
+    file.close();
+  }
+  //  QFile::remove("IDBFS/storage.dat");
+  //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
+}
 }
 // void TreeModel::saveIDBFS() {
 //  QDir::setCurrent(QDir::currentPath());
