@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_TreeModel_t {
-    QByteArrayData data[41];
-    char stringdata0[406];
+    QByteArrayData data[43];
+    char stringdata0[427];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -72,7 +72,9 @@ QT_MOC_LITERAL(36, 342, 16), // "getIdToClipboard"
 QT_MOC_LITERAL(37, 359, 13), // "acceptsCopies"
 QT_MOC_LITERAL(38, 373, 19), // "hasMultipleSiblings"
 QT_MOC_LITERAL(39, 393, 3), // "kok"
-QT_MOC_LITERAL(40, 397, 8) // "loadFile"
+QT_MOC_LITERAL(40, 397, 8), // "loadFile"
+QT_MOC_LITERAL(41, 406, 8), // "isMobile"
+QT_MOC_LITERAL(42, 415, 11) // "setPlatform"
 
     },
     "TreeModel\0updateProxyFilter\0\0cond\0"
@@ -85,7 +87,8 @@ QT_MOC_LITERAL(40, 397, 8) // "loadFile"
     "node\0QDataStream&\0stream\0deserialize\0"
     "check\0copyRows\0source\0copyRowsAndChildren\0"
     "getId\0id\0getIdToClipboard\0acceptsCopies\0"
-    "hasMultipleSiblings\0kok\0loadFile"
+    "hasMultipleSiblings\0kok\0loadFile\0"
+    "isMobile\0setPlatform"
 };
 #undef QT_MOC_LITERAL
 
@@ -95,7 +98,7 @@ static const uint qt_meta_data_TreeModel[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      30,   14, // methods
+      32,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -103,38 +106,40 @@ static const uint qt_meta_data_TreeModel[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  164,    2, 0x06 /* Public */,
-       4,    0,  167,    2, 0x06 /* Public */,
+       1,    1,  174,    2, 0x06 /* Public */,
+       4,    0,  177,    2, 0x06 /* Public */,
 
  // methods: name, argc, parameters, tag, flags
-       5,    2,  168,    2, 0x02 /* Public */,
-       9,    1,  173,    2, 0x02 /* Public */,
-      10,    3,  176,    2, 0x02 /* Public */,
-      10,    2,  183,    2, 0x22 /* Public | MethodCloned */,
-      13,    4,  188,    2, 0x02 /* Public */,
-      17,    3,  197,    2, 0x02 /* Public */,
-      17,    2,  204,    2, 0x22 /* Public | MethodCloned */,
-      18,    1,  209,    2, 0x02 /* Public */,
-      19,    0,  212,    2, 0x02 /* Public */,
-      20,    0,  213,    2, 0x02 /* Public */,
-      22,    1,  214,    2, 0x02 /* Public */,
-      24,    2,  217,    2, 0x02 /* Public */,
-      29,    3,  222,    2, 0x02 /* Public */,
-      29,    2,  229,    2, 0x22 /* Public | MethodCloned */,
-      31,    4,  234,    2, 0x02 /* Public */,
-      31,    3,  243,    2, 0x22 /* Public | MethodCloned */,
-      31,    2,  250,    2, 0x22 /* Public | MethodCloned */,
-      33,    4,  255,    2, 0x02 /* Public */,
-      33,    3,  264,    2, 0x22 /* Public | MethodCloned */,
-      33,    2,  271,    2, 0x22 /* Public | MethodCloned */,
-      34,    1,  276,    2, 0x02 /* Public */,
-      11,    1,  279,    2, 0x02 /* Public */,
-      36,    1,  282,    2, 0x02 /* Public */,
-      37,    2,  285,    2, 0x02 /* Public */,
-      38,    1,  290,    2, 0x02 /* Public */,
-      37,    1,  293,    2, 0x02 /* Public */,
-      39,    0,  296,    2, 0x02 /* Public */,
-      40,    0,  297,    2, 0x02 /* Public */,
+       5,    2,  178,    2, 0x02 /* Public */,
+       9,    1,  183,    2, 0x02 /* Public */,
+      10,    3,  186,    2, 0x02 /* Public */,
+      10,    2,  193,    2, 0x22 /* Public | MethodCloned */,
+      13,    4,  198,    2, 0x02 /* Public */,
+      17,    3,  207,    2, 0x02 /* Public */,
+      17,    2,  214,    2, 0x22 /* Public | MethodCloned */,
+      18,    1,  219,    2, 0x02 /* Public */,
+      19,    0,  222,    2, 0x02 /* Public */,
+      20,    0,  223,    2, 0x02 /* Public */,
+      22,    1,  224,    2, 0x02 /* Public */,
+      24,    2,  227,    2, 0x02 /* Public */,
+      29,    3,  232,    2, 0x02 /* Public */,
+      29,    2,  239,    2, 0x22 /* Public | MethodCloned */,
+      31,    4,  244,    2, 0x02 /* Public */,
+      31,    3,  253,    2, 0x22 /* Public | MethodCloned */,
+      31,    2,  260,    2, 0x22 /* Public | MethodCloned */,
+      33,    4,  265,    2, 0x02 /* Public */,
+      33,    3,  274,    2, 0x22 /* Public | MethodCloned */,
+      33,    2,  281,    2, 0x22 /* Public | MethodCloned */,
+      34,    1,  286,    2, 0x02 /* Public */,
+      11,    1,  289,    2, 0x02 /* Public */,
+      36,    1,  292,    2, 0x02 /* Public */,
+      37,    2,  295,    2, 0x02 /* Public */,
+      38,    1,  300,    2, 0x02 /* Public */,
+      37,    1,  303,    2, 0x02 /* Public */,
+      39,    0,  306,    2, 0x02 /* Public */,
+      40,    0,  307,    2, 0x02 /* Public */,
+      41,    0,  308,    2, 0x02 /* Public */,
+      42,    1,  309,    2, 0x02 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -169,6 +174,8 @@ static const uint qt_meta_data_TreeModel[] = {
     QMetaType::Bool, 0x80000000 | 6,    7,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Bool,
+    QMetaType::Void, QMetaType::Bool,   41,
 
        0        // eod
 };
@@ -227,6 +234,9 @@ void TreeModel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 28: _t->kok(); break;
         case 29: _t->loadFile(); break;
+        case 30: { bool _r = _t->isMobile();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 31: _t->setPlatform((*reinterpret_cast< bool(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -277,13 +287,13 @@ int TreeModel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 30)
+        if (_id < 32)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 30;
+        _id -= 32;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 30)
+        if (_id < 32)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 30;
+        _id -= 32;
     }
     return _id;
 }
