@@ -12,7 +12,6 @@ import Qt.labs.settings 1.0
 import QtQuick.VirtualKeyboard 2.15
 import QtQuick.VirtualKeyboard.Styles 2.15
 import QtQuick.VirtualKeyboard.Settings 2.15
-import App 1.0
 
 Item{
     id:ur

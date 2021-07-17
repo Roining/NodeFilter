@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls 1.4 as QCY
-import App 1.0
+
 
 //import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
