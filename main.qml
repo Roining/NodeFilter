@@ -12,14 +12,16 @@ import Qt.labs.settings 1.0
 import QtQuick.VirtualKeyboard 2.15
 import QtQuick.VirtualKeyboard.Styles 2.15
 import QtQuick.VirtualKeyboard.Settings 2.15
+import App 1.0
 
 Item{
     id:ur
-
+Component.onCompleted: {
+  }
 ApplicationWindow {
 
     id: root
-
+    property alias input: inputPanel
     function isDevice() {
         console.log("pcisDevice4444")
 
@@ -36,8 +38,38 @@ ApplicationWindow {
     }
     InputPanel {
         id: inputPanel
-                y: parent.height - inputPanel.height -50
+//        active:false
+        z:1000
+        y:Qt.inputMethod.visible?parent.height - inputPanel.height -50:parent.height
+//        externalLanguageSwitchEnabled:true
+//                y: inputPanel.active? parent.height - inputPanel.height -50:parent.height -50
+                property int  hidden: parent.height - inputPanel.height -50
                 width: parent.width
+//                states: State {
+//                    name: "visible"
+//                    /*  The visibility of the InputPanel can be bound to the Qt.inputMethod.visible property,
+//                        but then the handwriting input panel and the keyboard input panel can be visible
+//                        at the same time. Here the visibility is bound to InputPanel.active property instead,
+//                        which allows the handwriting panel to control the visibility when necessary.
+//                    */
+//                    when: inputPanel.active
+//                    PropertyChanges {
+//                        target: inputPanel
+//                        y: parent.height - inputPanel.height -50
+//                        opacity: 1
+//                                        visible: true
+//                    }
+//                }
+//                State {
+//                           name: "hidden"
+//                           when: !inputPanel.active
+//                           PropertyChanges {
+//                               target: inputPanel
+//                               y: parent.height
+//                               opacity: 0
+//                               visible:false
+//                           }
+//                       }
                              Component.onCompleted: {
 
 
@@ -74,10 +106,7 @@ onClosing: {
 //        }
 
 //        if (settings.windows.length === 0) {
-        Qt.inputMethod.visibleChanged.connect(function () {
-            if (Qt.inputMethod.visible)
-                Qt.inputMethod.hide()
-        })
+
             var component = Qt.createComponent("WindowComponent.qml")
             var window = component.createObject(root)
             root.array.push(window)

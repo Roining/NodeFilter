@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls 1.4 as QCY
+import App 1.0
 
 //import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
@@ -249,6 +250,7 @@ Component {
 //                     }
 
 //            }
+
             TextArea {
                 id: search
 
@@ -261,6 +263,18 @@ Component {
                 clip: true
                 objectName: "search"
                 placeholderText: "Find"
+
+                onActiveFocusChanged: {
+                if(activeFocus){
+
+
+                            Qt.inputMethod.hide(); // hide the keyboard
+
+                }
+                }
+                Component.onCompleted: {
+
+                                         }
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
                     var row = nodeTree.rowAtY(posInTreeView, true)
@@ -279,7 +293,10 @@ Component {
 
             }
 
+//    anchors.FILL:parent
+
             QCY.TreeView {
+
                 id: nodeTree
                 property int  currentRow
                 property int  coHeight
@@ -388,6 +405,8 @@ headerVisible: false
 //                styleHints.indent: 25
 //                styleHints.columnPadding: 30
                 Component.onCompleted: {
+
+
 
 //                    var posInTreeView = mapToItem(nodeTree, 0, 0)
 //                    var row = nodeTree.rowAtY(posInTreeView, true)
@@ -685,6 +704,7 @@ var query =">:" + myClass.getId(
                     }
 rowDelegate:Component{
 id:pt
+
 Rectangle{
 
 id:ot
@@ -738,7 +758,11 @@ text: model.edit
                     id: delegateComponent
 
                     Rectangle {
+                        Component.onCompleted: {
 
+
+
+                        }
                         border.color: "white"
                         id: delegateRoot
 
@@ -846,7 +870,9 @@ background: Rectangle {
                                    font.pixelSize:10
                                    //                            font: nodeTree.styleHints.font
 
-                            }
+    Component.onCompleted: {
+
+    }                        }
 onClicked: {
 
     uniqueid1.open();}
@@ -879,6 +905,7 @@ onClicked: {
                         TextArea {
                             id: content
 
+
                             onContentHeightChanged: {
                                nodeTree.currentRow = styleData.row
                             nodeTree.coHeight = contentHeight}
@@ -893,6 +920,7 @@ onClicked: {
 //                                            color: uniqueid1.activeFocus ? "white" :
 //                                                     "green"
 //                                    }
+
                             clip: true
                             font.pointSize: 18
                             anchors.left: dot.right
@@ -900,6 +928,12 @@ onClicked: {
                             text: model.edit
                             onActiveFocusChanged: {
                                 if (activeFocus) {
+                                    console.log("onActiveFocusChanged " )
+
+
+//                                            Qt.inputMethod.hide(); // hide the keyboard
+
+//                                    viewInstance.parent.parent.root.parent.input.active == true
 
                                     if (myClass.hasMultipleSiblings(
                                                 nodeTree.model.mapToSource(
@@ -912,6 +946,8 @@ onClicked: {
                                         textDot.color = "green"
                                     }
                                 } else {
+//                                    viewInstance.parent.parent.parent.input.active == false
+
                                     textDot.color = "black"
                                 }
                             }
@@ -982,7 +1018,13 @@ onClicked: {
                         }
                     }
                 }
+//                               ScrollBar.vertical: ScrollBar {
+//                                   id: vbar
 
+//                                   width: 12
+//                                   policy: ScrollBar.AlwaysOn
+//                                   active: true
+//                               }
 //                ScrollBar.horizontal: ScrollBar {
 //                    id: hbar
 
@@ -990,14 +1032,26 @@ onClicked: {
 //                    policy: ScrollBar.AlwaysOn
 //                    active: true
 //                }
-//                ScrollBar.vertical: ScrollBar {
-//                    id: vbar
 
-//                    width: 12
-//                    policy: ScrollBar.AlwaysOn
-//                    active: true
-//                }
+//               ScrollBar {
+//                       id: vbar
+//                       hoverEnabled: true
+//                       size:0.3
+//                       active: hovered || pressed
+//                       orientation: Qt.Vertical
+////                       size: frame.height / content.height
+////                       anchors.top: parent.top
+////                       anchors.right: parent.right
+////                       anchors.bottom: parent.bottom
+//                   }
             }
-        }
+
+
+
+
+
+
+
     }
+}
 }

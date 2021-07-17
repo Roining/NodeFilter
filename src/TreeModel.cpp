@@ -1030,6 +1030,9 @@ void TreeModel::getIdToClipboard(const QModelIndex &index) {
   clipboardItem->setText(getId(index));
 }
 void TreeModel::acceptsCopies(const QModelIndex &index, bool acceptsCopies) {
+  //  QInputMethod *input;
+  //  input = QGuiApplication::inputMethod();
+  //  input->setVisible(false);
   auto item = getItem(index);
   item->acceptsCopies = acceptsCopies;
 }
