@@ -45,10 +45,11 @@ TreeModel::TreeModel(QObject *parent) {
     if (!rootItem->childCount()) {
       qDebug() << "aa44444a ";
 
-      beginInsertRows(QModelIndex().parent(), 0, 1);
+      //      beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
-      endInsertRows();
-      insertRows(0, 1, QModelIndex());
+      //      endInsertRows();
+      //      insertRows(0, 1, QModelIndex());
+      rootItem->insertChildrenNew(0, 1, 0);
     }
     file.close();
   }
@@ -106,10 +107,17 @@ Q_INVOKABLE void TreeModel::loadFile() {
   auto fileContentReady = [this](const QString &fileName,
                                  const QByteArray &fileContent) {
     if (fileName.isEmpty()) {
+      qDebug() << "empty";
+
       // No file was selected
-    } else if (QFileInfo(fileName).completeSuffix() != "dat") {
+    } /*else if (QFileInfo(fileName).completeSuffix() != "dat") {
+
       qDebug() << "dataString";
-    } else {
+      qDebug() << QFileInfo(fileName).filePath();
+      qDebug() << QFileInfo(fileName).fileName();
+
+    }*/
+    else {
       // Use fileName and fileContent
       map.clear();
       container.clear();
