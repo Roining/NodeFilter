@@ -10,6 +10,10 @@ const precacheResources = [ '/',
 '/storage.dat',
 '/NodeFilter.wasm',
 '/NodeFilter.js',
+'/manifest.json',
+'/NodeFilter.data',
+'/NodeFilter.wasm.map',
+
 '/qtloader.js',];
 
 // When the service worker is installing, open the cache and add the precache resources to it
