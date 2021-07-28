@@ -5,7 +5,7 @@ const precacheResources = [ '/',
 '/NodeFilter.html',
 '/index.html',
 '/sw.js',
-
+'/ms-icon-144x144.png',
 '/qtlogo.svg',
 '/storage.dat',
 '/NodeFilter.wasm',
