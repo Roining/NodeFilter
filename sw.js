@@ -3,7 +3,7 @@ const assets = [
   '/',
   '/NodeFilter.html',
   '/index.html',
-  '/sw.js',
+  
  
   '/qtlogo.svg',
   '/storage.dat',
