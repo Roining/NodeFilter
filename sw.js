@@ -4,13 +4,13 @@ const assets = [
   '/NodeFilter.html',
   '/index.html',
   '/sw.js',
-  '/manifest.json',
+ 
   '/qtlogo.svg',
   '/storage.dat',
   '/NodeFilter.wasm',
   '/NodeFilter.js',
   '/qtloader.js',
-  '/NodeFilter.data',
+
 
 ];
 // install event
