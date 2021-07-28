@@ -1,7 +1,7 @@
 {
   "name": "My PWA Sample App",
   "short_name" : "PWA",
-  "start_url": "index.html?utm_source=homescreen",
+  "start_url": "index.html",
   "scope" : "./",
   "icons": [
       {
