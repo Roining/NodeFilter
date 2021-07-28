@@ -10,6 +10,8 @@ const assets = [
   '/NodeFilter.wasm',
   '/NodeFilter.js',
   '/qtloader.js',
+  '/NodeFilter.data',
+
 ];
 // install event
 self.addEventListener('install', evt => {
