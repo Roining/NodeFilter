@@ -2,8 +2,12 @@
 Node Filter is a knowledge management tool  which relies on the concepts of transclusion and hierarchical filtering to connect different pieces of information  and place them in a transitive hierarchy of abstractions.
  
  User input  is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
+# Demo
+WebAssembly port of NodeFilter with a guide to NodeFilter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
+Web version of NodeFilter is meant to be used only as a demo, it is not identical to the desktop application and has several limitations which are explained in the demo.  
 
-
+# Community
+[Discord](https://discord.gg/sNbVChHX)
 # Filtering  
 Hierarchical filtering shows the descendants(or ascendants) of a certain node. However, if a node is copied, then if at least one instance of the node matches the filter(i.e. is a descendant of  a queried node), then all its other instances will also match the filter(if using >> and << operators). There are several types of hierarchical filters(see query syntax).  
 Hierarchical filtering can   be  used to build a  hierarchy(or multiple linked hierarchies) of abstractions  of arbitrary depth that can be used as a transitive tagging system. A hierarchy of abstractions can be defined by the user. 	 Hierarchies can be built going from specific things up to abstract concepts.   
@@ -108,55 +112,8 @@ Ctrl-P - mark the selected node as a template(or as a "blocking node"). Template
 Ctrl-Shift-P -remove the template mark from the selected node  
 Ctrl-S - save the changes manually  
 
-
-# Use cases  
-## Transitive filtering  
-Example:  
- Create a node  to take notes on a certain topic.For example, let's call the node "History of Geography". Insert all notes on history of Geography as children(or descendants) of the created node.   
-Then create a node "Later" to dump all notes (for example,book/article/etc) that you want to revisit later. 
-To "tag" a note as "Later", copy the node that contains to note(Ctrl-Q) and insert it as child of "Later"(Ctrl-Shift-M)  
-To find all nodes that descend from "Later", you need to get the id of the node(select it and press Ctrl-E) and use hierarchical filter:   
-\>>:*id of node "Later"*  
-This filter will search for all nodes that descend from "Later" and their copies. Since the nodes that were inserted as children of "Later"  also descend from   "History of Geography" , they will match the filter and will be shown in the resulting filtered view  
-Create  a node called "Important", insert it as a child of "Later" and copy all nodes  you consider important as a child of "Important".  
-Now, if you insert any node as a child  of "Important", they will also match when searching for descendants of "Later"(the query above) because the filtering is transitive.  
-
-## Bi-directional links and concept maps  
-Example of creating dependencies between tasks.  
-Create  nodes "Task A" and "Task B" (you may create them  near each other as children of some node or  in entirely  different parts of the knowledge base ).  
-Create a "depends on" node and mark it as a template node(Ctrl-P).  
-Insert a "depends on" template node as a child of "Task A", then copy "Task B" as a child of "depends on" node.  
-Now, while seeing  on which tasks "Task A" depends on is trivial since they are shown as descendents of "Task A", to find out which tasks are dependent on "Task B" we need to search for ascendants of both nodes:  
-\<<:*id of "Task B"*&&<<:*id of "depends on"*    
-Alternatively, we can use  \>^ operator:  
-\>^:*id of "Task B"*&&>^:*id of "depends on"*    
-
-If we use "depends on" in context of concept mapping, then we may categorize it as a linking word.If we want to know all of Task B's links to other nodes, then we need to create "linking words" node,copy "depends on" as a child of it  and search for ascendants of Task B and for descendants of "linking words" like so:  
-\<<:*id of "Task B"*&&>>:*id of "linking words"*    
-Linking words can be considered a form of bi-directional links, so let's create a node called "bi-directional links" and copy "linking words" node as a child of it. Now we can search for all references to Task B:  
-\<<:*id of "Task B"&&>>:*id of "bi-directional links"*  
-
-## Templates  
- Template node is  a special type of a cloned node with  the following attributes:  
-
-1)If node X is marked as a template node and node Y is copied from node X(to copy node X , Ctrl-Q when node X is selected and insert the copy anywhere in the knowledge base ),  then all nodes copied from Node Y will only mirror node Y.
-So, other nodes copied from node X will not mirror node Y.
-However, nodes copied from node Y will mirror node Y.  
-Mirroring a node means that  if a child node Z is inserted/deleted under node A, node A's copied nodes insert/delete a copy of node Z as a child.   
-2) it doesnt't accept mirrored nodes from it's cloned nodes   
-
-Template nodes are used when nodes are not supposed to mirror all their copies copies, i.e. linking words, backlinks, templates.  
-Let's create a daily document workflow by using the template functionality.  
-Create a node "Templates" and insert a node "Day" as a child.  
-Insert  nodes "Dump" and "TODO" as children of "Day".  
-Mark "Day" and it's children as templates(Ctrl-P).  
-Create a node "Daily document", and insert a node named after the current day (for example, "April 5th") as a child.  
-Now copy the "Day" node(Ctrl-Q) and insert it as a child of "June 1st" node.  
-By default, when a node  is inserted as a child of a node X that has copies, the inserted node will also be copied as a child of copies of Node X (if it has any).  
-Marking "Day" and it's descendants as templates disables this behaviour  and makes these nodes not accept the newly inserted children from their copies, so "Day" node which descends from "Templates" will not receive the children of "Day" node which descends from "Daily Document". However, template nodes only block incoming nodes, so if a node Y is inserted as a child of a template node, the copied nodes will also insert the copy of node Y as a child(unless these nodes are also marked as a template).  
-
 # Building  
-The easiest way to build NodeFilter is through the QT Creator, as a project. You will also need to build Qt Quick 2  QML Treeview since it is distributed as a Qt extension.  
+The easiest way to build NodeFilter is through the QT Creator, as a project. You will also need to build Qt Quick 2 QML Treeview since it is distributed as a Qt extension.  
 Dependencies:  
 Qt 5.15  
 QtQuick 2.15  
@@ -164,4 +121,4 @@ Qt Quick 2 QML Treeview - 	https://code.qt.io/cgit/qt-extensions/qttreeview.git/
 Note that Qt Quick 2 QML Treeview is not a part of core Qt and only builds with qmake in Qt5.   
 
 # Installation  
-Windows: download latest version from Releases.  
+Windows: download latest version from [Releases](https://github.com/Roining/NodeFilter/releases).  
