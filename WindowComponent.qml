@@ -95,6 +95,12 @@ ApplicationWindow {
    myClass.loadFile();
         }
     }
+    Shortcut {
+        sequence: "Ctrl+Shift+S"
+        onActivated: {
+   myClass.saveJSON();
+        }
+    }
 
     SplitView {
         id: splitViewInstance

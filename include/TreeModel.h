@@ -66,6 +66,8 @@ public:
   Q_INVOKABLE void saveIndex(const QModelIndex &index);
 
   Q_INVOKABLE void save();
+  Q_INVOKABLE void saveJSON();
+
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
 
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
@@ -79,6 +81,8 @@ public:
   bool isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode);
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
+  Q_INVOKABLE void serializeJSON(TreeNode &node);
+
   void serializeCleanUp(TreeNode &node);
   void serializeClear(TreeNode &node);
   Q_INVOKABLE void deserializeDat(TreeNode &node, QDataStream &stream,

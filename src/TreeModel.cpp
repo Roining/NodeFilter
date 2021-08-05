@@ -400,13 +400,42 @@ void TreeModel::saveIndex(const QModelIndex &index) {
   last = index;
   return;
 }
+// void TreeModel::save() {
+//  QFile fileJSON("storage.json");
+//  fileJSON.remove();
+//  listArray = QJsonArray();
+//  inputArray = QJsonArray();
+//  ;
+//  inputArrayIterator = 0;
+
+//  QDir::setCurrent(QDir::currentPath());
+//  QString path = QDir::currentPath();
+//  QFile file("storage.dat");
+//  int value = QRandomGenerator::global()->generate();
+
+//  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+//  if (!cachePath.exists()) {
+//    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+//  }
+//  auto isSuccessful =
+//      file.copy(QStringLiteral("%1/storage.dat").arg(path),
+//                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+//                    .arg(path)
+//                    .arg(value));
+//  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+//    QFile fileJSON("storage.json");
+//    fileJSON.open(QIODevice::Append | QIODevice::Text);
+//    QDataStream stream(&file);
+//    serializeClear(*rootItem);
+//    serializeCleanUp(*rootItem);
+//    serialize(*rootItem, stream);
+//    QJsonDocument doc(listArray);
+//    fileJSON.write(doc.toJson(QJsonDocument::Indented));
+//    fileJSON.close();
+//    file.close();
+//  }
+//}
 void TreeModel::save() {
-  QFile fileJSON("storage.json");
-  fileJSON.remove();
-  listArray = QJsonArray();
-  inputArray = QJsonArray();
-  ;
-  inputArrayIterator = 0;
 
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
@@ -423,16 +452,37 @@ void TreeModel::save() {
                     .arg(path)
                     .arg(value));
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-    QFile fileJSON("storage.json");
-    fileJSON.open(QIODevice::Append | QIODevice::Text);
+
     QDataStream stream(&file);
     serializeClear(*rootItem);
     serializeCleanUp(*rootItem);
     serialize(*rootItem, stream);
+
+    file.close();
+  }
+}
+
+void TreeModel::saveJSON() {
+  QDir::setCurrent(QDir::currentPath());
+  QFile fileJSON("storage.json");
+  fileJSON.remove();
+
+  listArray = QJsonArray();
+  inputArray = QJsonArray();
+
+  inputArrayIterator = 0;
+
+  //  QDir::setCurrent(QDir::currentPath());
+  //  QString path = QDir::currentPath();
+
+  if (fileJSON.open(QIODevice::Append | QIODevice::Text)) {
+
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serializeJSON(*rootItem);
     QJsonDocument doc(listArray);
     fileJSON.write(doc.toJson(QJsonDocument::Indented));
     fileJSON.close();
-    file.close();
   }
 }
 QPersistentModelIndex TreeModel::getLastIndex() { return last; }
@@ -507,6 +557,16 @@ TreeNode *TreeModel::getItem(const QModelIndex &index) const {
 }
 void TreeModel::serialize(TreeNode &node, QDataStream &stream) {
   stream << node;
+  if (node.childCount()) {
+    for (int i = 0; i < node.childCount(); i++) {
+
+      serialize(*(node.children()[i]), stream);
+    }
+  }
+
+  return;
+}
+void TreeModel::serializeJSON(TreeNode &node) {
 
   QFile file("storage.json");
   file.open(QIODevice::Append | QIODevice::Text);
@@ -569,7 +629,7 @@ void TreeModel::serialize(TreeNode &node, QDataStream &stream) {
   if (node.childCount()) {
     for (int i = 0; i < node.childCount(); i++) {
 
-      serialize(*(node.children()[i]), stream);
+      serializeJSON(*(node.children()[i]));
     }
   }
   file.close();
