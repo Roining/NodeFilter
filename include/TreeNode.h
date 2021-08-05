@@ -49,7 +49,7 @@ private:
   std::shared_ptr<QVector<TreeNode *>> siblings;
   TreeNode *parentItem;
   int numberOfChildren;
-  QMultiMap<QUuid, int> position;
+  QMap<QUuid, int> position;
   QUuid id;
   QVector<QUuid> tempParents;
   QVector<QUuid> parents;

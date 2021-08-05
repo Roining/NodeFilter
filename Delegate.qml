@@ -25,46 +25,52 @@ Component {
         SplitView.preferredWidth: parent.width / 4
         SplitView.maximumWidth: Screen.width
 
-        Keys.onPressed: {
-            if ((event.key === Qt.Key_W)
-                    && (event.modifiers & Qt.ControlModifier)
-                    && (event.modifiers & Qt.ShiftModifier)) {
-                root.arrayOfWindows.length === 0
+//        Keys.onPressed: {
+//            if ((event.key === Qt.Key_W)
+//                    && (event.modifiers & Qt.ControlModifier)
+//                    && (event.modifiers & Qt.ShiftModifier)) {
+//                root.arrayOfWindows.length === 0
 
-                var serializationWindowsArray = []
-                for (var i = 0; i < root.array.length; i++) {
+//                var serializationWindowsArray = []
+//                for (var i = 0; i < root.array.length; i++) {
 
-                    var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
+//                    var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
 
-                    serializationWindowsArray.push(windowData)
+//                    serializationWindowsArray.push(windowData)
 
-                    for (var j = 0; j < root.array[i].viewArray.length; j++) {
+//                    for (var j = 0; j < root.array[i].viewArray.length; j++) {
 
-                        var viewData = [root.array[i].viewArray[j].x, root.array[i].viewArray[j].y, root.array[i].viewArray[j].width, root.array[i].viewArray[j].height, root.array[i].viewArray[j].ser.text]
-                        serializationWindowsArray[i].push(viewData)
-                    }
-                }
+//                        var viewData = [root.array[i].viewArray[j].x, root.array[i].viewArray[j].y, root.array[i].viewArray[j].width, root.array[i].viewArray[j].height, root.array[i].viewArray[j].ser.text]
+//                        serializationWindowsArray[i].push(viewData)
+//                    }
+//                }
 
-                for (var i = 0; i < root.array.length; i++) {
-                    root.arrayOfWindows.push((serializationWindowsArray[i]))
-                }
-                root.settings.windows = root.arrayOfWindows
-                myClass.save()
-                Qt.quit()
-                return
-            } else if ((event.key === Qt.Key_W)
-                       && (event.modifiers & Qt.ControlModifier)) {
-                // Delete view Alt D
-                viewInstance.destroy()
-                return
-            }
-        }
+//                for (var i = 0; i < root.array.length; i++) {
+//                    root.arrayOfWindows.push((serializationWindowsArray[i]))
+//                }
+//                root.settings.windows = root.arrayOfWindows
+//                console.log(root.settings.windows);
+//                myClass.save()
+//                Qt.quit()
+//                return
+//            } else if ((event.key === Qt.Key_W)
+//                       && (event.modifiers & Qt.ControlModifier)) {
+//                viewInstance.destroy()
+//                return
+//            }
+//        }
 
         Component.onDestruction: {
+
             for (var i = 0; i < parent.parent.root.viewArray.length; i++) {
+
+
+
+
                 if (viewInstance.objectName.toString(
                             ) === parent.parent.root.viewArray[i].objectName.toString(
                             )) {
+
                     parent.parent.root.viewArray.splice(i, 1)
                     if (parent.parent.root.viewArray.length === 0) {
                         parent.parent.root.destroy()
@@ -72,6 +78,8 @@ Component {
                     break
                 }
             }
+
+
         }
 
         Column {
@@ -143,15 +151,7 @@ Component {
                                 nodeTree.currentModelIndex).forceActiveFocus()
                 }
 
-                Keys.onDigit2Pressed: {
-                    for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
-                        if (viewInstance.objectName.toString(
-                                    ) === viewInstance.parent.parent.root.viewArray[i].objectName.toString(
-                                    )) {
-                            break
-                        }
-                    }
-                }
+
                 Keys.onPressed: {
                     if ((event.key === Qt.Key_P)
                             && (event.modifiers & Qt.ControlModifier)
@@ -164,15 +164,15 @@ Component {
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         root.arrayOfWindows.length === 0
-
+root.settings.windows.length ===0
                         var serializationWindowsArray = []
                         for (var i = 0; i < root.array.length; i++) {
 
                             var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
 
                             serializationWindowsArray.push(windowData)
-//console.log("root.array[i] " + root.array[i])
-//console.log("root.array[i].viewArray " + root.array[i].viewArray)
+
+
 
                             for (var j = 0; j < root.array[i].viewArray.length; j++) {
 
@@ -216,7 +216,6 @@ Component {
                     } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
-                        //acceptsCopies true Ctrl Shift P
                         for (var i = 0; i < viewInstance.parent.parent.root.viewArray.length; i++) {
                             if (viewInstance.parent.parent.root.viewArray[i].objectName.toString(
                                         ) === viewInstance.objectName.toString(
@@ -235,7 +234,6 @@ Component {
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
 
-                        //insert new node as a child Ctrl Shift N
                         myClass.insertRows(
                                     0, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex)) //TODO
@@ -245,7 +243,6 @@ Component {
                     } else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
-                        //copy node as child Ctrl Shift M
                         event.accepted = true
 
                         myClass.copyRows(0, 1, nodeTree.model.mapToSource(
@@ -255,32 +252,32 @@ Component {
                         return
                     } else if ((event.key === Qt.Key_P)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //acceptsCopies false Ctrl P
                         myClass.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentModelIndex),
                                               false)
                         return
                     } else if ((event.key === Qt.Key_S)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //serialize/save Ctrl S
                         myClass.save()
                         return
-                    } else if ((event.key === Qt.Key_5)
+                    }
+//                    else if ((event.key === Qt.Key_5)
+//                               && (event.modifiers & Qt.ControlModifier)) {
+//                        event.accepted = true
+//                        //serialize/save Ctrl S
+//                        if (nodeTree.currentModelIndex.hasChildren) {
+//                            nodeTree.currentModelIndex = nodeTree.model.index(
+//                                        0, 0, nodeTree.currentModelIndex)
+//                        } else {
+//                            nodeTree.currentModelIndex = nodeTree.model.index(
+//                                        nodeTree.currentModelIndex.row + 1, 0,
+//                                        nodeTree.currentModelIndex.parent)
+//                        }
+//                        return
+//                    }
+                    else if ((event.key === Qt.Key_W)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        event.accepted = true
-                        //serialize/save Ctrl S
-                        if (nodeTree.currentModelIndex.hasChildren) {
-                            nodeTree.currentModelIndex = nodeTree.model.index(
-                                        0, 0, nodeTree.currentModelIndex)
-                        } else {
-                            nodeTree.currentModelIndex = nodeTree.model.index(
-                                        nodeTree.currentModelIndex.row + 1, 0,
-                                        nodeTree.currentModelIndex.parent)
-                        }
-                        return
-                    } else if ((event.key === Qt.Key_W)
-                               && (event.modifiers & Qt.ControlModifier)) {
-                        // Delete view Alt D
+
                         viewInstance.destroy()
                         return
                     } else if ((event.key === Qt.Key_U)
@@ -292,20 +289,18 @@ Component {
                         Qt.quit()
                     } else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
-
-                        //remove node Ctrl D
                         deleteDialog.open()
                         return
                     } else if ((event.key === Qt.Key_U)
                                && (event.modifiers & Qt.ControlModifier)) {
 
-                        //remove node Ctrl D
+
                         hbar.decrease()
                         return
                     } else if ((event.key === Qt.Key_O)
                                && (event.modifiers & Qt.ControlModifier)) {
 
-                        //remove node Ctrl D
+
                         search.forceActiveFocus()
                         search.clear()
                         search.append(">:" + myClass.getId(
@@ -315,27 +310,23 @@ Component {
                     } else if ((event.key === Qt.Key_Q)
                                && (event.modifiers & Qt.ControlModifier)) {
 
-                        //copy a copied node Ctrl A
                         myClass.saveIndex(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex)) //TODO
                         return
                     } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //copy Id to clipboard Ctrl E
                         myClass.getIdToClipboard(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
                         return
                     } else if ((event.key === Qt.Key_F)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //Ctrl F
                         search.forceActiveFocus()
                         search.selectAll()
                         return
                     } else if ((event.key === Qt.Key_N)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //Ctrl N insert node
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
@@ -346,13 +337,11 @@ Component {
                         return
                     } else if ((event.key === Qt.Key_J)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //Ctrl N insert node
                         var test1 = nodeTree.currentModelIndex.parent
                         nodeTree.currentModelIndex
                         return
                     } else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        //Ctrl M copy node
                         event.accepted = true
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
@@ -538,21 +527,7 @@ return;
                                                       nodeTree.model.mapToSource(
                                                           nodeTree.currentModelIndex)))
                                     return
-//                                    var posInTreeView = nodeTree.mapFromItem(
-//                                                parent, point.position)
-//                                    var row = nodeTree.rowAtY(posInTreeView.y,
-//                                                              true)
-//                                    nodeTree.currentIndex = nodeTree.viewIndex(
-//                                                0, row)
 
-//                                    if (tapCount == 1)
-
-//                                        search.forceActiveFocus()
-//                                    search.selectAll()
-//                                    search.append(
-//                                                ">:" + myClass.getId(
-//                                                    nodeTree.model.mapToSource(
-//                                                        nodeTree.currentModelIndex)))
                                 }
                             }
                         }
@@ -566,7 +541,7 @@ return;
                             selectedTextColor: "white"
                             objectName: "text"
                             wrapMode: "WrapAnywhere"
-                            textFormat: TextEdit.MarkdownText
+                            textFormat: TextEdit.PlainText
                             clip: true
                             font.pointSize: 18
                             anchors.left: dot.right

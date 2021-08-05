@@ -5,7 +5,6 @@
 #include <QIODevice>
 #include <QMap>
 #include <QModelIndex>
-#include <QMultiMap>
 #include <QPersistentModelIndex>
 #include <QUuid>
 #include <QVariant>
@@ -26,7 +25,7 @@ public:
   TreeModel(const QStringList &headers, const QString &data,
             QObject *parent = nullptr);
   ~TreeModel();
-
+  Q_INVOKABLE void loadFile();
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation,
                       int role = Qt::DisplayRole) const override;
@@ -61,24 +60,29 @@ public:
              const QModelIndex &parent = QModelIndex()) override;
 
   void removeRowsRecursive(int position, QUuid callingId, QUuid calledId,
-                           const QModelIndex &child);
+                           const QPersistentModelIndex &child);
 
   QHash<int, QByteArray> roleNames() const override;
   Q_INVOKABLE void saveIndex(const QModelIndex &index);
+
   Q_INVOKABLE void save();
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
 
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
   TreeNode *isDescendantNode(TreeNode *parent, TreeNode *child);
+  TreeNode *isDirectDescendantNode(TreeNode *parent, TreeNode *child,
+                                   int depth);
   bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant2(TreeNode *parent, TreeNode *child, int depth);
-
+  bool isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode);
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
   void serializeCleanUp(TreeNode &node);
   void serializeClear(TreeNode &node);
+  Q_INVOKABLE void deserializeDat(TreeNode &node, QDataStream &stream,
+                                  bool check = false);
   Q_INVOKABLE void deserialize(TreeNode &node, QDataStream &stream,
                                bool check = false);
   Q_INVOKABLE bool

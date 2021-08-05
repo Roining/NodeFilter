@@ -89,6 +89,12 @@ ApplicationWindow {
                                       }))
         }
     }
+    Shortcut {
+        sequence: "Ctrl+Shift+O"
+        onActivated: {
+   myClass.loadFile();
+        }
+    }
 
     SplitView {
         id: splitViewInstance
