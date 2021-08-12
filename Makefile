@@ -39,8 +39,8 @@ COMPRESS      =
 DISTNAME      = NodeFilter.js1.0.0
 DISTDIR = C:\Users\medve\Documents\NodeFilter\.tmp\NodeFilter.js1.0.0
 LINK          = em++
-LFLAGS        = -s TOTAL_MEMORY=32MB --preload-file   storage.dat -lidbfs.js -s WASM=1 -s FULL_ES2=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s EXIT_RUNTIME=1 -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=["UTF16ToString","stringToUTF16"] --bind -s FETCH=1 -O2 -s ALLOW_MEMORY_GROWTH=1
-LIBS          = $(SUBLIBS) C:/Qt/5.15.2/wasm_32/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.a C:/Qt/5.15.2/wasm_32/plugins/platforms/libqwasm.a C:/Qt/5.15.2/wasm_32/lib/libQt5EventDispatcherSupport.a C:/Qt/5.15.2/wasm_32/lib/libQt5FontDatabaseSupport.a C:/Qt/5.15.2/wasm_32/lib/libqtfreetype.a C:/Qt/5.15.2/wasm_32/lib/libQt5EglSupport.a C:/Qt/5.15.2/wasm_32/plugins/iconengines/libqsvgicon.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqgif.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqicns.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqico.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqjpeg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqsvg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtga.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtiff.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwbmp.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwebp.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_hangul.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_openwnn.a C:/Qt/5.15.2/wasm_32/lib/libqtopenwnn.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_pinyin.a C:/Qt/5.15.2/wasm_32/lib/libqtpinyin.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_tcime.a C:/Qt/5.15.2/wasm_32/lib/libqttcime.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_thai.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/platform/libqtlabsplatformplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/libdialogplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/qmlmodels/liblabsmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/libqtquickvirtualkeyboardplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Layouts/libqquicklayoutsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQml/libqmlplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/settings/libqmlsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/Private/libdialogsprivateplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls/libqtquickcontrolsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/PrivateWidgets/libwidgetsplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/folderlistmodel/libqmlfolderlistmodelplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/Settings/libqtquickvirtualkeyboardsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/Styles/libqtquickvirtualkeyboardstylesplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5VirtualKeyboard.a C:/Qt/5.15.2/wasm_32/lib/libQt5Svg.a C:/Qt/5.15.2/wasm_32/lib/libQt5Widgets.a C:/Qt/5.15.2/wasm_32/qml/QtQml/Models.2/libmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick.2/libqtquick2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Templates.2/libqtquicktemplates2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/libqtquickcontrols2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Fusion/libqtquickcontrols2fusionstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/private/libqtgraphicaleffectsprivate.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Window.2/libwindowplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/libqtgraphicaleffectsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Imagine/libqtquickcontrols2imaginestyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Material/libqtquickcontrols2materialstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Universal/libqtquickcontrols2universalstyleplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickControls2.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickTemplates2.a C:/Qt/5.15.2/wasm_32/lib/libQt5Quick.a C:/Qt/5.15.2/wasm_32/lib/libQt5Gui.a C:/Qt/5.15.2/wasm_32/lib/libqtlibpng.a C:/Qt/5.15.2/wasm_32/lib/libqtharfbuzz.a C:/Qt/5.15.2/wasm_32/lib/libQt5QmlModels.a C:/Qt/5.15.2/wasm_32/lib/libQt5Qml.a C:/Qt/5.15.2/wasm_32/lib/libQt5Network.a C:/Qt/5.15.2/wasm_32/lib/libQt5Core.a C:/Qt/5.15.2/wasm_32/lib/libqtpcre2.a   
+LFLAGS        = --preload-file storage.dat -lidbfs.js -s TOTAL_MEMORY=32MB -s WASM=1 -s FULL_ES2=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s EXIT_RUNTIME=1 -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=["UTF16ToString","stringToUTF16"] --bind -s FETCH=1 -g4 -s WASM=1 -s FULL_ES2=1 -s FULL_ES3=1 -s USE_WEBGL2=1 -s EXIT_RUNTIME=1 -s ERROR_ON_UNDEFINED_SYMBOLS=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=["UTF16ToString","stringToUTF16"] --bind -s FETCH=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1 -s GL_DEBUG=1 --profiling-funcs -s ALLOW_MEMORY_GROWTH=1 --source-map-base http://localhost:8000/
+LIBS          = $(SUBLIBS) C:/Qt/5.15.2/wasm_32/plugins/platforminputcontexts/libqtvirtualkeyboardplugin.a C:/Qt/5.15.2/wasm_32/plugins/platforms/libqwasm.a C:/Qt/5.15.2/wasm_32/lib/libQt5EventDispatcherSupport.a C:/Qt/5.15.2/wasm_32/lib/libQt5FontDatabaseSupport.a C:/Qt/5.15.2/wasm_32/lib/libqtfreetype.a C:/Qt/5.15.2/wasm_32/lib/libQt5EglSupport.a C:/Qt/5.15.2/wasm_32/plugins/iconengines/libqsvgicon.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqgif.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqicns.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqico.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqjpeg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqsvg.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtga.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqtiff.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwbmp.a C:/Qt/5.15.2/wasm_32/plugins/imageformats/libqwebp.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_hangul.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_openwnn.a C:/Qt/5.15.2/wasm_32/lib/libqtopenwnn.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_pinyin.a C:/Qt/5.15.2/wasm_32/lib/libqtpinyin.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_tcime.a C:/Qt/5.15.2/wasm_32/lib/libqttcime.a C:/Qt/5.15.2/wasm_32/plugins/virtualkeyboard/libqtvirtualkeyboard_thai.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/libdialogplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/qmlmodels/liblabsmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Layouts/libqquicklayoutsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQml/libqmlplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/settings/libqmlsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Dialogs/Private/libdialogsprivateplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls/libqtquickcontrolsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/PrivateWidgets/libwidgetsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQml/Models.2/libmodelsplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/platform/libqtlabsplatformplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/libqtquickvirtualkeyboardplugin.a C:/Qt/5.15.2/wasm_32/qml/Qt/labs/folderlistmodel/libqmlfolderlistmodelplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/Settings/libqtquickvirtualkeyboardsettingsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/VirtualKeyboard/Styles/libqtquickvirtualkeyboardstylesplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5VirtualKeyboard.a C:/Qt/5.15.2/wasm_32/lib/libQt5Svg.a C:/Qt/5.15.2/wasm_32/lib/libQt5Widgets.a C:/Qt/5.15.2/wasm_32/qml/QtQuick.2/libqtquick2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Templates.2/libqtquicktemplates2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/libqtquickcontrols2plugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Fusion/libqtquickcontrols2fusionstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/private/libqtgraphicaleffectsprivate.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Window.2/libwindowplugin.a C:/Qt/5.15.2/wasm_32/qml/QtGraphicalEffects/libqtgraphicaleffectsplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Imagine/libqtquickcontrols2imaginestyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Material/libqtquickcontrols2materialstyleplugin.a C:/Qt/5.15.2/wasm_32/qml/QtQuick/Controls.2/Universal/libqtquickcontrols2universalstyleplugin.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickControls2.a C:/Qt/5.15.2/wasm_32/lib/libQt5QuickTemplates2.a C:/Qt/5.15.2/wasm_32/lib/libQt5Quick.a C:/Qt/5.15.2/wasm_32/lib/libQt5Gui.a C:/Qt/5.15.2/wasm_32/lib/libqtlibpng.a C:/Qt/5.15.2/wasm_32/lib/libqtharfbuzz.a C:/Qt/5.15.2/wasm_32/lib/libQt5QmlModels.a C:/Qt/5.15.2/wasm_32/lib/libQt5Qml.a C:/Qt/5.15.2/wasm_32/lib/libQt5Network.a C:/Qt/5.15.2/wasm_32/lib/libQt5Core.a C:/Qt/5.15.2/wasm_32/lib/libqtpcre2.a   
 AR            = emar cqs
 RANLIB        = 
 SED           = $(QMAKE) -install sed
@@ -263,21 +263,21 @@ Makefile: NodeFilter.pro ..\..\..\..\Qt\5.15.2\wasm_32\mkspecs\wasm-emscripten\q
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick.2\libqtquick2plugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls\libqtquickcontrolsplugin.prl \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Window.2\libwindowplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\libdialogplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Layouts\libqquicklayoutsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\qmlmodels\liblabsmodelsplugin.prl \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\libqtquickvirtualkeyboardplugin.prl \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Styles\libqtquickvirtualkeyboardstylesplugin.prl \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Settings\libqtquickvirtualkeyboardsettingsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQml\libqmlplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Templates.2\libqtquicktemplates2plugin.prl \
-		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Window.2\libwindowplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\folderlistmodel\libqmlfolderlistmodelplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\settings\libqmlsettingsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\Private\libdialogsprivateplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\PrivateWidgets\libwidgetsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQml\Models.2\libmodelsplugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\libqtquickvirtualkeyboardplugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Styles\libqtquickvirtualkeyboardstylesplugin.prl \
+		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Settings\libqtquickvirtualkeyboardsettingsplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\Fusion\libqtquickcontrols2fusionstyleplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\Imagine\libqtquickcontrols2imaginestyleplugin.prl \
 		..\..\..\..\Qt\5.15.2\wasm_32\qml\QtGraphicalEffects\libqtgraphicaleffectsplugin.prl \
@@ -452,21 +452,21 @@ qml_qmlcache.qrc:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick.2\libqtquick2plugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\libqtquickcontrols2plugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls\libqtquickcontrolsplugin.prl:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Window.2\libwindowplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\libdialogplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Layouts\libqquicklayoutsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\qmlmodels\liblabsmodelsplugin.prl:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\libqtquickvirtualkeyboardplugin.prl:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Styles\libqtquickvirtualkeyboardstylesplugin.prl:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Settings\libqtquickvirtualkeyboardsettingsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQml\libqmlplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Templates.2\libqtquicktemplates2plugin.prl:
-..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Window.2\libwindowplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\folderlistmodel\libqmlfolderlistmodelplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\settings\libqmlsettingsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Dialogs\Private\libdialogsprivateplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\PrivateWidgets\libwidgetsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQml\Models.2\libmodelsplugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\Qt\labs\platform\libqtlabsplatformplugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\libqtquickvirtualkeyboardplugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Styles\libqtquickvirtualkeyboardstylesplugin.prl:
+..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\VirtualKeyboard\Settings\libqtquickvirtualkeyboardsettingsplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\Fusion\libqtquickcontrols2fusionstyleplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtQuick\Controls.2\Imagine\libqtquickcontrols2imaginestyleplugin.prl:
 ..\..\..\..\Qt\5.15.2\wasm_32\qml\QtGraphicalEffects\libqtgraphicaleffectsplugin.prl:
@@ -1005,12 +1005,14 @@ TreeModel.obj: src\TreeModel.cpp include\TreeModel.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qvector2d.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtGui\qtouchdevice.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QFileInfo \
-		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonDocument \
-		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsondocument.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonArray \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsonarray.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsonvalue.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qcborvalue.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qdatetime.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qcborcommon.h \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonDocument \
+		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsondocument.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QJsonObject \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\qjsonobject.h \
 		..\..\..\..\Qt\5.15.2\wasm_32\include\QtCore\QRandomGenerator \

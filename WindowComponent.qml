@@ -57,7 +57,6 @@ close.accepted = false
 //    Shortcut {
 //        sequence: "Ctrl+Shift+Q"
 //        onActivated: {
-//            console.log("khjkhk")
 
 //myClass.kok();
 //        }
@@ -67,7 +66,7 @@ close.accepted = false
         sequence: "Ctrl+Shift+O"
         onActivated: {
 
-myClass.loadFile();
+myClass.loadFileIDBFS();
         }
     }
 
@@ -75,7 +74,9 @@ myClass.loadFile();
         sequence: "Ctrl+Shift+S"
         onActivated: {
 //uniqueid1.open();
-myClass.save();
+
+myClass.saveIDBFS();
+//myClass.saveJSON();
         }
     }
 
@@ -83,9 +84,14 @@ myClass.save();
         sequence: "Ctrl+Shift+X"
         onActivated: {
 
-//            console.log("parent.height  " +root.inputPanel.parent.height )
-//                console.log("inputPanel.height  " +root.inputPanel.height )
-//                console.log("y  " +root.inputPanel.y )
+
+        }
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Shift+J"
+        onActivated: {
+
         }
     }
     Shortcut {
@@ -126,7 +132,7 @@ myClass.save();
 //                            Layout.maximumWidth: 1000
            handle : Rectangle {
                implicitWidth: 4
-               implicitHeight: 4
+               implicitHeight: 1
                color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter(
                                                                                    "#c2f4c6",
                                                                                    1.1) : "#c2f4c6")

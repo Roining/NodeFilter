@@ -31,16 +31,42 @@ TreeNode::TreeNode(TreeNode &other) {
 
 TreeNode::~TreeNode() {
 
+  QUuid knownId;
+  for (int i = 0; i < siblings->size(); i++) {
+    if (copyChildren.contains(siblingItems()[i]->id) &&
+        siblingItems()[i]->acceptsCopies) {
+
+      knownId = siblingItems()[i]->id;
+      break;
+    }
+  }
+  bool isParentTemplate = false;
+
+  for (int i = 0; i < siblings->size(); i++) {
+    if (!parents.isEmpty()) {
+      if (siblingItems()[i]->id == parents[0] &&
+          !siblingItems()[i]->acceptsCopies) {
+        isParentTemplate = true;
+      }
+    }
+  }
   siblings->erase(std::find(siblings->begin(), siblings->end(), this));
   for (int i = 0; i < siblings->size(); i++) {
     if (!parents.isEmpty()) {
       if (siblingItems()[i]->id == parents[0]) {
+        siblingItems()[i]->copyChildren.erase(std::find(
+            siblingItems()[i]->copyChildren.begin(),
+            siblingItems()[i]->copyChildren.end(),
+            id)); // Delete node's id from copyParent node's copyChildren
+        if (acceptsCopies && !isParentTemplate) {
 
-        siblingItems()[i]->copyChildren.erase(
-            std::find(siblingItems()[i]->copyChildren.begin(),
-                      siblingItems()[i]->copyChildren.end(), id));
-        if (acceptsCopies) {
-          siblingItems()[i]->copyChildren.append(copyChildren);
+          siblingItems()[i]->copyChildren.append(
+              copyChildren); // copy deleted node's(which has a copyParent)
+                             // copyChildren to its' copyParent
+        } else if (acceptsCopies && isParentTemplate) {
+          if (knownId != QUuid() && siblingItems()[i]->id != knownId) {
+            siblingItems()[i]->copyChildren.append(knownId);
+          }
         }
       }
     }
@@ -49,8 +75,28 @@ TreeNode::~TreeNode() {
 
     if (copyChildren.contains(siblingItems()[i]->id)) {
       siblingItems()[i]->parents.clear();
-      if (!parents.isEmpty() && acceptsCopies) {
-        siblingItems()[i]->parents.append(parents[0]);
+      if (!parents.isEmpty() && !isParentTemplate && acceptsCopies) {
+
+        siblingItems()[i]->parents.append(parents);
+
+      } else {
+        if (siblingItems()[i]->id != knownId) {
+          if (knownId != QUuid()) {
+
+            siblingItems()[i]->parents.append(knownId);
+          }
+        }
+
+        if (siblingItems()[i]->id == knownId) {
+          auto container = copyChildren;
+          if (container.contains(siblingItems()[i]->id)) {
+            container.erase(std::find(container.begin(), container.end(),
+                                      siblingItems()[i]->id));
+          }
+          siblingItems()[i]->copyChildren.append(container);
+
+          //          knownId = siblingItems()[i]->id;
+        }
       }
     }
   }

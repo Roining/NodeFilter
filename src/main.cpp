@@ -7,23 +7,40 @@
 #include <QtPlugin>
 #include <emscripten.h>
 
-// Q_IMPORT_PLUGIN(QtQuickControls1Plugin);
-// Q_IMPORT_PLUGIN(QtQuickControls2Plugin);
-
 int main(int argc, char *argv[]) {
   qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QApplication app(argc, argv);
-  //  ShortcutListener *app1 = new ShortcutListener();
-  //  app.installEventFilter(app1);
-  //  QInputMethod *input;
-  //  input = QGuiApplication::inputMethod();
-
-  ////  input->setVisible(false);
 
   // clang-format off
+
   EM_ASM(
+              document.addEventListener("visibilitychange", function() {
+                if (document.visibilityState === 'visible') {
+//
+                } else {
+//
+                                                 console.log("hide");
+                                                Module._saveIDBFS();
+
+                }
+              });
+//              document.onpagehide = function (e) {
+//                   e = e || window.event;
+//          Module._saveIDBFS();
+
+//                 return console.log("freeze");
+//               };
+//          window.onpagehide = function (e) {
+//               e = e || window.event;
+//          Module._saveIDBFS();
+//          return console.log("dddd");
+
+//           };
+
+
+
               if('serviceWorker' in navigator){
                 navigator.serviceWorker.register('/sw.js')
                   .then(reg => console.log('service worker registered'))
@@ -54,7 +71,6 @@ int main(int argc, char *argv[]) {
       Qt::QueuedConnection);
   QObject::connect(&engine, &QQmlApplicationEngine::quit, &QApplication::quit);
   engine.load(url);
-  qDebug() << "file.readAll()";
 
   //  emscripten_exit_with_live_runtime();
   return app.exec();

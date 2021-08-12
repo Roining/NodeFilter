@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls 1.4 as QCY
 
 
-//import QtQuick.Window 2.12
+import QtQuick.Window 2.12
 //import QtQuick.TreeView 2.15
 //import Qt.labs.platform 1.0
 import QtQuick.Dialogs 1.1
@@ -20,13 +20,12 @@ Component {
     Item {
 
         Menu {
-                 id:uniqueid1
+                 id:itemMenu
 
 
 
                  MenuItem { text: "Insert a node"
                  onTriggered: {
-                     console.log("ytyyyyyyy")
                      var position = myClass.position(
                                  nodeTree.model.mapToSource(
                                      nodeTree.currentIndex))
@@ -45,7 +44,7 @@ Component {
 
                  }
                  }
-                 MenuItem { text: "Copy the Id of the node"
+                 MenuItem { text: "Copy id of node"
                  onTriggered: {
                      var id = myClass.getId(
                                  nodeTree.model.mapToSource(
@@ -66,7 +65,6 @@ Component {
 
                  MenuItem { text: "Paste a copied node"
                  onTriggered: {
-                     console.log("ctrl-m")
 
                      var position = myClass.position(
                                  nodeTree.model.mapToSource(
@@ -78,7 +76,7 @@ Component {
                                  myClass.getLastIndex()) //TODO
                  }
                  }
-                 MenuItem { text: "Paste a copied node as a child"
+                 MenuItem { text: "Paste a child copied node"
                  onTriggered: {
                      myClass.copyRows(0, 1, nodeTree.model.mapToSource(
                                           nodeTree.currentIndex),
@@ -98,16 +96,53 @@ Component {
                                      nodeTree.currentIndex).parent) //TODO
                  }
                  }
-                 MenuItem { text: "Save the storage"
-                 onTriggered: {
+
+                 Menu { title: "Load the storage"
+cascade: true
+                         MenuItem { text: "Load the storage(JSON)"
+                         onTriggered: {
+                myClass.loadFileJSON();
+
+                         }
+                         }
+                         MenuItem { text: "Load the storage(.dat)"
+                             onTriggered: {
+                             myClass.loadFile();
+                                      }
+                                     }
+                         MenuItem { text: "Load the storage(local)"
+                             onTriggered: {
+                          myClass.loadFileIDBFS();
+                                      }
+                                     }
+
+
+
+                 }
+                 Menu { title: "Save the storage"
+        cascade: true
+        MenuItem { text: "Save the storage(JSON)"
+        onTriggered: {
+        myClass.saveJSON();
+        }
+        }
+        MenuItem { text: "Save the storage(.dat)"
+        onTriggered: {
         myClass.save();
-                 }
-                 }
-                 MenuItem { text: "Load the storage"
-                 onTriggered: {
-        myClass.loadFile();
-                 }
-                 }
+        }
+        }
+
+                                 MenuItem { text: "Save the storage(local)"
+                                     onTriggered: {
+        myClass.saveIDBFS();                                     }
+
+
+
+                         }
+                         }
+
+
+
                  MenuItem { text: "Open a new pane"
                  onTriggered: {
 
@@ -134,6 +169,7 @@ Component {
                                }
                  MenuItem { text: "Mark as a template"
                  onTriggered: {
+
                      myClass.acceptsCopies(nodeTree.model.mapToSource(
                                                                      nodeTree.currentIndex),
                                                                  false)
@@ -149,6 +185,7 @@ Component {
 
              }
         id: viewInstance
+
 //width:parent.width
 //height:parent.height
         property alias tree: nodeTree
@@ -166,7 +203,7 @@ Component {
                    SplitView.preferredHeight: parent.height / 2
                    SplitView.minimumWidth: 100
                    SplitView.preferredWidth: parent.width / 4
-                   SplitView.maximumWidth: 10000
+                   SplitView.maximumWidth: Screen.width
 
         Keys.onPressed: {
            /* if ((event.key === Qt.Key_W)
@@ -230,7 +267,6 @@ Component {
 //            height:100
 //            text: "Save"
 //                     onClicked: {
-//                     console.log("button")
 //                         myClass.save()
 
 
@@ -243,7 +279,6 @@ Component {
 //            height:100
 //            text: "Load"
 //                     onClicked: {
-//                     console.log("button1")
 //                         myClass.loadFile();
 
 
@@ -263,7 +298,15 @@ Component {
                 clip: true
                 objectName: "search"
                 placeholderText: "Find"
+                onSelectedTextChanged:  {
 
+                    if(selectedText.length >0&&nodeTree.isMobile){
+
+                        findSelectionMenu.x = (viewInstance.width) / 3
+                                    findSelectionMenu.y = (viewInstance.height ) / 2
+                    findSelectionMenu.open()
+                    }
+                }
                 onActiveFocusChanged: {
                 if(activeFocus){
 
@@ -284,20 +327,95 @@ Component {
                 }
 
                 onTextChanged: {
-
                     nodeTree.model.setQuery(text)
 //                    myClass.save()
 
 
                 }
+                Menu {
+                         id:findSelectionMenu
 
+
+
+                         MenuItem { text: "Copy"
+                         onTriggered: {
+
+        search.copy();
+                         }
+                         }
+                         MenuItem { text: "Paste"
+                         onTriggered: {
+
+        search.paste();
+                         }
+                         }
+                         MenuItem { text: "Cut"
+                         onTriggered: {
+
+        search.cut();
+                         }
+                         }
+                }
             }
+
 
 //    anchors.FILL:parent
 
-            QCY.TreeView {
 
+            QCY.TreeView {
+                horizontalScrollBarPolicy : Qt.ScrollBarAsNeeded
+                verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+//                x: -hbar1.position * width
+//                   y: -vbar1.position * height
+//                ScrollBar {
+//                      id: vbar1
+//                      hoverEnabled: true
+//                      active: hovered || pressed
+//                      orientation: Qt.Vertical
+//                      size: frame.height / content.height
+//                      anchors.top: parent.top
+//                      anchors.right: parent.right
+//                      anchors.bottom: parent.bottom
+//                  }
+
+//                  ScrollBar {
+//                      id: hbar1
+//                      hoverEnabled: true
+//                      active: hovered || pressed
+//                      orientation: Qt.Horizontal
+//                      size: frame.width / content.width
+//                      anchors.left: parent.left
+//                      anchors.right: parent.right
+//                      anchors.bottom: parent.bottom
+//                  }
+//                MouseArea {
+//                    id: pos
+//                                                onClicked: mouse.accepted = false
+//                                                onPressAndHold: mouse.accepted = false
+//                                                onDoubleClicked: mouse.accepted = false
+//                                                onPositionChanged: mouse.accepted = false
+//                                                onReleased: mouse.accepted = false
+//                                                onPressed: mouse.accepted = false
+//                    anchors.fill: parent
+//                    hoverEnabled: true
+//                    onWheel: {
+////                        event.accepted = true
+//                        if (wheel.modifiers & Qt.ShiftModifier) {
+//                            if (wheel.angleDelta.y > 0) {
+//                                hbar1.increase()
+//                            } else if (wheel.angleDelta.y < 0) {
+//                                hbar1.decrease()
+//                            }
+//                        } else if (wheel.angleDelta.y < 0) {
+
+//                            vbar1.increase()
+//                        } else if (wheel.angleDelta.y > 0) {
+//                            vbar1.decrease()
+//                        }
+//                    }
+//                }
                 id: nodeTree
+                property bool isMobile: false //TODO should be false by default
                 property int  currentRow
                 property int  coHeight
 
@@ -371,7 +489,8 @@ return;
 //                        title: "Name"
                         role: "edit"
 //                        width: 300
-                        width: viewInstance.parent.width
+                        width: viewInstance.width
+
 
 
                     }
@@ -381,6 +500,8 @@ return;
                                               nodeTree.currentIndex) //index
 //                contentHeight: 3000
 //                contentWidth: 2000
+                width:viewInstance.width
+                              height: viewInstance.height -search.height
                 clip: true
 //                reuseItems: true
 //                rowHeightProvider: function (row) {
@@ -399,14 +520,15 @@ return;
 
 headerVisible: false
 //frameVisible:false
-                width: viewInstance.width
-                height: viewInstance.height -search.height
+
 //                styleHints.overlay: "green"
 //                styleHints.indent: 25
 //                styleHints.columnPadding: 30
                 Component.onCompleted: {
 
-
+//                    if(myClass.isMobile()){
+//                            nodeTree.isMobile = true
+//                            } //TODO
 
 //                    var posInTreeView = mapToItem(nodeTree, 0, 0)
 //                    var row = nodeTree.rowAtY(posInTreeView, true)
@@ -416,7 +538,6 @@ headerVisible: false
                 }
 
                 Keys.onDigit2Pressed: {
-
                 }
                 Keys.onPressed: {
                     if ((event.key === Qt.Key_P)
@@ -444,8 +565,7 @@ headerVisible: false
                             var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
 
                             serializationWindowsArray.push(windowData)
-//console.log("root.array[i] " + root.array[i])
-//console.log("root.array[i].viewArray " + root.array[i].viewArray)
+
 
                             for (var j = 0; j < root.array[i].viewArray.length; j++) {
 
@@ -503,7 +623,6 @@ headerVisible: false
                                && (event.modifiers & Qt.ShiftModifier)) {
                              event.accepted = true
                         //copy node as child Ctrl Shift M
-                        console.log("ctrl-shift-m")
 
 
 
@@ -587,7 +706,6 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //copy a copied node Ctrl A
-                        console.log("gggggg")
                         myClass.saveIndex(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex)) //TODO
@@ -596,7 +714,6 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
 
-//                        console.log("ret")
 
 //                        //copy Id to clipboard Ctrl E
 //                        myClass.getIdToClipboard(
@@ -625,7 +742,6 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                              event.accepted = true
-                        console.log("ytyyyyyyy")
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
@@ -645,7 +761,6 @@ var query =">:" + myClass.getId(
                         //Ctrl M copy node
                         event.accepted = true
 
-                        console.log("ctrl-m")
 
                         var position = myClass.position(
                                     nodeTree.model.mapToSource(
@@ -659,7 +774,6 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)) {
      event.accepted = true
                         if(!nodeTree.isExpanded(nodeTree.currentIndex)){
-                            console.log("ttttt")
                         nodeTree.expand(nodeTree.currentIndex)
                         }
                         else{
@@ -718,20 +832,20 @@ id:box
 Connections{
 target: nodeTree
 function onCHeight(coHeight,row){
+
+
 if(styleData.row === row ){
-    console.log("Connections " +styleData.row)
 
-    console.log("coHeight b  " +coHeight)
 ot.height = coHeight +10
-    console.log("ttttrrrrr " +box.height)
 
+}
+else{
 }
 }
 }
 Keys.onEnterPressed: {
 //model.edit = model.edit +"\n"
-    console.log("before " +contentHeight)
-    console.log("after " +contentHeight)
+
 
 }
 width: nodeTree.width
@@ -747,7 +861,6 @@ font.pointSize: 18
 anchors.leftMargin: 5
 text: model.edit
 //onTextChanged: {
-//console.log("hhhhhhhhhhhhhhhhh")
 //    model.edit = text
 //}
 }
@@ -777,7 +890,7 @@ text: model.edit
                         visible: true
                        height:100
 //                        implicitHeight: 100
-                        implicitWidth: viewInstance.parent.width
+                        implicitWidth: viewInstance.width
                         focus: true
                         clip: true
 
@@ -835,7 +948,6 @@ text: model.edit
 
 //                                    if (tapCount == 1)
 //                                        if(!nodeTree.isExpanded(nodeTree.currentIndex)){
-//                                            console.log("ttttt")
 //                                        nodeTree.expand(nodeTree.currentIndex)
 //                                        }
 //                                        else{
@@ -875,7 +987,7 @@ background: Rectangle {
     }                        }
 onClicked: {
 
-    uniqueid1.open();}
+    itemMenu.open();}
 //                            TapHandler {
 //                                id: dotTapHandler
 
@@ -902,120 +1014,149 @@ onClicked: {
 //                            }
                         }
 
-                        TextArea {
-                            id: content
+
+//                            ScrollBar.horizontal: ScrollBar{policy: ScrollBar.AlwaysOn}
+
+ TextArea {
+
+                           anchors.left: dot.right
+anchors.leftMargin: 5
+ width: delegateRoot.width -20
+//   clip: true
+
+                                                  Menu {
+                                                           id:selectionMenu
 
 
-                            onContentHeightChanged: {
-                               nodeTree.currentRow = styleData.row
-                            nodeTree.coHeight = contentHeight}
-                            width: delegateRoot.width
-                            selectByMouse: true
-                            selectionColor: "#3399FF"
-                            selectedTextColor: "white"
-                            objectName: "text"
-//                            wrapMode: "WrapAnywhere"
-                            textFormat: TextEdit.PlainText
-//                            background: Rectangle {
-//                                            color: uniqueid1.activeFocus ? "white" :
-//                                                     "green"
-//                                    }
 
-                            clip: true
-                            font.pointSize: 18
-                            anchors.left: dot.right
-                            anchors.leftMargin: 5
-                            text: model.edit
-                            onActiveFocusChanged: {
-                                if (activeFocus) {
-                                    console.log("onActiveFocusChanged " )
+                                                           MenuItem { text: "Copy"
+                                                           onTriggered: {
 
+                                          content.copy();
+                                                           }
+                                                           }
+                                                           MenuItem { text: "Paste"
+                                                           onTriggered: {
 
-//                                            Qt.inputMethod.hide(); // hide the keyboard
+                                          content.paste();
+                                                           }
+                                                           }
+                                                           MenuItem { text: "Cut"
+                                                           onTriggered: {
 
-//                                    viewInstance.parent.parent.root.parent.input.active == true
+                                          content.cut();
+                                                           }
+                                                           }
+                                                  }
+                                                  id: content
+                                                  Keys.onDigit3Pressed: {
+                                                  }
 
-                                    if (myClass.hasMultipleSiblings(
-                                                nodeTree.model.mapToSource(
-                                                    nodeTree.currentIndex))) {
-                                        textDot.color = "blue"
-                                    }
-                                    if (!myClass.acceptsCopies(
-                                                nodeTree.model.mapToSource(
-                                                    nodeTree.currentIndex))) {
-                                        textDot.color = "green"
-                                    }
-                                } else {
-//                                    viewInstance.parent.parent.parent.input.active == false
+                      onSelectedTextChanged:  {
 
-                                    textDot.color = "black"
-                                }
-                            }
+                          if(selectedText.length >0&&nodeTree.isMobile){
 
+                              selectionMenu.x = (viewInstance.width) / 3
+                                          selectionMenu.y = (viewInstance.height ) / 2
+                          selectionMenu.open()
+                          }
+                      }
+                                                  onContentHeightChanged: {
+                                                     nodeTree.currentRow = styleData.row
+                                                  nodeTree.coHeight = contentHeight}
 
-                            onTextChanged: {
-
-
-                                if (nodeTree.activeFocus) {
-                                    console.log("before1 " +contentHeight)
-
-                                   model.edit = text
-
-                                    console.log("after1 " +contentHeight)
-
-                                    console.log(model.edit)
-
-                                }
-                                if (nodeTree.activeFocus
-                                        && content.activeFocus) {
-//                                    nodeTree.forceLayout()
-                                    heightChanged()
-                                    widthChanged()
-                                }
-                            }
+                                                  selectByMouse: true
+                                                  selectionColor: "#3399FF"
+                                                  selectedTextColor: "white"
+                                                  objectName: "text"
+                                                  wrapMode: TextEdit.WrapAnywhere
+                                                  textFormat: TextEdit.PlainText
+                      //                            background: Rectangle {
+                      //                                            color: itemMenu.activeFocus ? "white" :
+                      //                                                     "green"
+                      //                                    }
 
 
-//                            MouseArea {
-//                                acceptedButtons: Qt.NoButton
-//                                hoverEnabled: true
-//                                cursorShape: Qt.IBeamCursor
-//                                propagateComposedEvents: true
-//                                onClicked: mouse.accepted = false
-//                                onPressAndHold: mouse.accepted = false
-//                                onDoubleClicked: mouse.accepted = false
-//                                onPositionChanged: mouse.accepted = false
-//                                onReleased: mouse.accepted = false
-//                                onPressed: mouse.accepted = false
-//                                anchors.fill: parent
-//                                onEntered: {
-//                                    var posInTreeView = mapToItem(nodeTree,
-//                                                                  mouseX, mouseY)
-//                                    var row = nodeTree.rowAtY(posInTreeView.y,
-//                                                              false)
-//                                    nodeTree.currentIndex = nodeTree.mapToModel(
-//                                                nodeTree.viewIndex(0, row))
-//                                    if (!search.focus) {
-//                                        nodeTree.itemAtModelIndex(
-//                                                    nodeTree.currentIndex).item.forceActiveFocus()
-//                                    }
-//                                }
-//                            }
+                                                  font.pointSize: 18
+
+                                                  text: model.edit
+                                                  onActiveFocusChanged: {
+                                                      if (activeFocus) {
 
 
-                            Shortcut {
-                                sequence: "Ctrl+Shift+B"
-                                onActivated: {
-//                                    event.accepted = true
-                                                       //insert new node as a child Ctrl Shift N
-                                                       myClass.insertRows(
-                                                                   0, 1, nodeTree.model.mapToSource(
-                                                                       nodeTree.currentIndex)) //TODO
-                                                       nodeTree.expand(nodeTree.currentIndex)
 
-                                }
-                            }
+                      //                                            Qt.inputMethod.hide(); // hide the keyboard
 
-                        }
+                      //                                    viewInstance.parent.parent.root.parent.input.active == true
+
+                                                          if (myClass.hasMultipleSiblings(
+                                                                      nodeTree.model.mapToSource(
+                                                                          nodeTree.currentIndex))) {
+                                                              textDot.color = "blue"
+                                                          }
+                                                          if (!myClass.acceptsCopies(
+                                                                      nodeTree.model.mapToSource(
+                                                                          nodeTree.currentIndex))) {
+                                                              textDot.color = "green"
+                                                          }
+                                                      } else {
+                      //                                    viewInstance.parent.parent.parent.input.active == false
+
+                                                          textDot.color = "black"
+                                                      }
+                                                  }
+
+
+                                                  onTextChanged: {
+
+
+                                                      if (nodeTree.activeFocus) {
+
+                                                         model.edit = text
+
+
+
+                                                      }
+                                                      if (nodeTree.activeFocus
+                                                              && content.activeFocus) {
+                      //                                    nodeTree.forceLayout()
+                                                          heightChanged()
+                                                          widthChanged()
+                                                      }
+                                                  }
+
+
+                      //                            MouseArea {
+                      //                                acceptedButtons: Qt.NoButton
+                      //                                hoverEnabled: true
+                      //                                cursorShape: Qt.IBeamCursor
+                      //                                propagateComposedEvents: true
+                      //                                onClicked: mouse.accepted = false
+                      //                                onPressAndHold: mouse.accepted = false
+                      //                                onDoubleClicked: mouse.accepted = false
+                      //                                onPositionChanged: mouse.accepted = false
+                      //                                onReleased: mouse.accepted = false
+                      //                                onPressed: mouse.accepted = false
+                      //                                anchors.fill: parent
+                      //                                onEntered: {
+                      //                                    var posInTreeView = mapToItem(nodeTree,
+                      //                                                                  mouseX, mouseY)
+                      //                                    var row = nodeTree.rowAtY(posInTreeView.y,
+                      //                                                              false)
+                      //                                    nodeTree.currentIndex = nodeTree.mapToModel(
+                      //                                                nodeTree.viewIndex(0, row))
+                      //                                    if (!search.focus) {
+                      //                                        nodeTree.itemAtModelIndex(
+                      //                                                    nodeTree.currentIndex).item.forceActiveFocus()
+                      //                                    }
+                      //                                }
+                      //                            }
+
+
+
+
+                                              }
+
                     }
                 }
 //                               ScrollBar.vertical: ScrollBar {
@@ -1045,6 +1186,7 @@ onClicked: {
 ////                       anchors.bottom: parent.bottom
 //                   }
             }
+
 
 
 

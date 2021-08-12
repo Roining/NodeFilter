@@ -8,7 +8,7 @@ import Qt.labs.platform 1.0
 import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
 import Qt.labs.settings 1.0
-//import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls.Styles 1.4
 import QtQuick.VirtualKeyboard 2.15
 import QtQuick.VirtualKeyboard.Styles 2.15
 import QtQuick.VirtualKeyboard.Settings 2.15
@@ -20,9 +20,8 @@ Component.onCompleted: {
 ApplicationWindow {
 
     id: root
-    property alias input: inputPanel
+//    property alias input: inputPanel
     function isDevice() {
-        console.log("pcisDevice4444")
 
 //        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(navigator.userAgent);
     }
@@ -32,18 +31,23 @@ ApplicationWindow {
 //        property var windows: []
 //    }
     Component.onDestruction: {
-        console.log("destrooooy")
 
     }
-    InputPanel {
-        id: inputPanel
+//    Loader{
+//    sourceComponent: myClass.isMobile() ? keyboard:""
+
+//}
+
+
+InputPanel {
+id: inputPanel
 //        active:false
-        z:1000
-        y:Qt.inputMethod.visible?parent.height - inputPanel.height -50:parent.height
+z:1000
+y:Qt.inputMethod.visible?parent.height - inputPanel.height -50:parent.height
 //        externalLanguageSwitchEnabled:true
 //                y: inputPanel.active? parent.height - inputPanel.height -50:parent.height -50
-                property int  hidden: parent.height - inputPanel.height -50
-                width: parent.width
+property int  hidden: parent.height - inputPanel.height -50
+width: parent.width
 //                states: State {
 //                    name: "visible"
 //                    /*  The visibility of the InputPanel can be bound to the Qt.inputMethod.visible property,
@@ -69,40 +73,29 @@ ApplicationWindow {
 //                               visible:false
 //                           }
 //                       }
-                             Component.onCompleted: {
+Component.onCompleted: {
 
 
 
 if(!myClass.isMobile()){
-                                  console.log("non-mobile")
 
- inputPanel.destroy();
+inputPanel.destroy();
 }
 
 
 
-                             }
+}
 
-        }
-
+}
 
 onClosing: {
-    console.log("cloooose")
-    close.accepted = false
-//            onTriggered:  copyDialog1.open();
 
 
-//    myClass.save()
 
 }
     visible: true
     Component.onCompleted: {
 
-//        if(!root.isDevice()){
-//                                          console.log("pc")
-
-////            inputPanel.destroy();
-//        }
 
 //        if (settings.windows.length === 0) {
 

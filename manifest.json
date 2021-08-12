@@ -1,6 +1,6 @@
 {
-  "name": "My PWA Sample App",
-  "short_name" : "PWA",
+  "name": "Node Filter",
+  "short_name" : "Node Filter",
   "start_url": "index.html",
   "scope" : "./",
   "icons": [

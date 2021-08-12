@@ -9,10 +9,14 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGuiApplication>
+#include <QJsonArray>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
-
+QJsonArray listArray;
+QJsonArray inputArray;
+int inputArrayIterator = 0;
 #include <emscripten.h>
 
 // const char *QWasmIntegration::beforeunloadCallback(int eventType,
@@ -24,26 +28,22 @@
 //}
 extern TreeModel myClass1;
 TreeModel::TreeModel(QObject *parent) {
-  //  EM_ASM(console.log("bbbbbb"); window.onbeforeunload = function(e) {
+  //  EM_ASM( window.onbeforeunload = function(e) {
   //    e = e || window.event;
-  //    console.log("aaaaaa");
   //    return 'Sure';
   //  };);
   //  QFile file("IDBFS/storage.dat");
   QFile file("storage.dat");
 
   if (file.open(QIODevice::ReadWrite)) {
-    qDebug() << "aaa ";
 
     QDataStream stream(&file);
     QVector<QVariant> rootData;
 
     rootItem = new TreeNode(rootData, nullptr);
     deserialize(*rootItem, stream);
-    qDebug() << "aaa ";
 
     if (!rootItem->childCount()) {
-      qDebug() << "aa44444a ";
 
       beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
@@ -52,72 +52,56 @@ TreeModel::TreeModel(QObject *parent) {
     }
     file.close();
   }
-  //  EM_ASM(
-  //      // Make a directory other than '/'
-  //      FS.mkdir('/IDBFS'); console.log("YYYYY  ");
-  //      // Then mount with IDBFS type
-  //      FS.mount(IDBFS, {}, '/IDBFS'); console.log("eeeeeeee  ");
+  // clang-format off
+  EM_ASM(
+      // Make a directory other than '/'
+      FS.mkdir('/IDBFS');
+      // Then mount with IDBFS type
+      FS.mount(IDBFS, {}, '/IDBFS');
 
-  //          // Then sync
-  //          //        FS.syncfs(true,
-  //          //                  function(err){
-  //          //                      // Error
-  //          //                      console.log("ssssssssss  " + err)
+      FS.syncfs(true,
+                function(err){// Error
+                              })
+      //                      //                ccall('callback3', 'v',
 
-  //          //                      //                ccall('callback3', 'v',
-  //          '',
-  //          []);
-  //  //                  });
-  //  console.log("22222  ");
-
-  //    ); //TODO
+  ); // TODO
+  // clang-format on
   // clang-format off
 // clang-format off
   EM_ASM(/*if (typeof window.orientation == 'undefined') {
-    console.log("true")
-  } else {console.log("false")
+  } else {
 
   }*/
 
 
          var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  console.log("heeeeeeeeeeey1"); /* your code here */
 
          if(isMobile) {
-           console.log("MOBILE"); /* your code here */
                Module._setPlatform(true);
          } else {
-           console.log("PC"); /* your code here */
                Module._setPlatform(false);
          }
 
-         console.log("tttttt");
         window.onbeforeunload = function (e) {
              e = e || window.event;
              return 'Sure';
          };
 
   ); // TODO
-  // clang-format on
+//  // clang-format on
 }
 // clang-format on
 
 Q_INVOKABLE void TreeModel::loadFile() {
-  qDebug() << "gggg";
 
   auto fileContentReady = [this](const QString &fileName,
                                  const QByteArray &fileContent) {
-    qDebug() << "ddddd";
-
     if (fileName.isEmpty()) {
-      qDebug() << "dataString";
 
       // No file was selected
     } /*else if (QFileInfo(fileName).completeSuffix() != "dat") {
 
-      qDebug() << "dataString";
-      qDebug() << QFileInfo(fileName).filePath();
-      qDebug() << QFileInfo(fileName).fileName();
+
 
     }*/
     else {
@@ -128,20 +112,16 @@ Q_INVOKABLE void TreeModel::loadFile() {
       beginResetModel();
 
       //            QFile file("IDBFS/storage.dat");
-      qDebug() << "ttttttttt";
 
       //            if (file.open(QIODevice::ReadWrite)) {
-      qDebug() << "aaa ";
 
       QDataStream stream(fileContent);
       QVector<QVariant> rootData;
 
       rootItem = new TreeNode(rootData, nullptr);
       deserialize(*rootItem, stream);
-      qDebug() << "aaa ";
 
       if (!rootItem->childCount()) {
-        qDebug() << "aa44444a ";
 
         beginInsertRows(QModelIndex().parent(), 0, 1);
         rootItem->itemData.get()->append("data");
@@ -151,56 +131,221 @@ Q_INVOKABLE void TreeModel::loadFile() {
       //              file.close();
       //            }
 
-      qDebug() << "offline after " << QDir("/offline").entryList();
-      qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
-
-      qDebug() << "/ after " << QDir("/").entryList();
       endResetModel();
     }
   };
   QFileDialog::getOpenFileContent("Image Files (*.png *.jpg *.bmp)",
                                   fileContentReady);
 }
+Q_INVOKABLE void TreeModel::loadFileJSON() {
 
-// void TreeModel::syncStorage() {
+  auto fileContentReady = [this](const QString &fileName,
+                                 const QByteArray &fileContent) {
+    if (fileName.isEmpty()) {
 
-//  EM_ASM(FS.syncfs(true,
-//                   function(err){
-//                       // Error
-//                       console.log("ssssssssss  " + err)
+      // No file was selected
+    } /*else if (QFileInfo(fileName).completeSuffix() != "dat") {
 
-//                       //                ccall('callback3', 'v', '', []);
-//                   });
 
-//  );
-//}
+
+    }*/
+    else {
+      // Use fileName and fileContent
+      map.clear();
+      container.clear();
+      delete rootItem;
+      listArray = QJsonArray();
+      inputArrayIterator = 0;
+      beginResetModel();
+
+      //            QFile file("IDBFS/storage.dat");
+
+      //            if (file.open(QIODevice::ReadWrite)) {
+      QJsonParseError jsonError;
+
+      inputArray = QJsonDocument::fromJson(fileContent, &jsonError).array();
+      if (jsonError.error != QJsonParseError::NoError) {
+      }
+
+      QDataStream stream(fileContent);
+      QVector<QVariant> rootData;
+
+      rootItem = new TreeNode(rootData, nullptr);
+      deserializeJSON(*rootItem, stream);
+
+      if (!rootItem->childCount()) {
+
+        beginInsertRows(QModelIndex().parent(), 0, 1);
+        rootItem->itemData.get()->append("data");
+        endInsertRows();
+        insertRows(0, 1, QModelIndex());
+      }
+      //              file.close();
+      //            }
+
+      endResetModel();
+    }
+  };
+  QFileDialog::getOpenFileContent("Image Files (*.png *.jpg *.bmp)",
+                                  fileContentReady);
+}
+void TreeModel::deserializeJSON(TreeNode &node, QDataStream &stream,
+                                bool check) {
+  if (!check) {
+
+    auto nodeInfo = inputArray[inputArrayIterator++].toObject();
+
+    node.itemData->append(nodeInfo.value("itemData").toString());
+
+    node.numberOfChildren = nodeInfo.value("numberOfChildren").toInt();
+
+    node.id = QUuid(nodeInfo.value("id").toString());
+
+    node.acceptsCopies = nodeInfo.value("acceptsCopies").toBool();
+
+    for (const auto &e : nodeInfo.value("tempParents").toArray()) {
+
+      node.tempParents.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("parents").toArray()) {
+
+      node.parents.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("copyChildren").toArray()) {
+
+      node.copyChildren.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("position").toObject().keys()) {
+
+      for (auto it : nodeInfo.value("position").toObject().value(e).toArray()) {
+        node.position.insertMulti(QUuid(e), it.toInt());
+      }
+    }
+
+    if ((node.tempParents.size() > 1) &&
+        (!check)) { // temp stores ids of parents.if more than 1 then node is
+                    // copied further
+      map.insert(node.id,
+                 &node); // corresponds id of not copied nodes to a pointer to
+                         // the node
+      for (int i = 0; i < node.tempParents.size(); i++) {
+
+        container.insert(
+            node.tempParents[i],
+            node.id); // keys are parents, current item(to be copied) is value
+      }
+
+      auto cont = container.find(node.parentItem->id, node.id);
+
+      if (!node.position.isEmpty()) {
+      }
+    }
+  } else { // if node is copied
+           //    stream >> &node;
+    auto nodeInfo = inputArray[inputArrayIterator++].toObject();
+
+    node.item() = nodeInfo.value("itemData").toString();
+
+    node.numberOfChildren = nodeInfo.value("numberOfChildren").toInt();
+    node.numberOfChildren;
+
+    node.id = QUuid(nodeInfo.value("id").toString());
+
+    node.acceptsCopies = nodeInfo.value("acceptsCopies").toBool();
+
+    for (const auto &e : nodeInfo.value("tempParents").toArray()) {
+
+      node.tempParents.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("parents").toArray()) {
+
+      node.parents.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("copyChildren").toArray()) {
+
+      node.copyChildren.append(QUuid(e.toString()));
+    }
+
+    for (const auto &e : nodeInfo.value("position").toObject().keys()) {
+
+      for (auto it : nodeInfo.value("position").toObject().value(e).toArray()) {
+        node.position.insertMulti(QUuid(e), it.toInt());
+      }
+    }
+  }
+
+  for (int i = 0; i < node.numberOfChildren; i++) {
+
+    if (container.value(node.id) ==
+        QUuid()) { // if node is a not parent of a copied item
+
+      deserializeJSON(node.insertChildrenNew(i, 1, 0), stream);
+    } else {
+      TreeNode *check1 = nullptr;
+      auto list = container.values(
+          node.id); // list should contain ids of all potential children
+      for (int j = 0; j < list.size(); j++) {
+
+        auto ht = map.value(list[j])->position.keys();
+        for (auto &item : map.value(list[j])->position.keys()) {
+
+          if (item == node.id &&
+              map.value(list[j])->position.values(item).contains(i)) {
+            check1 = map.value(list[j]);
+
+            break;
+          }
+        }
+      }
+      if (check1 != nullptr) {
+
+        deserializeJSON(node.insertChildrenSerialization(i, 1, 0, check1),
+                        stream, true);
+      } else {
+
+        auto score = map.value(container.value(node.id));
+        deserializeJSON(node.insertChildrenNew(i, 1, 0), stream);
+      }
+      check1 = nullptr;
+    }
+  }
+  return;
+}
+
+void TreeModel::syncStorage() {
+
+  EM_ASM(FS.syncfs(true,
+                   function(err){
+                       // Error
+
+                       //                ccall('callback3', 'v', '', []);
+                   });
+
+  );
+}
 Q_INVOKABLE void TreeModel::kok() {
-  //  if (!QDir("IDBFS").exists()) {
-  //    qDebug() << "777";
 
-  //    QDir(QDir::currentPath()).mkdir("IDBFS");
-  //    qDebug() << "777";
-  //  }
   map.clear();
   container.clear();
   delete rootItem;
   beginResetModel();
 
   QFile file("IDBFS/storage.dat");
-  qDebug() << "ttttttttt";
 
   if (file.open(QIODevice::ReadWrite)) {
-    qDebug() << "aaa ";
 
     QDataStream stream(&file);
     QVector<QVariant> rootData;
 
     rootItem = new TreeNode(rootData, nullptr);
     deserialize(*rootItem, stream);
-    qDebug() << "aaa ";
 
     if (!rootItem->childCount()) {
-      qDebug() << "aa44444a ";
 
       beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
@@ -210,10 +355,6 @@ Q_INVOKABLE void TreeModel::kok() {
     file.close();
   }
 
-  qDebug() << "offline after " << QDir("/offline").entryList();
-  qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
-
-  qDebug() << "/ after " << QDir("/").entryList();
   endResetModel();
 }
 
@@ -247,22 +388,11 @@ QDataStream &operator<<(QDataStream &out, TreeNode &item) {
   out << item.parents;
   out << item.copyChildren;
 
-  //  qDebug() << *item.itemData;
-  //  qDebug() << item.numberOfChildren;
-  //  qDebug() << item.id;
-  //  qDebug() << item.acceptsCopies;
-  //  qDebug() << item.tempParents;
-  //  qDebug() << item.position;
-  //  qDebug() << item.parents;
-  //  qDebug() << item.copyChildren;
   return out;
 }
 
 QDataStream &operator>>(QDataStream &in, TreeNode *item) {
-  //  QChar data;
-  //  in >> data;
-  //  qDebug() << "ghghh   " << data;
-  //  item->itemData.get()[0].append(QString(data));
+
   in >> *item->itemData;
   in >> item->numberOfChildren; // TODO move out of class members
   in >> item->id;
@@ -403,7 +533,6 @@ bool TreeModel::insertRows(int position, int rows, const QModelIndex &parent) {
   }
 
   beginInsertRows(parent, position, position + rows - 1);
-  qDebug() << "insertRows";
   parentItem->insertChildren(position, rows, rootItem->columnCount());
 
   const QModelIndex &child = this->index(position, 0, parent);
@@ -475,11 +604,6 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
     return false;
   }
   const QModelIndex &child = this->index(position, 0, parent);
-  beginRemoveRows(parent, position, position + 1 - 1);
-
-  const bool success = parentItem->removeChildren(position, 1);
-
-  endRemoveRows();
 
   if ((!parentItem->parents.isEmpty())) {
 
@@ -498,6 +622,11 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent) {
                           child);
     }
   }
+  beginRemoveRows(parent, position, position + 1 - 1);
+
+  const bool success = parentItem->removeChildren(position, 1);
+
+  endRemoveRows();
 
   updateProxyFilter(true);
 
@@ -552,9 +681,173 @@ QHash<int, QByteArray> TreeModel::roleNames() const {
           {Qt::UserRole + 2, "id"}};
 }
 void TreeModel::saveIndex(const QModelIndex &index) {
-  qDebug() << "IDBFS after " << QDir("/IDBFS").entryList();
 
   last = index;
+  return;
+}
+Q_INVOKABLE void TreeModel::loadFileIDBFS() {
+
+  // Use fileName and fileContent
+  map.clear();
+  container.clear();
+  delete rootItem;
+
+  beginResetModel();
+
+  QDir::setCurrent(QDir::currentPath());
+  QFile file("IDBFS/storage.dat");
+
+  if (file.open(QIODevice::ReadOnly)) {
+
+    //  if (file.open(QIODevice::ReadWrite)) {
+    QDataStream stream(&file);
+    QVector<QVariant> rootData;
+
+    rootItem = new TreeNode(rootData, nullptr);
+    deserialize(*rootItem, stream);
+
+    if (!rootItem->childCount()) {
+
+      beginInsertRows(QModelIndex().parent(), 0, 1);
+      rootItem->itemData.get()->append("data");
+      endInsertRows();
+      insertRows(0, 1, QModelIndex());
+    }
+    //  }
+    file.close();
+  } else {
+  }
+
+  endResetModel();
+}
+
+Q_INVOKABLE void TreeModel::loadFile1() {
+
+  // Use fileName and fileContent
+  map.clear();
+  container.clear();
+  delete rootItem;
+  listArray = QJsonArray();
+  inputArrayIterator = 0;
+  beginResetModel();
+
+  QDir::setCurrent(QDir::currentPath());
+  QFile file("storage.dat");
+  QFile fileJSON("storage.json");
+  fileJSON.open(QIODevice::ReadOnly);
+  QJsonParseError jsonError;
+  inputArray = QJsonDocument::fromJson(fileJSON.readAll(), &jsonError).array();
+  if (jsonError.error != QJsonParseError::NoError) {
+  }
+
+  //  if (file.open(QIODevice::ReadWrite)) {
+  QDataStream stream(&file);
+  QVector<QVariant> rootData;
+
+  rootItem = new TreeNode(rootData, nullptr);
+  deserializeJSON(*rootItem, stream);
+  if (!rootItem->childCount()) {
+    beginInsertRows(QModelIndex().parent(), 0, 1);
+    rootItem->itemData.get()->append("data");
+    endInsertRows();
+    insertRows(0, 1, QModelIndex());
+  }
+  //  }
+  file.close();
+
+  fileJSON.close();
+  endResetModel();
+}
+void TreeModel::save1() {
+  QDir::setCurrent(QDir::currentPath());
+  QFile fileJSON("storage.json");
+  fileJSON.remove();
+
+  listArray = QJsonArray();
+  inputArray = QJsonArray();
+
+  inputArrayIterator = 0;
+
+  //  QDir::setCurrent(QDir::currentPath());
+  //  QString path = QDir::currentPath();
+
+  if (fileJSON.open(QIODevice::Append | QIODevice::Text)) {
+
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serializeJSON(*rootItem);
+    QJsonDocument doc(listArray);
+    fileJSON.write(doc.toJson(QJsonDocument::Indented));
+    fileJSON.close();
+  }
+}
+void TreeModel::serializeJSON(TreeNode &node) {
+
+  QFile file("storage.json");
+  file.open(QIODevice::Append | QIODevice::Text);
+
+  QJsonObject defectObject;
+  defectObject.insert("itemData", node.item().toString());
+  defectObject.insert("numberOfChildren", node.numberOfChildren);
+  defectObject.insert("id", node.id.toString());
+  defectObject.insert("acceptsCopies", node.acceptsCopies);
+  QJsonObject json;
+  QMap<QString, int> myMap;
+
+  QMapIterator<QUuid, int> i(node.position);
+  while (i.hasNext()) {
+    i.next();
+    myMap.insertMulti(i.key().toString(), i.value());
+  }
+  if (node.item().toString().contains("test12")) {
+  }
+  assert(myMap.size() == node.position.size());
+  QMapIterator<QString, int> j(myMap);
+  while (j.hasNext()) {
+    j.next();
+    QJsonArray array;
+    for (auto it : myMap.values(j.key())) {
+      array.append(it);
+    }
+
+    json.insert(j.key(), array);
+  }
+  //  assert(json.size() == node.position.size());
+  //  json.insert("map",myMap);
+  defectObject.insert("position", json);
+
+  QJsonArray tempParents1;
+  for (QUuid e : node.tempParents) {
+
+    tempParents1.append(e.toString());
+  }
+  defectObject.insert("tempParents", tempParents1);
+
+  //        defectObject.insert("position", node.position);
+  QJsonArray parents1;
+  for (QUuid e : node.parents) {
+
+    parents1.append(e.toString());
+  }
+  defectObject.insert("parents", parents1);
+  QJsonArray copyChildren1;
+  for (QUuid e : node.copyChildren) {
+
+    copyChildren1.append(e.toString());
+  }
+  defectObject.insert("copyChildren", copyChildren1);
+
+  //      defectObject.insert("positions", QJsonValue::fromVariant(positions));
+  //  QJsonArray listArray;
+  listArray.push_back(defectObject);
+
+  if (node.childCount()) {
+    for (int i = 0; i < node.childCount(); i++) {
+
+      serializeJSON(*(node.children()[i]));
+    }
+  }
+  file.close();
   return;
 }
 void TreeModel::save() {
@@ -572,15 +865,10 @@ void TreeModel::save() {
     serializeClear(*rootItem);
     serializeCleanUp(*rootItem);
     serialize(*rootItem, stream);
-    //    qDebug() << file.readAll();
-
-    //    qDebug() << file.readAll();
-    //    qDebug() << "10  " << ba;
 
     file.close();
   }
   if (file.open(QIODevice::ReadOnly)) {
-    qDebug() << "baaaaaaa";
 
     ba = file.readAll();
 
@@ -590,11 +878,53 @@ void TreeModel::save() {
   if (file.open(QIODevice::ReadWrite)) {
     //    qDebug() << "1  " << ba;
     ba = file.readAll();
-    //    qDebug() << "1  " << ba;
     //    EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
     QFileDialog::saveFileContent(ba, "storage.dat");
 
     file.close();
+  }
+  //  QFile::remove("IDBFS/storage.dat");
+  //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
+}
+void TreeModel::saveJSON() {
+  QFile fileJSON("storage.json");
+
+  QByteArray ba;
+
+  fileJSON.remove();
+
+  listArray = QJsonArray();
+  inputArray = QJsonArray();
+
+  inputArrayIterator = 0;
+
+  if (fileJSON.open(QIODevice::Append | QIODevice::Text)) {
+
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serializeJSON(*rootItem);
+
+    QJsonDocument doc(listArray);
+    fileJSON.write(doc.toJson(QJsonDocument::Indented));
+    fileJSON.close();
+  }
+  // void EMSCRIPTEN_KEEPALIVE TreeModel::save() {
+
+  if (fileJSON.open(QIODevice::ReadOnly)) {
+
+    ba = fileJSON.readAll();
+
+    fileJSON.close();
+  }
+
+  if (fileJSON.open(QIODevice::ReadWrite)) {
+    //    qDebug() << "1  " << ba;
+    ba = fileJSON.readAll();
+    //    qDebug() << "1  " << ba;
+    //    EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
+    QFileDialog::saveFileContent(ba, "storage.json");
+
+    fileJSON.close();
   }
   //  QFile::remove("IDBFS/storage.dat");
   //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
@@ -609,81 +939,38 @@ void EMSCRIPTEN_KEEPALIVE setPlatform(bool isMobile) {
 }
 }
 extern "C" {
-void EMSCRIPTEN_KEEPALIVE save1() {
+void EMSCRIPTEN_KEEPALIVE saveIDBFS() { myClass1.saveIDBFS(); }
+}
+void TreeModel::saveIDBFS() {
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
-  //  QFile file("IDBFS/storage.dat");
-  QFile file("storage.dat");
+  QFile file("IDBFS/storage.dat");
 
+  //  int value = QRandomGenerator::global()->generate();
+
+  //  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+  //  if (!cachePath.exists()) {
+  //    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+  //  }
+  //  auto isSuccessful =
+  //      file.copy(QStringLiteral("%1/storage.dat").arg(path),
+  //                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+  //                    .arg(path)
+  //                    .arg(value));
   QByteArray ba;
   if (file.open(QIODevice::WriteOnly)) {
 
     QDataStream stream(&file);
-    myClass1.serializeClear(*myClass1.rootItem);
-    myClass1.serializeCleanUp(*myClass1.rootItem);
-    myClass1.serialize(*myClass1.rootItem, stream);
-    //    qDebug() << file.readAll();
-
-    //    qDebug() << file.readAll();
-    //    qDebug() << "10  " << ba;
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serialize(*rootItem, stream);
 
     file.close();
   }
-  if (file.open(QIODevice::ReadOnly)) {
-    qDebug() << "baaaaaaa";
-
-    ba = file.readAll();
-
-    file.close();
-  } // TODO: remove this from all functions
-
-  if (file.open(QIODevice::ReadWrite)) {
-    //    qDebug() << "1  " << ba;
-    ba = file.readAll();
-    //    qDebug() << "1  " << ba;
-    //    EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
-    QFileDialog::saveFileContent(ba, "storage.dat");
-
-    file.close();
-  }
-  //  QFile::remove("IDBFS/storage.dat");
-  //  QFile::copy("offline/storage.dat", "IDBFS/storage.dat");
+  EM_ASM(FS.syncfs(function(err) { Module._setPlatform(true); }););
+  //  while (!isMobile()) {
+  //  };
 }
-}
-// void TreeModel::saveIDBFS() {
-//  QDir::setCurrent(QDir::currentPath());
-//  QString path = QDir::currentPath();
-//  QFile file("IDBFS/storage.dat");
-
-//  int value = QRandomGenerator::global()->generate();
-
-//  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
-//  if (!cachePath.exists()) {
-//    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
-//  }
-//  auto isSuccessful =
-//      file.copy(QStringLiteral("%1/storage.dat").arg(path),
-//                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
-//                    .arg(path)
-//                    .arg(value));
-//  QByteArray ba;
-//  if (file.open(QIODevice::WriteOnly)) {
-
-//    QDataStream stream(&file);
-//    serializeClear(*rootItem);
-//    serializeCleanUp(*rootItem);
-//    serialize(*rootItem, stream);
-//    //    qDebug() << file.readAll();
-
-//    //    qDebug() << file.readAll();
-//    //    qDebug() << "10  " << ba;
-
-//    file.close();
-//  }
-//  EM_ASM(FS.syncfs(function(err){console.log("ffffffffffff")}););
-
-//  std::this_thread::sleep_for(std::chrono::milliseconds(200));
-//}
 // void TreeModel::save() {
 //  QDir::setCurrent(QDir::currentPath());
 //  QString path = QDir::currentPath();
@@ -707,15 +994,10 @@ void EMSCRIPTEN_KEEPALIVE save1() {
 //    serializeClear(*rootItem);
 //    serializeCleanUp(*rootItem);
 //    serialize(*rootItem, stream);
-//    qDebug() << file.readAll();
-
-//    //    qDebug() << file.readAll();
-//    //    qDebug() << "10  " << ba;
 
 //    file.close();
 //  }
 //  if (file.open(QIODevice::ReadOnly)) {
-//    qDebug() << "ba " << file.readAll();
 
 //    ba = file.readAll();
 
@@ -723,9 +1005,7 @@ void EMSCRIPTEN_KEEPALIVE save1() {
 //  }
 
 //  if (file.open(QIODevice::ReadWrite)) {
-//    //    qDebug() << "1  " << ba;
 //    ba = file.readAll();
-//    qDebug() << "1  " << ba;
 
 //    QFileDialog::saveFileContent(ba, "storage.json");
 
@@ -959,7 +1239,6 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
                                     const QModelIndex &parent,
                                     const QPersistentModelIndex &source) {
   TreeNode *parentItem = getItem(parent);
-  qDebug() << "copyRowsAndChildren";
   if (!parentItem) {
     return false;
   }

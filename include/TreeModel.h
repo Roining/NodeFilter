@@ -70,7 +70,11 @@ public:
   QHash<int, QByteArray> roleNames() const override;
   Q_INVOKABLE void saveIndex(const QModelIndex &index);
   Q_INVOKABLE void save();
-  //  Q_INVOKABLE void saveIDBFS();
+  Q_INVOKABLE void save1();
+
+  Q_INVOKABLE void saveJSON();
+
+  Q_INVOKABLE void saveIDBFS();
 
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
 
@@ -83,10 +87,14 @@ public:
 
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
+  Q_INVOKABLE void serializeJSON(TreeNode &node);
+
   void serializeCleanUp(TreeNode &node);
   void serializeClear(TreeNode &node);
   Q_INVOKABLE void deserialize(TreeNode &node, QDataStream &stream,
                                bool check = false);
+  Q_INVOKABLE void deserializeJSON(TreeNode &node, QDataStream &stream,
+                                   bool check = false);
   Q_INVOKABLE bool
   copyRows(int position, int rows, const QModelIndex &parent = QModelIndex(),
            const QPersistentModelIndex &source = QModelIndex());
@@ -105,10 +113,15 @@ public:
   Q_INVOKABLE bool acceptsCopies(const QModelIndex &index);
   Q_INVOKABLE void kok();
   Q_INVOKABLE void loadFile();
+  Q_INVOKABLE void loadFile1();
+
+  Q_INVOKABLE void loadFileJSON();
+  Q_INVOKABLE void loadFileIDBFS();
+
   Q_INVOKABLE bool isMobile();
   Q_INVOKABLE void setPlatform(bool isMobile);
 
-  //  Q_INVOKABLE void syncStorage();
+  Q_INVOKABLE void syncStorage();
   TreeNode *rootItem;
 
 private:
