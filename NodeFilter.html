@@ -1,56 +1,8 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <link rel="manifest" href="/manifest.json">
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script>
-
-      let newWorker;
-    
-      function showUpdateBar() {
-        let snackbar = document.getElementById('snackbar');
-        snackbar.className = 'show';
-      }
-    
-      // The click event on the pop up notification
-   
-    
-      if ('serviceWorker' in navigator) {
-    
-        navigator.serviceWorker.register('/sw.js').then(reg => {
-          reg.addEventListener('updatefound', () => {
-            console.log("updatefound");
-            // A wild service worker has appeared in reg.installing!
-            newWorker = reg.installing;
-    
-            newWorker.addEventListener('statechange', () => {
-              // Has network.state changed?
-              switch (newWorker.state) {
-                case 'installed':
-                  if (navigator.serviceWorker.controller) {
-                    // new update available
-                    console.log("installed");
-
-                    newWorker.postMessage({ action: 'skipWaiting' });
-                    window.location.reload();
-                  }
-                  // No update available
-                  break;
-              }
-            });
-          });
-        });
-    
-        let refreshing;
-        navigator.serviceWorker.addEventListener('controllerchange', function () {
-          if (refreshing) return;
-          window.location.reload();
-          refreshing = true;
-        });
-      }
-    
-    </script>
 
     <!--Set visual viewport size for mobile devices to the device size,
         witch results in a scale of 1 and a 1:1 mapping between CSS pixels
@@ -78,7 +30,7 @@
         <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
       </center>
     </figure>
-    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()" contenteditable="true" inputmode="none"></canvas>
+    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()" contenteditable="true"></canvas>
 
     <script type='text/javascript'>
         function init() {
@@ -116,6 +68,5 @@
       }
     </script>
     <script type="text/javascript" src="qtloader.js"></script>
-
   </body>
 </html>
