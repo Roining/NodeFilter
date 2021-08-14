@@ -1,18 +1,19 @@
-const staticCacheName = 's-app-v30'
-const dynamicCacheName = 'd-app-v30'
+const staticCacheName = 's-app-v33'
+const dynamicCacheName = 'd-app-v33'
 
-const assetUrls = [
-  '/',
-  '/NodeFilter.html',
-  '/index.html',
-  '/qtlogo.svg',
-  '/storage.dat',
-  '/NodeFilter.wasm',
-  '/NodeFilter.js',
-  '/qtloader.js',
+const assetUrls = [ '/',
+'/NodeFilter.html',
+'/index.html',
+'/ms-icon-144x144.png',
+'/qtlogo.svg',
+'/storage.dat',
+'/NodeFilter.wasm',
+'/NodeFilter.js',
+'/manifest.json',
+'/NodeFilter.data',
+'/NodeFilter.wasm.map',
 
-
-]
+'/qtloader.js',]
 
 self.addEventListener('install', async event => {
   self.skipWaiting();
