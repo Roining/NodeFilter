@@ -190,7 +190,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "95351175-b6ee-4cb0-a639-eb0df3e481c4"});
+   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "42628fe5-d34a-47f5-8286-cea0483057d9"});
   
   })();
   
@@ -1467,11 +1467,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 20321696,
+    STACK_BASE = 20321824,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 15078816,
-    DYNAMIC_BASE = 20321696,
-    DYNAMICTOP_PTR = 15078640;
+    STACK_MAX = 15078944,
+    DYNAMIC_BASE = 20321824,
+    DYNAMICTOP_PTR = 15078768;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2000,10 +2000,10 @@ var tempI64;
 
 var ASM_CONSTS = {
   1124: function() {FS.mkdir('/IDBFS'); FS.mount(IDBFS, {}, '/IDBFS'); FS.syncfs(true, function(err){ })},  
- 1210: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); if(isMobile) { Module._setPlatform(true); } else { Module._setPlatform(false); } window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };},  
- 1557: function() {FS.syncfs(true, function(err){ });},  
- 1726: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
- 2155: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js') .then(reg => console.log('service worker registered')) .catch(err => console.log('service worker not registered', err)); } window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
+ 1210: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); console.log(navigator.userAgent); if(isMobile) { console.log("MOBILE"); Module._setPlatform(true); } else { console.log("PC"); Module._setPlatform(false); }},  
+ 1553: function() {FS.syncfs(true, function(err){ });},  
+ 1722: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
+ 2151: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
 };
 
 function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
@@ -2013,7 +2013,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 15077792;
+// STATICTOP = STATIC_BASE + 15077920;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -8778,7 +8778,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 15078640;
+      return 15078768;
     }
 
   
@@ -13147,7 +13147,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   }
   
   
-  var _fetch_work_queue=15078800;function __emscripten_get_fetch_work_queue() {
+  var _fetch_work_queue=15078928;function __emscripten_get_fetch_work_queue() {
       return _fetch_work_queue;
     }function _emscripten_start_fetch(fetch, successcb, errorcb, progresscb, readystatechangecb) {
     if (typeof noExitRuntime !== 'undefined') noExitRuntime = true; // If we are the main Emscripten runtime, we should not be closing down.
@@ -13779,10 +13779,10 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   
-  var ___tm_current=15078656;
+  var ___tm_current=15078784;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 15078704, 4), 15078704);
+  var ___tm_timezone=(stringToUTF8("GMT", 15078832, 4), 15078832);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.

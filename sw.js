@@ -1,42 +1,60 @@
-// Choose a cache name
-const cacheName = 'cache-v2';
-// List the files to precache
-const precacheResources = [ '/',
-'/NodeFilter.html',
-'/index.html',
-'/sw.js',
-'/ms-icon-144x144.png',
-'/qtlogo.svg',
-'/storage.dat',
-'/NodeFilter.wasm',
-'/NodeFilter.js',
-'/manifest.json',
-'/NodeFilter.data',
-'/NodeFilter.wasm.map',
+const staticCacheName = 's-app-v30'
+const dynamicCacheName = 'd-app-v30'
 
-'/qtloader.js',];
-
-// When the service worker is installing, open the cache and add the precache resources to it
-self.addEventListener('install', (event) => {
-  console.log('Service worker install event!');
-  event.waitUntil(caches.open(cacheName).then((cache) => cache.addAll(precacheResources)));
-});
-
-self.addEventListener('activate', (event) => {
-  console.log('Service worker activate event!');
-});
-
-// When there's an incoming fetch request, try and respond with a precached resource, otherwise fall back to the network
-self.addEventListener('fetch', (event) => {
-  console.log('Fetch intercepted for:', event.request.url);
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request);
-    }),
-  );
-});
+const assetUrls = [
+  '/',
+  '/NodeFilter.html',
+  '/index.html',
+  '/qtlogo.svg',
+  '/storage.dat',
+  '/NodeFilter.wasm',
+  '/NodeFilter.js',
+  '/qtloader.js',
 
 
+]
+
+self.addEventListener('install', async event => {
+  self.skipWaiting();
+  const cache = await caches.open(staticCacheName)
+  await cache.addAll(assetUrls)
+})
+
+self.addEventListener('activate', async event => {
+  const cacheNames = await caches.keys()
+  await Promise.all(
+    cacheNames
+      .filter(name => name !== staticCacheName)
+      .filter(name => name !== dynamicCacheName)
+      .map(name => caches.delete(name))
+  )
+})
+
+self.addEventListener('fetch', event => {
+  const {request} = event
+
+  const url = new URL(request.url)
+  if (url.origin === location.origin) {
+    event.respondWith(cacheFirst(request))
+  } else {
+    event.respondWith(networkFirst(request))
+  }
+})
+
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request)
+  return cached ?? await fetch(request)
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open(dynamicCacheName)
+  try {
+    const response = await fetch(request)
+    await cache.put(request, response.clone())
+    return response
+  } catch (e) {
+    const cached = await cache.match(request)
+    return cached ?? await caches.match('/offline.html')
+  }
+}

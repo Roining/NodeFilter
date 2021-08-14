@@ -191,7 +191,7 @@ cascade: true
         property alias tree: nodeTree
         property alias ser: search
         property alias test: nodeTree.model
-
+        property bool isMobile: false
         objectName: Math.random().toString(36).substr(2, 5)
 //Layout.fillWidth:true
 //         Layout.minimumHeight: 200
@@ -300,7 +300,7 @@ cascade: true
                 placeholderText: "Find"
                 onSelectedTextChanged:  {
 
-                    if(selectedText.length >0&&nodeTree.isMobile){
+                    if(selectedText.length >0&&viewInstance.isMobile){
 
                         findSelectionMenu.x = (viewInstance.width) / 3
                                     findSelectionMenu.y = (viewInstance.height ) / 2
@@ -415,7 +415,7 @@ cascade: true
 //                    }
 //                }
                 id: nodeTree
-                property bool isMobile: false //TODO should be false by default
+                 //TODO should be false by default
                 property int  currentRow
                 property int  coHeight
 
@@ -526,9 +526,10 @@ headerVisible: false
 //                styleHints.columnPadding: 30
                 Component.onCompleted: {
 
-//                    if(myClass.isMobile()){
-//                            nodeTree.isMobile = true
-//                            } //TODO
+                    if(myClass.isMobile()){
+                        console.log("ismobile")
+                            viewInstance.isMobile = true
+                            } //TODO
 
 //                    var posInTreeView = mapToItem(nodeTree, 0, 0)
 //                    var row = nodeTree.rowAtY(posInTreeView, true)
@@ -1021,7 +1022,7 @@ onClicked: {
 
                            anchors.left: dot.right
 anchors.leftMargin: 5
- width: delegateRoot.width -20
+ width: delegateRoot.width  - x
 //   clip: true
 
                                                   Menu {
@@ -1054,7 +1055,7 @@ anchors.leftMargin: 5
 
                       onSelectedTextChanged:  {
 
-                          if(selectedText.length >0&&nodeTree.isMobile){
+                          if(selectedText.length >0&&viewInstance.isMobile){
 
                               selectionMenu.x = (viewInstance.width) / 3
                                           selectionMenu.y = (viewInstance.height ) / 2
@@ -1109,7 +1110,7 @@ anchors.leftMargin: 5
 
                                                   onTextChanged: {
 
-
+console.log(width)
                                                       if (nodeTree.activeFocus) {
 
                                                          model.edit = text

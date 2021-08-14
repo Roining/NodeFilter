@@ -19,13 +19,6 @@ QJsonArray inputArray;
 int inputArrayIterator = 0;
 #include <emscripten.h>
 
-// const char *QWasmIntegration::beforeunloadCallback(int eventType,
-//                                                   const void *reserved,
-//                                                   void *userData)
-
-//{
-//  return "Do you really want to leave the page?";
-//}
 extern TreeModel myClass1;
 TreeModel::TreeModel(QObject *parent) {
   //  EM_ASM( window.onbeforeunload = function(e) {
@@ -72,20 +65,33 @@ TreeModel::TreeModel(QObject *parent) {
   } else {
 
   }*/
-
+//         var hasTouchScreen = false;
+//         if ("maxTouchPoints" in navigator) {
+//             hasTouchScreen = navigator.maxTouchPoints > 0;
+//         } else if ("msMaxTouchPoints" in navigator) {
+//             hasTouchScreen = navigator.msMaxTouchPoints > 0;
+//         }
 
          var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+
+          console.log(navigator.userAgent);
          if(isMobile) {
+      console.log("MOBILE");
+
+
                Module._setPlatform(true);
          } else {
+      console.log("PC");
+
+
                Module._setPlatform(false);
          }
 
-        window.onbeforeunload = function (e) {
-             e = e || window.event;
-             return 'Sure';
-         };
+//        window.onbeforeunload = function (e) {
+//             e = e || window.event;
+//             return 'Sure';
+//         };
 
   ); // TODO
 //  // clang-format on
