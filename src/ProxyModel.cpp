@@ -19,7 +19,9 @@ void ProxyModel::queryProcessing() {
   itemContainer.clear();
   for (int i = 0; i < stringontainer1.size(); i++) {
     if (stringontainer1[i].startsWith(">") ||
-        stringontainer1[i].startsWith("<")) {
+        stringontainer1[i].startsWith("<") ||
+        stringontainer1[i].contains(
+            QRegExp("sortNDesc:|sortADesc:|sortAAsc:|sortNAsc:"))) {
       auto queryTrimmed = stringontainer1[i].section(":", -1);
       auto itemIndex =
           sourceModel->match(sourceModel->index(0, 0), Qt::UserRole + 2,
@@ -55,18 +57,12 @@ bool ProxyModel::filterAcceptsRow(int source_row,
 
     if (container[i].startsWith("r:")) {
       auto string = container[i].mid(2);
-      auto m = currentItem->item().toString();
-      auto p = sourceModel->data(index, 0).toString();
       QRegularExpression regex(string);
       QRegularExpressionMatch match =
-          //          regex.match(sourceModel->data(index, 0).toString());
-          regex.match(currentItem->item().toString());
-
+          regex.match(sourceModel->data(index, 0).toString());
       if (!match.hasMatch()) {
         currentItem->setVisible(false);
         return false;
-      } else {
-        return true;
       }
     } else if (container[i].startsWith("NOT") ||
                container[i].startsWith("OR") ||
@@ -261,67 +257,68 @@ bool ProxyModel::lessThan(const QModelIndex &left,
                           const QModelIndex &right) const {
   auto leftItem = sourceModel->getItem(left);
   auto rightItem = sourceModel->getItem(right);
-  QVariant leftData = sourceModel->data(left, Qt::DisplayRole);
-  QVariant rightData = sourceModel->data(right, Qt::DisplayRole);
+
   auto itemId = query.mid(query.lastIndexOf(":") + 1);
-  auto itemIndex =
-      sourceModel->match(sourceModel->index(0, 0), Qt::UserRole + 2, itemId, 1,
-                         Qt::MatchRecursive);
-  if (itemIndex.isEmpty()) {
+  auto queryItem = itemContainer.value(itemId);
+  if (!queryItem) {
     return false;
   }
-  auto queryItem = sourceModel->getItem(itemIndex[0]);
+  QVariant leftData = sourceModel->data(left, Qt::DisplayRole);
+  QVariant rightData = sourceModel->data(right, Qt::DisplayRole);
+  if (query.contains("sortAAsc:")) {
+    return leftData.toString() < rightData.toString();
+    //    if (leftResult->childCount() && rightResult->childCount()) {
+    //      return leftResult->children()[0]->item() <
+    //             rightResult->children()[0]->item();
+    //    }
+  } else if (query.contains("sortADesc:")) {
+    return leftData.toString() > rightData.toString();
+    //    if (leftResult->childCount() && rightResult->childCount()) {
+    //      return leftResult->children()[0]->item() >
+    //             rightResult->children()[0]->item();
+    //    }
+  }
+  //  auto itemIndex =
+  //      sourceModel->match(sourceModel->index(0, 0), Qt::UserRole + 2, itemId,
+  //      1,
+  //                         Qt::MatchRecursive);
+  //  if (itemIndex.isEmpty()) {
+  //    return false;
+  //  }
+  //  auto queryItem = sourceModel->getItem(itemIndex[0]);
   auto leftResult = sourceModel->isDescendantNode(leftItem, queryItem);
   auto rightResult = sourceModel->isDescendantNode(rightItem, queryItem);
-  if (!(sourceModel->isDescendantNode(leftItem, queryItem)) ||
-      !(sourceModel->isDescendantNode(rightItem, queryItem))) {
+  if (!(leftResult) && !rightResult) {
     return false;
+  } else if ((!(leftResult) || !leftResult->childCount()) && rightResult) {
+    if (rightResult->childCount()) {
+      return false;
+    } else {
+      return false;
+    }
+  } else if ((!rightResult || !rightResult->childCount()) && leftResult) {
+    if (leftResult->childCount()) {
+      return true;
+    } else {
+      return true;
+    }
   }
 
   if (query.contains("sortNAsc:")) {
     //    return leftData.toDouble() < rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
-      return sourceModel->isDescendantNode(leftItem, queryItem)
-                 ->children()[0]
-                 ->item()
-                 .toDouble() <
-             sourceModel->isDescendantNode(rightItem, queryItem)
-                 ->children()[0]
-                 ->item()
-                 .toDouble();
+      return leftResult->children()[0]->item().toDouble() <
+             rightResult->children()[0]->item().toDouble();
     }
   } else if (query.contains("sortNDesc:")) {
     //       return leftData.toDouble() > rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
-      return sourceModel->isDescendantNode(leftItem, queryItem)
-                 ->children()[0]
-                 ->item()
-                 .toDouble() >
-             sourceModel->isDescendantNode(rightItem, queryItem)
-                 ->children()[0]
-                 ->item()
-                 .toDouble();
-    }
-  } else if (query.contains("sortAAsc:")) {
-    //        return leftData.toString() < rightData.toString();
-    if (leftResult->childCount() && rightResult->childCount()) {
-      return sourceModel->isDescendantNode(leftItem, queryItem)
-                 ->children()[0]
-                 ->item() < sourceModel->isDescendantNode(rightItem, queryItem)
-                                ->children()[0]
-                                ->item();
-    }
-  } else if (query.contains("sortADesc:")) {
-    //        return leftData.toString() < rightData.toString();
-    if (leftResult->childCount() && rightResult->childCount()) {
-      return sourceModel->isDescendantNode(leftItem, queryItem)
-                 ->children()[0]
-                 ->item() > sourceModel->isDescendantNode(rightItem, queryItem)
-                                ->children()[0]
-                                ->item();
+      return leftResult->children()[0]->item().toDouble() >
+             rightResult->children()[0]->item().toDouble();
     }
   } else {
-    return leftData.toString() < rightData.toString();
+    //    return leftData.toString() < rightData.toString();
+    return false;
   }
   return true;
 }
