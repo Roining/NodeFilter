@@ -36,7 +36,7 @@ ApplicationWindow {
             }
         }
         if (root.array.length === 0) {
-            myClass.save()
+//            myClass.save()
             Qt.quit()
         }
     }

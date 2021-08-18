@@ -440,6 +440,42 @@ void TreeModel::save() {
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
   QFile file("storage.dat");
+  //  int value = QRandomGenerator::global()->generate();
+
+  //  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
+  //  if (!cachePath.exists()) {
+  //    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
+  //  }
+  //  auto isSuccessful =
+  //      file.copy(QStringLiteral("%1/storage.dat").arg(path),
+  //                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
+  //                    .arg(path)
+  //                    .arg(value));
+  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+
+    QDataStream stream(&file);
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serialize(*rootItem, stream);
+
+    file.close();
+  }
+}
+void TreeModel::saveAtExit() {
+
+  QDir::setCurrent(QDir::currentPath());
+  QString path = QDir::currentPath();
+  QFile file("storage.dat");
+
+  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+
+    QDataStream stream(&file);
+    serializeClear(*rootItem);
+    serializeCleanUp(*rootItem);
+    serialize(*rootItem, stream);
+
+    file.close();
+  }
   int value = QRandomGenerator::global()->generate();
 
   QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
@@ -451,17 +487,7 @@ void TreeModel::save() {
                 QStringLiteral("%1/StorageCache/StorageCache%2.dat")
                     .arg(path)
                     .arg(value));
-  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-
-    QDataStream stream(&file);
-    serializeClear(*rootItem);
-    serializeCleanUp(*rootItem);
-    serialize(*rootItem, stream);
-
-    file.close();
-  }
 }
-
 void TreeModel::saveJSON() {
   QDir::setCurrent(QDir::currentPath());
   QFile fileJSON("storage.json");

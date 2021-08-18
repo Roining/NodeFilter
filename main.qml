@@ -10,7 +10,10 @@ import Qt.labs.settings 1.0
 
 ApplicationWindow {
     id: root
+Component.onDestruction:  {
+            myClass.saveAtExit();
 
+}
     property var array: []
     property var arrayOfWindows: []
     property Settings settings: Settings {

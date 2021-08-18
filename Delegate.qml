@@ -186,7 +186,7 @@ root.settings.windows.length ===0
                                         (serializationWindowsArray[i]))
                         }
                         root.settings.windows = root.arrayOfWindows
-                        myClass.save()
+//                        myClass.save()
                         Qt.quit()
                         return
                     } else if ((event.key === Qt.Key_G)

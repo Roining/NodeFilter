@@ -66,6 +66,8 @@ public:
   Q_INVOKABLE void saveIndex(const QModelIndex &index);
 
   Q_INVOKABLE void save();
+  Q_INVOKABLE void saveAtExit();
+
   Q_INVOKABLE void saveJSON();
 
   Q_INVOKABLE QPersistentModelIndex getLastIndex();
