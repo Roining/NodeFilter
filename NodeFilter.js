@@ -190,7 +190,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "1b4c5f4a-4c86-41ff-9284-e3a865b6b699"});
+   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "ecd1870e-c862-4257-b297-3f277fc20c3b"});
   
   })();
   
@@ -1467,11 +1467,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 20321824,
+    STACK_BASE = 20320992,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 15078944,
-    DYNAMIC_BASE = 20321824,
-    DYNAMICTOP_PTR = 15078768;
+    STACK_MAX = 15078112,
+    DYNAMIC_BASE = 20320992,
+    DYNAMICTOP_PTR = 15077936;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -1999,11 +1999,11 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  1124: function() {FS.mkdir('/IDBFS'); FS.mount(IDBFS, {}, '/IDBFS'); FS.syncfs(true, function(err){ })},  
- 1210: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); console.log(navigator.userAgent); if(isMobile) { console.log("MOBILE"); Module._setPlatform(true); } else { console.log("PC"); Module._setPlatform(false); }},  
- 1553: function() {FS.syncfs(true, function(err){ });},  
- 1722: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
- 2151: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
+  1166: function() {FS.mkdir('/IDBFS'); FS.mount(IDBFS, {}, '/IDBFS'); FS.syncfs(true, function(err){ })},  
+ 1252: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); console.log(navigator.userAgent); if(isMobile) { console.log("MOBILE"); Module._setPlatform(true); } else { console.log("PC"); Module._setPlatform(false); }},  
+ 1595: function() {FS.syncfs(true, function(err){ });},  
+ 1764: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
+ 2195: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
 };
 
 function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
@@ -2013,7 +2013,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 15077920;
+// STATICTOP = STATIC_BASE + 15077088;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -8778,7 +8778,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 15078768;
+      return 15077936;
     }
 
   
@@ -13147,7 +13147,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   }
   
   
-  var _fetch_work_queue=15078928;function __emscripten_get_fetch_work_queue() {
+  var _fetch_work_queue=15078096;function __emscripten_get_fetch_work_queue() {
       return _fetch_work_queue;
     }function _emscripten_start_fetch(fetch, successcb, errorcb, progresscb, readystatechangecb) {
     if (typeof noExitRuntime !== 'undefined') noExitRuntime = true; // If we are the main Emscripten runtime, we should not be closing down.
@@ -13779,10 +13779,10 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   
-  var ___tm_current=15078784;
+  var ___tm_current=15077952;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 15078832, 4), 15078832);
+  var ___tm_timezone=(stringToUTF8("GMT", 15078000, 4), 15078000);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.

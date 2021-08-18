@@ -307,17 +307,8 @@ cascade: true
                     findSelectionMenu.open()
                     }
                 }
-                onActiveFocusChanged: {
-                if(activeFocus){
 
 
-                            Qt.inputMethod.hide(); // hide the keyboard
-
-                }
-                }
-                Component.onCompleted: {
-
-                                         }
                 Keys.onEscapePressed: {
                     var posInTreeView = mapToItem(nodeTree, 0, 0)
                     var row = nodeTree.rowAtY(posInTreeView, true)
@@ -527,7 +518,6 @@ headerVisible: false
                 Component.onCompleted: {
 
                     if(myClass.isMobile()){
-                        console.log("ismobile")
                             viewInstance.isMobile = true
                             } //TODO
 
@@ -1110,7 +1100,6 @@ anchors.leftMargin: 5
 
                                                   onTextChanged: {
 
-console.log(width)
                                                       if (nodeTree.activeFocus) {
 
                                                          model.edit = text
