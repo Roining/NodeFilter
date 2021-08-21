@@ -21,6 +21,13 @@ Component.onDestruction:  {
     }
 
     visible: false
+    Timer {
+          interval: 600000; running: true; repeat: true
+          onTriggered:           {
+              console.log("saved")
+              myClass.save();}
+
+      }
     Component.onCompleted: {
         if (settings.windows.length === 0) {
             var component = Qt.createComponent("WindowComponent.qml")

@@ -138,8 +138,23 @@ bool ProxyModel::filterAcceptsRow(int source_row,
         currentItem->setVisible(false);
         return false;
       }
+      if (container[i].startsWith("<<<<")) {
+        innerResult = false;
 
-      if (container[i].startsWith("<<")) {
+        for (int i = 0; i < queryId->siblingItems().size(); i++) {
+          if (sourceModel->isDescendantReverse(
+                  currentItem, queryId->siblingItems()[i], depth, true)) {
+            innerResult = true;
+            break;
+          }
+        }
+        //          innerResult =
+        //              sourceModel->isDescendantReverse(currentItem, queryId,
+        //              depth, true);
+      } else if (container[i].startsWith("<<<")) {
+        innerResult =
+            sourceModel->isDescendantReverse(currentItem, queryId, depth, true);
+      } else if (container[i].startsWith("<<")) {
         innerResult =
             sourceModel->isDescendant(currentItem, queryId, depth, true);
       } else {

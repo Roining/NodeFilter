@@ -14,6 +14,7 @@ SOURCES += \
     src/TreeNode.cpp \
     src/main.cpp
 
+RC_ICONS += /icon.ico
 
 RESOURCES += \
     qml.qrc
