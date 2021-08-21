@@ -512,35 +512,7 @@ void TreeModel::saveJSON() {
   }
 }
 QPersistentModelIndex TreeModel::getLastIndex() { return last; }
-bool TreeModel::isDescendant3(TreeNode *parent, TreeNode *child, int depth,
-                              bool searchClones) {
-  if (depth == 0) {
-    return false;
-  }
-  if (parent == child) {
-    return true;
-  } else if (searchClones) {
-    if (*parent == *child) {
-      return true;
-    }
-  }
 
-  for (int i = 0; i < parent->childItems->size(); i++) {
-    if (searchClones) {
-      if (isDescendant((*parent->childItems.get())[i], child, depth - 1,
-                       true)) {
-        return true;
-      }
-
-    } else {
-      if (isDescendant((*parent->childItems.get())[i], child, depth - 1)) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
 bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
                              bool searchClones) {
   if (depth == 0) {

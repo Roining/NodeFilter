@@ -14,7 +14,7 @@ SOURCES += \
     src/TreeNode.cpp \
     src/main.cpp
 
-RC_ICONS += /icon.ico
+RC_ICONS += /resources/icon.ico
 
 RESOURCES += \
     qml.qrc
@@ -39,7 +39,8 @@ HEADERS += \
 DISTFILES += \
     Delegate.qml \
     WindowComponent.qml \
-    main.qml
+    main.qml \
+    resources/icon.ico
 #QT -= qmltest
 ##QT.testlib.CONFIG -= console
 #/SUBSYSTEM:windows

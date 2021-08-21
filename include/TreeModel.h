@@ -76,8 +76,6 @@ public:
                            bool searchClones = false);
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
-  bool isDescendant3(TreeNode *parent, TreeNode *child, int depth,
-                     bool searchClones = false);
 
   TreeNode *isDescendantNode(TreeNode *parent, TreeNode *child);
   TreeNode *isDirectDescendantNode(TreeNode *parent, TreeNode *child,

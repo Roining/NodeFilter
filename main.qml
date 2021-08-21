@@ -24,7 +24,7 @@ Component.onDestruction:  {
     Timer {
           interval: 600000; running: true; repeat: true
           onTriggered:           {
-              console.log("saved")
+
               myClass.save();}
 
       }
