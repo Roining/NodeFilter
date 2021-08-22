@@ -1,5 +1,5 @@
-const staticCacheName = 's-app-v52'
-const dynamicCacheName = 'd-app-v52'
+const staticCacheName = 's-app-v53'
+const dynamicCacheName = 'd-app-v53'
 
 const assetUrls = [ '/',
 '/NodeFilter.html',
@@ -34,12 +34,12 @@ self.addEventListener('activate', async event => {
 self.addEventListener('fetch', event => {
   const {request} = event
 
-  const url = new URL(request.url)
-  if (url.origin === location.origin) {
+  // const url = new URL(request.url)
+  // if (url.origin === location.origin) {
     event.respondWith(cacheFirst(request))
-  } else {
-    event.respondWith(networkFirst(request))
-  }
+  // } else {
+  //   event.respondWith(networkFirst(request))
+  // }
 })
 
 
