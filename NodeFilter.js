@@ -190,7 +190,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "4a985fdb-ea98-4d39-a45e-123f3f6adfeb"});
+   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 1658050, "audio": 0}], "remote_package_size": 1658050, "package_uuid": "38fa24a7-9a5a-4a5d-ad34-fcfd730fc9c3"});
   
   })();
   
@@ -1467,11 +1467,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 20321248,
+    STACK_BASE = 20320992,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 15078368,
-    DYNAMIC_BASE = 20321248,
-    DYNAMICTOP_PTR = 15078192;
+    STACK_MAX = 15078112,
+    DYNAMIC_BASE = 20320992,
+    DYNAMICTOP_PTR = 15077936;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2003,7 +2003,7 @@ var ASM_CONSTS = {
  1261: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); console.log(navigator.userAgent); if(isMobile) { console.log("MOBILE"); Module._setPlatform(true); } else { console.log("PC"); Module._setPlatform(false); }},  
  1604: function() {FS.syncfs(true, function(err){ });},  
  1773: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
- 2203: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js') .then(reg => console.log('service worker registered')) .catch(err => console.log('service worker not registered', err)); } window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
+ 2203: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
 };
 
 function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
@@ -2013,7 +2013,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 15077344;
+// STATICTOP = STATIC_BASE + 15077088;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -8778,7 +8778,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 15078192;
+      return 15077936;
     }
 
   
@@ -13147,7 +13147,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   }
   
   
-  var _fetch_work_queue=15078352;function __emscripten_get_fetch_work_queue() {
+  var _fetch_work_queue=15078096;function __emscripten_get_fetch_work_queue() {
       return _fetch_work_queue;
     }function _emscripten_start_fetch(fetch, successcb, errorcb, progresscb, readystatechangecb) {
     if (typeof noExitRuntime !== 'undefined') noExitRuntime = true; // If we are the main Emscripten runtime, we should not be closing down.
@@ -13779,10 +13779,10 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   
-  var ___tm_current=15078208;
+  var ___tm_current=15077952;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 15078256, 4), 15078256);
+  var ___tm_timezone=(stringToUTF8("GMT", 15078000, 4), 15078000);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
