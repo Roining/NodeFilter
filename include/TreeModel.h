@@ -80,6 +80,8 @@ public:
 
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
+  bool isDescendantReverse(TreeNode *parent, TreeNode *child, int depth,
+                           bool searchClones = false);
   TreeNode *isDescendantNode(TreeNode *parent, TreeNode *child);
   bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
