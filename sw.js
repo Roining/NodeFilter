@@ -1,20 +1,18 @@
-const staticCacheName = 's-app-v53'
-const dynamicCacheName = 'd-app-v53'
-
+const staticCacheName = 's-app-v1.2'
+const dynamicCacheName = 'd-app-v1.2'
 const assetUrls = [ '/',
 '/NodeFilter.html',
 '/index.html',
-'/ms-icon-144x144.png',
 '/qtlogo.svg',
 '/storage.dat',
 '/NodeFilter.wasm',
 '/NodeFilter.js',
 '/manifest.json',
 '/NodeFilter.data',
+'/icon.png',
 '/NodeFilter.wasm.map',
 
 '/qtloader.js',]
-
 self.addEventListener('install', async event => {
   self.skipWaiting();
   const cache = await caches.open(staticCacheName)
@@ -34,12 +32,12 @@ self.addEventListener('activate', async event => {
 self.addEventListener('fetch', event => {
   const {request} = event
 
-  // const url = new URL(request.url)
-  // if (url.origin === location.origin) {
+  const url = new URL(request.url)
+  if (url.origin === location.origin) {
     event.respondWith(cacheFirst(request))
-  // } else {
-  //   event.respondWith(networkFirst(request))
-  // }
+  } else {
+    event.respondWith(networkFirst(request))
+  }
 })
 
 

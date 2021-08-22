@@ -41,6 +41,20 @@ int main(int argc, char *argv[]) {
 
 
 
+                    if('serviceWorker' in navigator){
+          //    navigationPreload.disable();
+                          navigator.serviceWorker.register('/sw.js')
+                            .then(reg => console.log('service worker registered'))
+                            .catch(err => console.log('service worker not registered', err));
+
+
+
+              //               navigator.serviceWorker.getRegistrations().then(function (registrations) {
+              //   for (let registration of registrations) {
+              //     registration.update()
+              //   }
+              // })
+                        }
 
              window.onbeforeunload = function (e) {
                   e = e || window.event;

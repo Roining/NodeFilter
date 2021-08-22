@@ -1,7 +1,7 @@
 {
   "name": "Node Filter",
   "short_name" : "Node Filter",
-  "start_url": "index.html",
+  "start_url": "/index.html",
   "scope" : "./",
   "icons": [
       {
