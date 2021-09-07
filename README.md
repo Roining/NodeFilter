@@ -34,9 +34,9 @@ Transclusive descendants of both node X and node Y but not node Z which contain 
 \>^::\*id of node X\* - matches any node Y if node Y or any ascendant of node Y is a node X or a copy of node X.  
 \<:\*id of node X\* - shows all ascendants of node X up to the root node.  
 \<<:\*id of node X\* -  shows transclusive ascendants of node X.I.e.  if node X or any ascendant of node X is a copy of a any node Y, then node Y matches this filter.  
-2.Regex filter: r:*regex expression*     
+2.Regex filter: r:\*regex expression\*     
 All nodes that match the regex expression are shown.  
-3.Default string filter(without any prefix): *any number of words separated by space*  
+3.Default string filter(without any prefix): \*any number of words separated by space\*  
 Node X matches the filter if node X or any ascendant of node X contains one of the words in queried words 
 4.Sorting queries:  
 In a tree structure, only sibling nodes are compared to each other when the tree is sorted.  
