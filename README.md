@@ -114,12 +114,13 @@ Ctrl-P - mark the selected node as a template(or as a "blocking node"). Template
 Ctrl-Shift-P -remove the template mark from the selected node  
 Ctrl-S - save the changes manually  
 # Notes on WebAssembly/PWA/Mobile support
+The source code for the WebAssembly port of Node Filter is available at the gh-pages branch of this repository.  
 To install Node Filter's PWA on mobile,visit Node Filter's website and tap Add to home screen.  
 To access the node manipulation/navigation interface on mobile, tap on any black dot to the left of any node.The desktop WebAssembly port of Node Filter, in addition to this interface, also supports keyboard shortcut interface similar to desktop.  
 It should be noted that PWA version of Node Filter can be used offline without the desktop app, or it can share the knowledge base across several devices with desktop/web versions of Node Filter.   
 The knowledge base needs to be loaded before each session and saved after the end of each session.  
 # Building  
-For now the easiest way to build NodeFilter is through the QT Creator, as a project. You will also need to build Qt Quick 2 QML Treeview since it is distributed as a Qt extension. 
+For now, the easiest way to build NodeFilter is through the QT Creator as a project. You will also need to build Qt Quick 2 QML Treeview since it is distributed as a Qt extension. 
 Dependencies:  
 Qt 5.15  
 QtQuick 2.15  
@@ -128,6 +129,7 @@ Note that Qt Quick 2 QML Treeview is not a part of core Qt and only builds with 
 
 # Installation  
 Windows: download latest version from [Releases](https://github.com/Roining/NodeFilter/releases).  
+Linux/Mac:  At this time, the only available way to install Node Filter on these platforms without the need to build from source is to install a PWA of a WebAssembly port of Node Filter. After the installation, Node Filter PWA will be able to work offline as a standalone application.   
 
 # Community
 [Discord](https://discord.gg/sNbVChHX)
