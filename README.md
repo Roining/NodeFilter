@@ -1,5 +1,5 @@
 
-Node Filter is a local-first, multi-platform outlining knowledge management tool with an advanced hierarchical query system that relies on the concepts of transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create transitive hierarchies of abstractions, as well as create their own user-defined  PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, advanced sorting/property functionality,daily document workflow, advanced task management workflow, etc.(some of these workflows are shown in the WebAssembly demo posted below).  
+Node Filter is a local-first, multi-platform outlining knowledge management tool with an advanced hierarchical query system that relies on the concepts of transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create transitive hierarchies of abstractions, as well as create their own user-defined  PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, advanced sorting/property functionality,daily document workflow, advanced task management workflow, etc.(some of these workflows are implemented in the WebAssembly demo posted below).  
 Node Filter has a fully functional Desktop version and an experimantal Web/mobile PWA support provided by its Qt for WebAssembly port.  
 It is currently possible to share/sync the knowledge base between desktop,web and mobile versions of Node Filter.
  # Structure of the knowledge base  
@@ -13,27 +13,27 @@ See Query syntax below for more information on types of hierarchical filters.
 # Demo
 Node Filter has an experimental local-first web and mobile support provided by its WebAssembly port.  
 A  WebAssembly port of Node Filter with a guide to Node Filter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
-The web version of Node Filter is generally meant to be used only if a desktop version is not available(for example, on mobile platforms), however, it has almost all the Desktop version's features with a few limitations which are specified in the demo.   
+The web version of Node Filter is generally meant to be used only if a desktop version is not available(for example, on mobile platforms), however, it has almost all the Desktop version's features with a few limitations which are specified in the demo. 
 Currently, it is possible to share/sync the knowledge base across desktop, web, and mobile versions of Node Filter.  
 # Query syntax:  
 There are several types of filters.  
 1.Hierarchical filters:  
-\>:*id of node X* -  shows  only  direct descendants of node X.The filter matches if any node in the knowledge base is  either Node X or it's descendants.
- Example:  
-\>:*id of node X*&&r:[7-9]  
+\>:\*id of node X\* -  shows  only  direct descendants of node X.The filter matches if any node in the knowledge base is  either Node X or it's descendants.
+ Example:   
+\>:\*id of node X\*&&r:[7-9]  
  Result:  
  Descendants of node X which contain numbers from 7 to 9  
 
-\>>:*id of node X*  - shows transclusive descendants(copied descendants) of node X and of it's copied nodes. The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants.
+\>>:\*id of node X\*  - shows transclusive descendants(copied descendants) of node X and of it's copied nodes. The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants.
 Example:  
-\>>:*id of node X*&&>>:*id of node Y*&&NOT&&>>:*id of node Z*&&query    
+\>>:\*id of node X\*&&>>:\*id of node Y\*&&NOT&&>>:\*id of node Z\*&&query    
 Result:  
 Transclusive descendants of both node X and node Y but not node Z which contain "query"  
 
-\>>>:*id of node X* - shows only direct transclusive descendants.The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants.   
-\>^::*id of node X* - matches any node Y if node Y or any ascendant of node Y is a node X or a copy of node X.  
-\<:*id of node X* - shows all ascendants of node X up to the root node.  
-\<<:*id of node X* -  shows transclusive ascendants of node X.I.e.  if node X or any ascendant of node X is a copy of a any node Y, then node Y matches this filter.  
+\>>>:\*id of node X\* - shows only direct transclusive descendants.The filter matches if any node in the knowledge base is the same node  or  is a copied node of  either Node X or it's descendants.   
+\>^::\*id of node X\* - matches any node Y if node Y or any ascendant of node Y is a node X or a copy of node X.  
+\<:\*id of node X\* - shows all ascendants of node X up to the root node.  
+\<<:\*id of node X\* -  shows transclusive ascendants of node X.I.e.  if node X or any ascendant of node X is a copy of a any node Y, then node Y matches this filter.  
 2.Regex filter: r:*regex expression*     
 All nodes that match the regex expression are shown.  
 3.Default string filter(without any prefix): *any number of words separated by space*  
@@ -42,19 +42,19 @@ Node X matches the filter if node X or any ascendant of node X contains one of t
 In a tree structure, only sibling nodes are compared to each other when the tree is sorted.  
 The soritng method is desinged to emulate a table functionality. Nodes are sorted by the "value" of their child node(child nodes play the role of properties, "value" of the property is just the first child node of this property ).
 
-4.1. sortNAsc:*id of a node X* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in ascending order.  
-4.2. sortNDesc:*id of a node X* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in descending order.  
-4.3. sortAAsc:*id of a node X* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in ascending order.  
-4.4. sortADesc:*id of a node X* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in descending order.  
+4.1. sortNAsc:\*id of a node X\* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in ascending order.  
+4.2. sortNDesc:\*id of a node X\* - the nodes which have node X as descendant are sorted numerically by the value of the first child of node X in descending order.  
+4.3. sortAAsc:\*id of a node X\* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in ascending order.  
+4.4. sortADesc:\*id of a node X\* - the nodes which have node X as descendant are sorted alphabetically by the value of the first child of node X in descending order.  
 
 Example: Template node  "Priority" is copied as a child of two sibling nodes - node Z and node Y.Insert a child node for each created  "Priority" node (there are two new ones now, descending from node z and node Y).Set the values,for example, as 12 and 9 respectively.  
 In this case, sortNAsc:*id of a Priority node* will put node Y over node Z, since the 9 is less than 12 and the order is ascending.  
-sortNDesc:*id of a Priority node* will  put Node Z over node X.  
+sortNDesc:\*id of a Priority node\* will  put Node Z over node X.  
 Notes:  
 1.If node X matches the filter, then all of node X ascendants up to the root node will be shown in the tree   
 2.Multiple filters can be combined into one query(separated by "&&").  
 Example:  
-\>:*id of node X*&&WordA    
+\>:\*id of node X\*&&WordA    
 Result:  
  Descendants of node X which contain string  "WordA" are shown  
 3.Template nodes are marked green, copied nodes are marked blue.  
@@ -67,10 +67,10 @@ b) WordA&&NOT&&WordB
 Result:Nodes which contain WordA but don't contain WordB will be shown  
 OR operator will match if node X matches the following part of query and will not match if  node X  matches none of the parts of query following the operator   
 Example of softened query:  
-OR&&>:*id of node X*&&OR&&>:*id of node Y*   
+OR&&>:\*id of node X\*&&OR&&>:\*id of node Y\*   
 Result:  
 Show  descendants   of  node X and node Y  
-5. >  and >> operators can specify how many levels of descendants will match the filter. For example, >1:*id of node X* will only match node X and >2:*id of node X* will match the children of node X as well. By default, these operators will match all descendants.  
+5. >  and >> operators can specify how many levels of descendants will match the filter. For example, >1:\*id of node X\* will only match node X and >2:*id of node X* will match the children of node X as well. By default, these operators will match all descendants.  
 6. Order of queries in a combined query matters. By default, each next query filters the results of the previous.  
 
 # Navigation  
@@ -104,7 +104,7 @@ Ctrl-O - zoom into the selected node
 
 ## Node manipulation shortcuts  
 Ctrl-Shift-N - insert new node as a child of the selected node.  
-Ctrl-N - insert new node as a sibling of the selected node  
+Ctrl-N - iinsert new node as a sibling of the selected node  
 Ctrl-Q - copy the selected node.  
 Ctrl-M - insert the copied node as a sibling of the selected node  
 Ctrl-Shift-M - insert the copied node as a child of the selected node  
