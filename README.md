@@ -1,18 +1,20 @@
 
-Node Filter is a knowledge management tool  which relies on the concepts of transclusion and hierarchical filtering to connect different pieces of information  and place them in a transitive hierarchy of abstractions.
- 
- User input  is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
-# Demo
-WebAssembly port of NodeFilter with a guide to NodeFilter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
-Web version of NodeFilter is meant to be used only as a demo, it is not identical to the desktop application and has several limitations which are explained in the demo.  
-
-# Community
-[Discord](https://discord.gg/sNbVChHX)
+Node Filter is a local-first, multi-platform outlining knowledge management tool with an advanced hierarchical query system that relies on the concepts of transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create transitive hierarchies of abstractions, as well as create their own user-defined  PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, advanced sorting/property functionality,daily document workflow, advanced task management workflow, etc.(some of these workflows are shown in the WebAssembly demo posted below).  
+Node Filter has a fully functional Desktop version and an experimantal Web/mobile PWA support provided by its Qt for WebAssembly port.  
+It is currently possible to share/sync the knowledge base between desktop,web and mobile versions of Node Filter.
+ # Structure of the knowledge base  
+ User input is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
 # Filtering  
-Hierarchical filtering shows the descendants(or ascendants) of a certain node. However, if a node is copied, then if at least one instance of the node matches the filter(i.e. is a descendant of  a queried node), then all its other instances will also match the filter(if using >> and << operators). There are several types of hierarchical filters(see query syntax).  
-Hierarchical filtering can   be  used to build a  hierarchy(or multiple linked hierarchies) of abstractions  of arbitrary depth that can be used as a transitive tagging system. A hierarchy of abstractions can be defined by the user. 	 Hierarchies can be built going from specific things up to abstract concepts.   
-Hierarchical filtering can be used to emulate the bi-directional linking functionality, and  to extend it to support different user-defined types of bi-directional links.  
-
+Hierarchical filtering in combination with the use of copied nodes can be used to create a user-defined PKM workflow of any complexity.  
+Hierarchical filtering can be used to build a hierarchy(or multiple linked hierarchies) of abstractions of arbitrary depth that can be used as a transitive tagging system. A hierarchy of abstractions can be defined by the user. Hierarchies can be built going from specific things up to abstract concepts.  
+A hierarchical filter roughly translates to "Find all descendants of node X", where node X is specified in the filter. A hierarchical filter matches all descendants of node X and, optionally(depending on the type of hierarchical filter), all copies of descendants of node X. 
+Hierarchical filtering can be used to emulate the bi-directional linking functionality, and to extend it to support different user-defined types of bi-directional links.  
+See Query syntax below for more information on types of hierarchical filters.  
+# Demo
+Node Filter has an experimental local-first web and mobile support provided by its WebAssembly port.  
+A  WebAssembly port of Node Filter with a guide to Node Filter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
+The web version of Node Filter is generally meant to be used only if a desktop version is not available(for example, on mobile platforms), however, it has almost all the Desktop version's features with a few limitations which are specified in the demo.   
+Currently, it is possible to share/sync the knowledge base across desktop, web, and mobile versions of Node Filter.  
 # Query syntax:  
 There are several types of filters.  
 1.Hierarchical filters:  
@@ -72,7 +74,7 @@ Show  descendants   of  node X and node Y
 6. Order of queries in a combined query matters. By default, each next query filters the results of the previous.  
 
 # Navigation  
-Node Filter is currently navigated only through keyboard shortcuts(see the full list of shortcuts below).  
+Desktop Node Filter is currently navigated only through keyboard shortcuts(see the full list of shortcuts below).  
 Any number of tabs and windows can be created(Ctrl-T and Ctrl-K shortcuts respectively).  
 Workflow for filtering:  
 For hierarchical filtering, the id of the selected node is needed(press Ctrl-E to copy  the id of the selected node to the clipboard and Ctrl-V to paste the id to the search box).  
@@ -102,7 +104,7 @@ Ctrl-O - zoom into the selected node
 
 ## Node manipulation shortcuts  
 Ctrl-Shift-N - insert new node as a child of the selected node.  
-Ctrl-N - iinsert new node as a sibling of the selected node  
+Ctrl-N - insert new node as a sibling of the selected node  
 Ctrl-Q - copy the selected node.  
 Ctrl-M - insert the copied node as a sibling of the selected node  
 Ctrl-Shift-M - insert the copied node as a child of the selected node  
@@ -111,9 +113,13 @@ Ctrl-E - copy the id of the selected node to the clipboard (Ctrl-V to insert the
 Ctrl-P - mark the selected node as a template(or as a "blocking node"). Template nodes don't "mirror" the children of their copied nodes. By default, if a some node is inserted as a child of  a  node copied from node X, then node X will copy the inserted node. Template node disable this behaviour for the selected node  
 Ctrl-Shift-P -remove the template mark from the selected node  
 Ctrl-S - save the changes manually  
-
+# Notes on WebAssembly/PWA/Mobile support
+To install Node Filter's PWA on mobile,visit Node Filter's website and tap Add to home screen.  
+To access the node manipulation/navigation interface on mobile, tap on any black dot to the left of any node.The desktop WebAssembly port of Node Filter, in addition to this interface, also supports keyboard shortcut interface similar to desktop.  
+It should be noted that PWA version of Node Filter can be used offline without the desktop app, or it can share the knowledge base across several devices with desktop/web versions of Node Filter.   
+The knowledge base needs to be loaded before each session and saved after the end of each session.  
 # Building  
-The easiest way to build NodeFilter is through the QT Creator, as a project. You will also need to build Qt Quick 2 QML Treeview since it is distributed as a Qt extension.  
+For now the easiest way to build NodeFilter is through the QT Creator, as a project. You will also need to build Qt Quick 2 QML Treeview since it is distributed as a Qt extension. 
 Dependencies:  
 Qt 5.15  
 QtQuick 2.15  
@@ -122,3 +128,6 @@ Note that Qt Quick 2 QML Treeview is not a part of core Qt and only builds with 
 
 # Installation  
 Windows: download latest version from [Releases](https://github.com/Roining/NodeFilter/releases).  
+
+# Community
+[Discord](https://discord.gg/sNbVChHX)
