@@ -1,7 +1,9 @@
+Node Filter is a local-first outlining knowledge management tool with an advanced hierarchical query system(similar to SPARQL in its purpose) that relies on the concepts of structured data, transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create and query their own transitive ontologies and hierarchies of abstractions out of their daily notes, as well as create their own user-defined PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, sorting/property functionality, document and task management workflow, etc.  
 
-Node Filter is a local-first, multi-platform outlining knowledge management tool with an advanced hierarchical query system that relies on the concepts of transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create transitive hierarchies of abstractions, as well as create their own user-defined  PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, advanced sorting/property functionality,daily document workflow, advanced task management workflow, etc.(some of these workflows are implemented in the WebAssembly demo posted below).  
-Node Filter has a fully functional Desktop version and an experimantal Web/mobile PWA support provided by its Qt for WebAssembly port.  
-It is currently possible to share/sync the knowledge base between desktop,web and mobile versions of Node Filter.
+Node Filter was created in an effort to break down note-taking and knowledge management to an atomic-level detail and and to add ability to place any individual note/fact in a user-defined ontology that can be queried transitively in a way similar to SPARQL queries.  
+This project is an attempt at mixing note-taking and ontologies with as little friction as possible.  
+Node Filter has a Desktop version and an experimental Web/mobile PWA support provided by its' Qt for WebAssembly port. 
+It is currently possible to share/sync the knowledge base between desktop, web, and mobile versions of Node Filter.  
  # Structure of the knowledge base  
  User input is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
 # Filtering  
