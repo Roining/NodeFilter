@@ -78,12 +78,15 @@ public:
                     bool searchClones = false);
 
   TreeNode *isDescendantNode(TreeNode *parent, TreeNode *child);
-  TreeNode *isDirectDescendantNode(TreeNode *parent, TreeNode *child,
-                                   int depth);
-  bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
+  QVector<TreeNode *> isDirectDescendantNode(TreeNode *parent, TreeNode *child,
+                                             int depth);
+  bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth,
+                          bool searchClones = true);
   bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant2(TreeNode *parent, TreeNode *child, int depth);
-  bool isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode);
+  //  bool isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode);
+  bool isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode);
+
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
   Q_INVOKABLE void serializeJSON(TreeNode &node);

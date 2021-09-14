@@ -112,7 +112,6 @@ Q_INVOKABLE void TreeModel::loadFile() {
   }
   //  }
   file.close();
-
   fileJSON.close();
   endResetModel();
 }
@@ -590,21 +589,49 @@ TreeNode *TreeModel::isDescendantNode(TreeNode *parent, TreeNode *child) {
 
   return nullptr;
 };
-bool TreeModel::isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode) {
-  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
-                               copiedNode.toString(), 1, Qt::MatchRecursive);
-  auto item = getItem(copiedNodeIndex[0]);
-  if (item->parents.isEmpty()) {
+bool TreeModel::isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode) {
+  //  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
+  //                               copiedNode.toString(), 1,
+  //                               Qt::MatchRecursive);
+  //  auto copiedNode = getItem(copiedNodeIndex[0]);
+  if (copiedNode->parents.isEmpty()) {
     return false;
   }
-  if ((item->parents[0] == originalNode->id) || item->id == originalNode->id) {
+  if ((copiedNode->parents.first() == originalNode->id) ||
+      copiedNode->id == originalNode->id || !originalNode->acceptsCopies) {
     return true;
   } else {
-    if (!isCoiedFromNode(item->parents[0], originalNode)) {
+    //      const auto& parentNode = map.value(copiedNode->parents.first());
+    TreeNode *parentNode = nullptr;
+    for (int i = 0; i < copiedNode->siblingItems().length(); i++) {
+      if (copiedNode->siblingItems()[i]->copyChildren.contains(
+              copiedNode->id)) {
+        parentNode = copiedNode->siblingItems()[i];
+      }
+    }
+    if (!isCopiedFromNode(parentNode, originalNode)) {
       return false;
+    } else {
+      return true;
     }
   }
 }
+// bool TreeModel::isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode) {
+//  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
+//                               copiedNode.toString(), 1, Qt::MatchRecursive);
+//  auto item = getItem(copiedNodeIndex[0]);
+//  if (item->parents.isEmpty()) {
+//    return false;
+//  }
+//  if ((item->parents[0] == originalNode->id) || item->id == originalNode->id)
+//  {
+//    return true;
+//  } else {
+//    if (!isCoiedFromNode(item->parents[0], originalNode)) {
+//      return false;
+//    }
+//  }
+//}
 
 TreeNode *TreeModel::getItem(const QModelIndex &index) const {
   if (index.isValid()) {
@@ -745,8 +772,8 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
     if ((node.tempParents.size() > 1) &&
         (!check)) { // temp stores ids of parents.if more than 1 then node is
                     // copied further
-      map.insert(node.id,
-                 &node); // corresponds id of not copied nodes to a pointer to
+                    /*  map.insert(node.id,
+                                 &node); */// corresponds id of not copied nodes to a pointer to
                          // the node
       for (int i = 0; i < node.tempParents.size(); i++) {
 
@@ -763,7 +790,7 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
   } else { // if node is copied
     stream >> &node;
   }
-
+  map.insert(node.id, &node);
   for (int i = 0; i < node.numberOfChildren; i++) {
 
     if (container.value(node.id) ==
@@ -776,7 +803,6 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
           node.id); // list should contain ids of all potential children
       for (int j = 0; j < list.size(); j++) {
 
-        auto ht = map.value(list[j])->position.keys();
         for (auto &item : map.value(list[j])->position.keys()) {
 
           if (item == node.id &&
@@ -793,7 +819,6 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
                        stream, true);
       } else {
 
-        auto score = map.value(container.value(node.id));
         deserializeDat(node.insertChildrenNew(i, 1, 0), stream);
       }
       check1 = nullptr;
@@ -902,7 +927,6 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
           node.id); // list should contain ids of all potential children
       for (int j = 0; j < list.size(); j++) {
 
-        auto ht = map.value(list[j])->position.keys();
         for (auto &item : map.value(list[j])->position.keys()) {
 
           if (item == node.id &&
@@ -975,14 +999,30 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
     return false;
   }
   TreeNode *lastItem = getItem(source);
-  TreeNode *result = isDirectDescendantNode(lastItem, parentItem, 1000);
-  if (result) {
-    auto bool1 = isCoiedFromNode(lastItem->id, result);
-    auto bool2 = isCoiedFromNode(result->id, lastItem);
-    if ((isCoiedFromNode(lastItem->id, result) ||
-         isCoiedFromNode(result->id, lastItem))) {
+  QVector<TreeNode *> result =
+      isDirectDescendantNode(lastItem, parentItem, 1000);
+  if (!result.isEmpty()) {
+    for (int i = 0; i < result.length(); i++) {
+      //    auto bool1 = isCoiedFromNode(lastItem->id, result);
+      //    auto bool2 = isCoiedFromNode(result->id, lastItem);
+      if ((isCopiedFromNode(lastItem, result[i]) ||
+           isCopiedFromNode(result[i], lastItem)) ||
+          lastItem == result[i]) {
+        beginInsertRows(parent, position, position + rows - 1);
 
-      return false;
+        parentItem->insertChildren(position, rows, rootItem->columnCount());
+
+        endInsertRows();
+        const QModelIndex &child = this->index(position, 0, parent);
+
+        this->setData(child, "Prevented infinite recurion", Qt::EditRole);
+        this->setData(child, "Data", Qt::UserRole + 2);
+        return false;
+      }
+      //      if (lastItem == result[i]) {
+
+      //        return false;
+      //      }
     }
   }
 
@@ -996,10 +1036,10 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
   }
   for (int i = 0; i < lastItem->childCount(); i++) {
     QPersistentModelIndex itemIndex = index(position, 0, parent);
-
-    if (!copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source))) {
-      return false;
-    }
+    copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source));
+    //    if (!copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source))) {
+    //      return false;
+    //    }
   }
 
   return true; // TODO check for success of operation
@@ -1134,8 +1174,8 @@ bool TreeModel::acceptsCopies(const QModelIndex &index) {
     return false;
   }
 }
-bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child,
-                                   int depth) {
+bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child, int depth,
+                                   bool searchClones) {
 
   while (true) {
     if (depth == 0) {
@@ -1145,13 +1185,16 @@ bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child,
 
       return false;
     } else if ((*child->parent() == *parent) || (*child == *parent)) {
-
-      return true;
-
-    } else {
-      child = child->parent();
-      depth--;
+      if (searchClones) {
+        return true;
+      } else {
+        if ((child->parent() == parent) || (child == parent)) {
+          return true;
+        }
+      }
     }
+    child = child->parent();
+    depth--;
   };
 }
 bool TreeModel::isDirectDescendant1(TreeNode *parent, TreeNode *child,
@@ -1179,29 +1222,33 @@ bool TreeModel::isDirectDescendant1(TreeNode *parent, TreeNode *child,
     }
   };
 }
-TreeNode *TreeModel::isDirectDescendantNode(TreeNode *parent, TreeNode *child,
-                                            int depth) {
 
+QVector<TreeNode *> TreeModel::isDirectDescendantNode(TreeNode *parent,
+                                                      TreeNode *child,
+                                                      int depth) {
+  QVector<TreeNode *> array;
   while (true) {
-    if (depth == 0) {
-      return nullptr;
-    }
+    //    if (depth == 0) {
+    //      return nullptr;
+    //    }
     if (child->parent() == nullptr) {
 
-      return nullptr;
+      //      return nullptr;
+      return array;
     } else if (*child == *parent) {
 
-      return child;
+      //      return child;
+      array.append(child);
 
     } /*else if (parent->copyChildren.contains(child->id)) {
 
       return true;
 
     }*/
-    else {
-      child = child->parent();
-      depth--;
-    }
+    //    else {
+    child = child->parent();
+    depth--;
+    //    }
   };
 }
 bool TreeModel::isDirectDescendant2(TreeNode *parent, TreeNode *child,

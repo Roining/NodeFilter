@@ -106,7 +106,8 @@ bool ProxyModel::filterAcceptsRow(int source_row,
         }
 
       } else {
-        innerResult = sourceModel->isDescendant(queryId, currentItem, depth);
+        innerResult =
+            sourceModel->isDirectDescendant(queryId, currentItem, depth, false);
       }
       bool isInclusive = i > 0 && container[i - 1] == "OR";
       bool isInversed = i > 0 && container[i - 1] == "NOT";
@@ -140,8 +141,10 @@ bool ProxyModel::filterAcceptsRow(int source_row,
       }
       if (container[i].startsWith("<<<<")) {
         innerResult = false;
-
+        if (*currentItem == *queryId) {
+        }
         for (int i = 0; i < queryId->siblingItems().size(); i++) {
+
           if (sourceModel->isDescendantReverse(
                   currentItem, queryId->siblingItems()[i], depth, true)) {
             innerResult = true;
