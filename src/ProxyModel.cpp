@@ -3,18 +3,20 @@
 #include "include/TreeNode.h"
 #include <QRegularExpression>
 
-TreeModel myClass1(nullptr);
+TreeModel SharedModel(nullptr);
 
 ProxyModel::ProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 
-  sourceModel = &myClass1;
-  setSourceModel(&myClass1);
+  sourceModel = &SharedModel;
+  setSourceModel(&SharedModel);
   setRecursiveFilteringEnabled(true);
   setDynamicSortFilter(false);
-  QObject::connect(&myClass1, &TreeModel::updateProxyFilter, this,
+  QObject::connect(&SharedModel, &TreeModel::updateProxyFilter, this,
                    &ProxyModel::updateFilter);
 };
 void ProxyModel::queryProcessing() {
+  
+
   QStringList stringontainer1 = query.split("&&");
   itemContainer.clear();
   for (int i = 0; i < stringontainer1.size(); i++) {
@@ -34,11 +36,17 @@ void ProxyModel::queryProcessing() {
       }
     }
   }
+
+  
 }
+
+
+
 bool ProxyModel::filterAcceptsRow(int source_row,
                                   const QModelIndex &source_parent) const {
   QModelIndex index = sourceModel->index(source_row, 0, source_parent);
-  TreeNode *currentItem = sourceModel->getItem(index);
+  TreeNode* currentItem = sourceModel->getItem(index);
+  /* return true;*/
 
   if (!queryChanged) {
     return true;
@@ -59,7 +67,7 @@ bool ProxyModel::filterAcceptsRow(int source_row,
       auto string = container[i].mid(2);
       QRegularExpression regex(string);
       QRegularExpressionMatch match =
-          regex.match(sourceModel->data(index, 0).toString());
+        regex.match(sourceModel->data(index, 0).toString());
       if (!match.hasMatch()) {
         currentItem->setVisible(false);
         return false;
@@ -90,16 +98,16 @@ bool ProxyModel::filterAcceptsRow(int source_row,
       }
       if (container[i].startsWith(">>>")) {
         innerResult =
-            sourceModel->isDescendant(queryId, currentItem, depth, true);
+          sourceModel->isDescendant(queryId, currentItem, depth, true);
       } else if (container[i].startsWith(">^")) {
         innerResult =
-            sourceModel->isDirectDescendant(queryId, currentItem, depth);
+          sourceModel->isDirectDescendant(queryId, currentItem, depth);
       } else if (container[i].startsWith(">>")) {
 
         innerResult = false;
         for (int i = 0; i < queryId->siblingItems().size(); i++) {
-          if (sourceModel->isDescendant(queryId->siblingItems()[i], currentItem,
-                                        depth, true)) {
+          if (sourceModel->isDescendant(
+                queryId->siblingItems()[i], currentItem, depth, true)) {
             innerResult = true;
             break;
           }
@@ -107,7 +115,7 @@ bool ProxyModel::filterAcceptsRow(int source_row,
 
       } else {
         innerResult =
-            sourceModel->isDirectDescendant(queryId, currentItem, depth, false);
+          sourceModel->isDirectDescendant(queryId, currentItem, depth, false);
       }
       bool isInclusive = i > 0 && container[i - 1] == "OR";
       bool isInversed = i > 0 && container[i - 1] == "NOT";
@@ -146,7 +154,7 @@ bool ProxyModel::filterAcceptsRow(int source_row,
         for (int i = 0; i < queryId->siblingItems().size(); i++) {
 
           if (sourceModel->isDescendantReverse(
-                  currentItem, queryId->siblingItems()[i], depth, true)) {
+                currentItem, queryId->siblingItems()[i], depth, true)) {
             innerResult = true;
             break;
           }
@@ -156,10 +164,10 @@ bool ProxyModel::filterAcceptsRow(int source_row,
         //              depth, true);
       } else if (container[i].startsWith("<<<")) {
         innerResult =
-            sourceModel->isDescendantReverse(currentItem, queryId, depth, true);
+          sourceModel->isDescendantReverse(currentItem, queryId, depth, true);
       } else if (container[i].startsWith("<<")) {
         innerResult =
-            sourceModel->isDescendant(currentItem, queryId, depth, true);
+          sourceModel->isDescendant(currentItem, queryId, depth, true);
       } else {
         innerResult = sourceModel->isDescendant(currentItem, queryId, depth);
       }
@@ -203,11 +211,11 @@ bool ProxyModel::filterAcceptsRow(int source_row,
       }
       if (contains == true) {
         for (int i = 0; i < words.size(); i++) {
-          TreeNode *itemPtr = currentItem;
+          TreeNode* itemPtr = currentItem;
           while (true) {
 
             if ((((itemPtr)->item().toString().contains(
-                    words[i], Qt::CaseInsensitive)))) {
+                  words[i], Qt::CaseInsensitive)))) {
               result = true;
               break;
             } else if (!itemPtr->parent()) {
@@ -285,25 +293,12 @@ bool ProxyModel::lessThan(const QModelIndex &left,
   QVariant rightData = sourceModel->data(right, Qt::DisplayRole);
   if (query.contains("sortAAsc:")) {
     return leftData.toString() < rightData.toString();
-    //    if (leftResult->childCount() && rightResult->childCount()) {
-    //      return leftResult->children()[0]->item() <
-    //             rightResult->children()[0]->item();
-    //    }
+   
   } else if (query.contains("sortADesc:")) {
     return leftData.toString() > rightData.toString();
-    //    if (leftResult->childCount() && rightResult->childCount()) {
-    //      return leftResult->children()[0]->item() >
-    //             rightResult->children()[0]->item();
-    //    }
+    
   }
-  //  auto itemIndex =
-  //      sourceModel->match(sourceModel->index(0, 0), Qt::UserRole + 2, itemId,
-  //      1,
-  //                         Qt::MatchRecursive);
-  //  if (itemIndex.isEmpty()) {
-  //    return false;
-  //  }
-  //  auto queryItem = sourceModel->getItem(itemIndex[0]);
+ 
   auto leftResult = sourceModel->isDescendantNode(leftItem, queryItem);
   auto rightResult = sourceModel->isDescendantNode(rightItem, queryItem);
   if (!(leftResult) && !rightResult) {
@@ -324,19 +319,16 @@ bool ProxyModel::lessThan(const QModelIndex &left,
   }
 
   if (query.contains("sortNAsc:")) {
-    //    return leftData.toDouble() < rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
       return leftResult->children()[0]->item().toDouble() <
              rightResult->children()[0]->item().toDouble();
     }
   } else if (query.contains("sortNDesc:")) {
-    //       return leftData.toDouble() > rightData.toDouble();
     if (leftResult->childCount() && rightResult->childCount()) {
       return leftResult->children()[0]->item().toDouble() >
              rightResult->children()[0]->item().toDouble();
     }
   } else {
-    //    return leftData.toString() < rightData.toString();
     return false;
   }
   return true;

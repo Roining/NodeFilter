@@ -26,6 +26,8 @@ public:
             QObject *parent = nullptr);
   ~TreeModel();
   Q_INVOKABLE void loadFile();
+  Q_INVOKABLE void loadHierarchy(const QModelIndex &index);
+
   Q_INVOKABLE QVariant data(const QModelIndex &index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation,
                       int role = Qt::DisplayRole) const override;
@@ -77,14 +79,14 @@ public:
   bool isDescendant(TreeNode *parent, TreeNode *child, int depth,
                     bool searchClones = false);
 
+
   TreeNode *isDescendantNode(TreeNode *parent, TreeNode *child);
   QVector<TreeNode *> isDirectDescendantNode(TreeNode *parent, TreeNode *child,
                                              int depth);
   bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth,
                           bool searchClones = true);
-  bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
-  bool isDirectDescendant2(TreeNode *parent, TreeNode *child, int depth);
-  //  bool isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode);
+
+
   bool isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode);
 
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
@@ -93,19 +95,32 @@ public:
 
   void serializeCleanUp(TreeNode &node);
   void serializeClear(TreeNode &node);
-  Q_INVOKABLE void deserializeDat(TreeNode &node, QDataStream &stream,
+  Q_INVOKABLE void deserializeDat(TreeNode& node,
+                                  QDataStream& stream,
+                                  QMultiMap<QUuid, QUuid>& container,
+                                  QMap<QUuid, TreeNode*>& map,
+
                                   bool check = false);
-  Q_INVOKABLE void deserialize(TreeNode &node, QDataStream &stream,
+  Q_INVOKABLE void deserialize(TreeNode& node,
+                               QDataStream& stream,
+                               QMultiMap<QUuid, QUuid>& container,
+                               QMap<QUuid, TreeNode*>& map,
                                bool check = false);
-  Q_INVOKABLE bool
-  copyRows(int position, int rows, const QModelIndex &parent = QModelIndex(),
-           const QPersistentModelIndex &source = QModelIndex());
+  Q_INVOKABLE bool copyRows(int position, int rows,
+                            const QModelIndex &parent = QModelIndex(),
+                            const QPersistentModelIndex &source = QModelIndex(),
+                            bool isDetached = false);
   Q_INVOKABLE bool
   copyRowsAndChildren(int position, int rows,
                       const QModelIndex &parent = QModelIndex(),
-                      const QPersistentModelIndex &source = QModelIndex());
+                      const QPersistentModelIndex &source = QModelIndex(),
+                      bool isDetached = false);
   void copyRowsRecursive(int position, QUuid callingId, QUuid calledId,
                          const QModelIndex &source);
+  void readJson(QJsonObject object, QHash<QString, QJsonObject> &array,
+                TreeNode *parent, QVector<TreeNode *> &parentsMap,
+                TreeNode *isCopied);
+
   Q_INVOKABLE QString getId(const QModelIndex &id);
   Q_INVOKABLE int position(const QModelIndex &index);
   Q_INVOKABLE void getIdToClipboard(const QModelIndex &index);
@@ -117,8 +132,7 @@ public:
 private:
   QPersistentModelIndex
       last; // TODO should it remain static? Related to copyRows
-  QMultiMap<QUuid, QUuid> container;
-  QMap<QUuid, TreeNode *> map;
+ 
   TreeNode *rootItem;
 };
 //! [2]

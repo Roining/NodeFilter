@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
   app.setApplicationName("Node Filter");
   qmlRegisterType<ProxyModel>("TreeModel.com", 1, 0, "Filtering");
   QQmlApplicationEngine engine;
-  engine.rootContext()->setContextProperty("myClass", &myClass1);
+  engine.rootContext()->setContextProperty("sharedModel", &SharedModel);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(
       &engine, &QQmlApplicationEngine::objectCreated, &app,

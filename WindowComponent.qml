@@ -36,7 +36,7 @@ ApplicationWindow {
             }
         }
         if (root.array.length === 0) {
-//            myClass.save()
+//            sharedModel.save()
             Qt.quit()
         }
     }
@@ -92,13 +92,19 @@ ApplicationWindow {
     Shortcut {
         sequence: "Ctrl+Shift+O"
         onActivated: {
-   myClass.loadFile();
+   sharedModel.loadFile();
         }
     }
+//    Shortcut {
+//        sequence: "Ctrl+Shift+L"
+//        onActivated: {
+//   sharedModel.loadHierarchy();
+//        }
+//    }
     Shortcut {
         sequence: "Ctrl+Shift+S"
         onActivated: {
-   myClass.saveJSON();
+   sharedModel.saveJSON();
         }
     }
 

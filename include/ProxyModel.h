@@ -18,6 +18,7 @@ public slots:
 public:
   ProxyModel(QObject *parent = nullptr);
   void queryProcessing();
+ 
   bool filterAcceptsRow(int source_row,
                         const QModelIndex &source_parent) const override;
   Q_INVOKABLE void setQuery(QString string);
@@ -31,5 +32,5 @@ private:
   QMap<QUuid, TreeNode *> itemContainer;
   TreeModel *sourceModel;
 };
-extern TreeModel myClass1;
+extern TreeModel SharedModel;
 #endif // PROXYMODEL_H

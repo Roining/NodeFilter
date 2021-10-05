@@ -25,41 +25,6 @@ Component {
         SplitView.preferredWidth: parent.width / 4
         SplitView.maximumWidth: Screen.width
 
-//        Keys.onPressed: {
-//            if ((event.key === Qt.Key_W)
-//                    && (event.modifiers & Qt.ControlModifier)
-//                    && (event.modifiers & Qt.ShiftModifier)) {
-//                root.arrayOfWindows.length === 0
-
-//                var serializationWindowsArray = []
-//                for (var i = 0; i < root.array.length; i++) {
-
-//                    var windowData = [root.array[i].x, root.array[i].y, root.array[i].width, root.array[i].height]
-
-//                    serializationWindowsArray.push(windowData)
-
-//                    for (var j = 0; j < root.array[i].viewArray.length; j++) {
-
-//                        var viewData = [root.array[i].viewArray[j].x, root.array[i].viewArray[j].y, root.array[i].viewArray[j].width, root.array[i].viewArray[j].height, root.array[i].viewArray[j].ser.text]
-//                        serializationWindowsArray[i].push(viewData)
-//                    }
-//                }
-
-//                for (var i = 0; i < root.array.length; i++) {
-//                    root.arrayOfWindows.push((serializationWindowsArray[i]))
-//                }
-//                root.settings.windows = root.arrayOfWindows
-//                console.log(root.settings.windows);
-//                myClass.save()
-//                Qt.quit()
-//                return
-//            } else if ((event.key === Qt.Key_W)
-//                       && (event.modifiers & Qt.ControlModifier)) {
-//                viewInstance.destroy()
-//                return
-//            }
-//        }
-
         Component.onDestruction: {
 
             for (var i = 0; i < parent.parent.root.viewArray.length; i++) {
@@ -156,11 +121,22 @@ Component {
                     if ((event.key === Qt.Key_P)
                             && (event.modifiers & Qt.ControlModifier)
                             && (event.modifiers & Qt.ShiftModifier)) {
-                        myClass.acceptsCopies(nodeTree.model.mapToSource(
+                        sharedModel.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentModelIndex),
                                               true)
                         return
-                    } else if ((event.key === Qt.Key_W)
+                    }
+                    else if ((event.key === Qt.Key_L)
+                            && (event.modifiers & Qt.ControlModifier)
+                            && (event.modifiers & Qt.ShiftModifier)) {
+                        event.accepted = true
+
+                        sharedModel.loadHierarchy(nodeTree.model.mapToSource(
+                                                  nodeTree.currentModelIndex));
+
+                        return
+                    }
+                    else if ((event.key === Qt.Key_W)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         root.arrayOfWindows.length === 0
@@ -186,7 +162,7 @@ root.settings.windows.length ===0
                                         (serializationWindowsArray[i]))
                         }
                         root.settings.windows = root.arrayOfWindows
-//                        myClass.save()
+//                        sharedModel.save()
                         Qt.quit()
                         return
                     } else if ((event.key === Qt.Key_G)
@@ -234,7 +210,7 @@ root.settings.windows.length ===0
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
 
-                        myClass.insertRows(
+                        sharedModel.insertRows(
                                     0, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex)) //TODO
                         nodeTree.expandModelIndex(nodeTree.currentModelIndex)
@@ -245,22 +221,32 @@ root.settings.windows.length ===0
                                && (event.modifiers & Qt.ShiftModifier)) {
                         event.accepted = true
 
-                        myClass.copyRows(0, 1, nodeTree.model.mapToSource(
+                        sharedModel.copyRows(0, 1, nodeTree.model.mapToSource(
                                              nodeTree.currentModelIndex),
-                                         myClass.getLastIndex()) //TODO
+                                         sharedModel.getLastIndex()) //TODO
                         nodeTree.expandModelIndex(nodeTree.currentModelIndex)
                         return
                     } else if ((event.key === Qt.Key_P)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        myClass.acceptsCopies(nodeTree.model.mapToSource(
+                        sharedModel.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentModelIndex),
                                               false)
                         return
-                    } else if ((event.key === Qt.Key_S)
-                               && (event.modifiers & Qt.ControlModifier)) {
-                        myClass.save()
+                    } else if ((event.key === Qt.Key_H)
+                               && (event.modifiers & Qt.ControlModifier) && (event.modifiers & Qt.ShiftModifier)) {
+                        event.accepted = true
+
+                        sharedModel.copyRows(0, 1, nodeTree.model.mapToSource(
+                                             nodeTree.currentModelIndex),
+                                         sharedModel.getLastIndex(),true) //TODO
+                        nodeTree.expandModelIndex(nodeTree.currentModelIndex)
                         return
                     }
+                    else if ((event.key === Qt.Key_S)
+                                                   && (event.modifiers & Qt.ControlModifier)) {
+                                            sharedModel.save()
+                                            return
+                                        }
 //                    else if ((event.key === Qt.Key_5)
 //                               && (event.modifiers & Qt.ControlModifier)) {
 //                        event.accepted = true
@@ -303,20 +289,20 @@ root.settings.windows.length ===0
 
                         search.forceActiveFocus()
                         search.clear()
-                        search.append(">:" + myClass.getId(
+                        search.append(">:" + sharedModel.getId(
                                           nodeTree.model.mapToSource(
                                               nodeTree.currentModelIndex)))
                         return
                     } else if ((event.key === Qt.Key_Q)
                                && (event.modifiers & Qt.ControlModifier)) {
 
-                        myClass.saveIndex(
+                        sharedModel.saveIndex(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex)) //TODO
                         return
                     } else if ((event.key === Qt.Key_E)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        myClass.getIdToClipboard(
+                        sharedModel.getIdToClipboard(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
                         return
@@ -327,10 +313,10 @@ root.settings.windows.length ===0
                         return
                     } else if ((event.key === Qt.Key_N)
                                && (event.modifiers & Qt.ControlModifier)) {
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
-                        myClass.insertRows(
+                        sharedModel.insertRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex).parent) //TODO
 
@@ -343,14 +329,14 @@ root.settings.windows.length ===0
                     } else if ((event.key === Qt.Key_M)
                                && (event.modifiers & Qt.ControlModifier)) {
                         event.accepted = true
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
 
-                        myClass.copyRows(
+                        sharedModel.copyRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex).parent,
-                                    myClass.getLastIndex()) //TODO
+                                    sharedModel.getLastIndex()) //TODO
                     } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)) {
                         nodeTree.toggleModelIndexExpanded(
@@ -388,11 +374,11 @@ root.settings.windows.length ===0
                     title: "Warning"
                     text: "Are you sure you want to delete the selected node? Children nodes will also be deleted"
                     onAccepted: {
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex))
 
-                        myClass.removeRows(
+                        sharedModel.removeRows(
                                     position, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentModelIndex).parent) //TODO
                     }
@@ -431,7 +417,7 @@ return;
                     }
                 }
                 Connections{
-                target:myClass
+                target:sharedModel
                 function onRecursionSignal(){
                 copyDialog.open();
                 }
@@ -523,7 +509,7 @@ return;
                                 onTapped: {
                                     search.forceActiveFocus()
                                     search.clear()
-                                    search.append(">:" + myClass.getId(
+                                    search.append(">:" + sharedModel.getId(
                                                       nodeTree.model.mapToSource(
                                                           nodeTree.currentModelIndex)))
                                     return
@@ -549,12 +535,12 @@ return;
                             text: edit
                             onActiveFocusChanged: {
                                 if (activeFocus) {
-                                    if (myClass.hasMultipleSiblings(
+                                    if (sharedModel.hasMultipleSiblings(
                                                 nodeTree.model.mapToSource(
                                                     nodeTree.currentModelIndex))) {
                                         dot.color = "blue"
                                     }
-                                    if (!myClass.acceptsCopies(
+                                    if (!sharedModel.acceptsCopies(
                                                 nodeTree.model.mapToSource(
                                                     nodeTree.currentModelIndex))) {
                                         dot.color = "green"

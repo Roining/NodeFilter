@@ -19,9 +19,11 @@ TreeModel::TreeModel(QObject *parent) {
   if (file.open(QIODevice::ReadWrite)) {
     QDataStream stream(&file);
     QVector<QVariant> rootData;
+    QMultiMap<QUuid, QUuid> container;
+    QMap<QUuid, TreeNode *> map;
 
     rootItem = new TreeNode(rootData, nullptr);
-    deserializeDat(*rootItem, stream);
+    deserializeDat(*rootItem, stream, container, map);
     if (!rootItem->childCount()) {
       beginInsertRows(QModelIndex().parent(), 0, 1);
       rootItem->itemData.get()->append("data");
@@ -81,9 +83,6 @@ QJsonArray inputArray;
 int inputArrayIterator = 0;
 Q_INVOKABLE void TreeModel::loadFile() {
 
-  // Use fileName and fileContent
-  map.clear();
-  container.clear();
   delete rootItem;
   listArray = QJsonArray();
   inputArrayIterator = 0;
@@ -98,12 +97,12 @@ Q_INVOKABLE void TreeModel::loadFile() {
   if (jsonError.error != QJsonParseError::NoError) {
   }
 
-  //  if (file.open(QIODevice::ReadWrite)) {
   QDataStream stream(&file);
   QVector<QVariant> rootData;
-
+  QMultiMap<QUuid, QUuid> container;
+  QMap<QUuid, TreeNode *> map;
   rootItem = new TreeNode(rootData, nullptr);
-  deserialize(*rootItem, stream);
+  deserialize(*rootItem, stream, container, map);
   if (!rootItem->childCount()) {
     beginInsertRows(QModelIndex().parent(), 0, 1);
     rootItem->itemData.get()->append("data");
@@ -114,6 +113,110 @@ Q_INVOKABLE void TreeModel::loadFile() {
   file.close();
   fileJSON.close();
   endResetModel();
+}
+Q_INVOKABLE void TreeModel::loadHierarchy(const QModelIndex &index) {
+
+  listArray = QJsonArray();
+  inputArrayIterator = 0;
+  auto parentItem = getItem(index);
+  QDir::setCurrent(QDir::currentPath());
+
+  QFile fileJSON("hierarchy.json");
+  fileJSON.open(QIODevice::ReadOnly);
+  QJsonParseError jsonError;
+  QJsonObject document =
+      QJsonDocument::fromJson(fileJSON.readAll(), &jsonError).object();
+  if (jsonError.error != QJsonParseError::NoError) {
+  }
+  QVector<TreeNode *> parentsMap;
+  listArray = document.value("concepts").toArray();
+
+  QHash<QString, QJsonObject> hash;
+  for (int i = 0; i < listArray.count(); i++) {
+    hash[listArray[i].toObject().value("uri").toString()] =
+        listArray[i].toObject();
+  }
+
+  for (int i = 0; i < listArray.count(); i++) {
+    auto list = listArray[i].toObject().value("prefLabel").toObject().keys();
+    if (list.isEmpty()) {
+      continue;
+    }
+    if (listArray[i]
+            .toObject()
+            .value("prefLabel")
+            .toObject()
+            .value(list[0])
+            .toString() == parentItem->item().toString()) {
+
+      readJson(listArray[i].toObject(), hash, parentItem, parentsMap, nullptr);
+      break;
+    }
+  }
+
+  QVector<QVariant> rootData;
+
+  fileJSON.close();
+}
+void TreeModel::readJson(QJsonObject object, QHash<QString, QJsonObject> &array,
+                         TreeNode *parent, QVector<TreeNode *> &parentsMap,
+                         TreeNode *isCopied) {
+  auto list = object.value("prefLabel").toObject().keys();
+  if (list.isEmpty()) {
+    return;
+  }
+  if (object.value("prefLabel").toObject().value(list[0]).toString() == "") {
+    return;
+  }
+  if (isCopied) {
+
+    TreeNode &success =
+        parent->copyNodeChildren(parent->childCount(), 1, 0, isCopied);
+    return;
+  }
+
+  auto node = &parent->insertChildrenNew(parent->childCount(), 1, 0);
+  node->itemData.get()->append(
+      object.value("prefLabel").toObject().value(list[0]).toString());
+  // endInsertRows();
+  if (object.value("broader").toArray().count() > 1 && !isCopied) {
+    parentsMap.append(node);
+  }
+
+  auto children = object.value("narrower").toArray();
+
+  for (int o = 0; o < children.count(); o++) {
+    QElapsedTimer timer;
+    timer.start();
+    QHash<QString, QJsonObject>::const_iterator child =
+        array.find(children[o].toObject().value("uri").toString());
+
+    if (child != array.end()) {
+
+      if (child->value("broader").toArray().count() > 1) {
+        auto listChild = child->value("prefLabel").toObject().keys();
+        if (listChild.isEmpty()) {
+          continue;
+        }
+        bool isAlreadyInserted = false;
+        for (int p = 0; p < parentsMap.length(); p++) {
+
+          if (parentsMap[p]->item().toString() == child->value("prefLabel")
+                                                      .toObject()
+                                                      .value(listChild[0])
+                                                      .toString()) {
+            readJson(*child, array, node, parentsMap, parentsMap[p]);
+            isAlreadyInserted = true;
+          }
+        }
+        if (!isAlreadyInserted) {
+          readJson(*child, array, node, parentsMap, nullptr);
+        }
+      } else {
+        readJson(*child, array, node, parentsMap, nullptr);
+      }
+    }
+  }
 }
 QVariant TreeModel::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
@@ -360,7 +463,6 @@ void TreeModel::removeRowsRecursive(int position, QUuid callingId,
   if (item->acceptsCopies) {
     if (item->childCount() && item->childCount() > position) {
 
-      auto k = getItem(child);
       if (*item->children()[position] == *getItem(child)) {
         beginRemoveRows(siblingIndex[0], position, position + 1 - 1);
 
@@ -399,57 +501,13 @@ void TreeModel::saveIndex(const QModelIndex &index) {
   last = index;
   return;
 }
-// void TreeModel::save() {
-//  QFile fileJSON("storage.json");
-//  fileJSON.remove();
-//  listArray = QJsonArray();
-//  inputArray = QJsonArray();
-//  ;
-//  inputArrayIterator = 0;
 
-//  QDir::setCurrent(QDir::currentPath());
-//  QString path = QDir::currentPath();
-//  QFile file("storage.dat");
-//  int value = QRandomGenerator::global()->generate();
-
-//  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
-//  if (!cachePath.exists()) {
-//    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
-//  }
-//  auto isSuccessful =
-//      file.copy(QStringLiteral("%1/storage.dat").arg(path),
-//                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
-//                    .arg(path)
-//                    .arg(value));
-//  if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-//    QFile fileJSON("storage.json");
-//    fileJSON.open(QIODevice::Append | QIODevice::Text);
-//    QDataStream stream(&file);
-//    serializeClear(*rootItem);
-//    serializeCleanUp(*rootItem);
-//    serialize(*rootItem, stream);
-//    QJsonDocument doc(listArray);
-//    fileJSON.write(doc.toJson(QJsonDocument::Indented));
-//    fileJSON.close();
-//    file.close();
-//  }
-//}
 void TreeModel::save() {
 
   QDir::setCurrent(QDir::currentPath());
   QString path = QDir::currentPath();
   QFile file("storage.dat");
-  //  int value = QRandomGenerator::global()->generate();
 
-  //  QDir cachePath(QStringLiteral("%1/StorageCache").arg(path));
-  //  if (!cachePath.exists()) {
-  //    cachePath.mkdir(QStringLiteral("%1/StorageCache").arg(path));
-  //  }
-  //  auto isSuccessful =
-  //      file.copy(QStringLiteral("%1/storage.dat").arg(path),
-  //                QStringLiteral("%1/StorageCache/StorageCache%2.dat")
-  //                    .arg(path)
-  //                    .arg(value));
   if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 
     QDataStream stream(&file);
@@ -497,9 +555,6 @@ void TreeModel::saveJSON() {
 
   inputArrayIterator = 0;
 
-  //  QDir::setCurrent(QDir::currentPath());
-  //  QString path = QDir::currentPath();
-
   if (fileJSON.open(QIODevice::Append | QIODevice::Text)) {
 
     serializeClear(*rootItem);
@@ -527,6 +582,7 @@ bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
 
   for (int i = 0; i < parent->childItems->size(); i++) {
     if (searchClones) {
+
       if (isDescendant((*parent->childItems.get())[i], child, depth - 1,
                        true)) {
         return true;
@@ -541,18 +597,13 @@ bool TreeModel::isDescendant(TreeNode *parent, TreeNode *child, int depth,
 
   return false;
 };
+
 bool TreeModel::isDescendantReverse(TreeNode *parent, TreeNode *child,
                                     int depth, bool searchClones) {
   if (depth == 0) {
     return false;
   }
-  //  if (parent == child) {
-  //    return true;
-  //  } else if (searchClones) {
-  //    if (*parent == *child) {
-  //      return true;
-  //    }
-  //  }
+
   if (isDescendant(parent, child, depth, searchClones)) {
     return true;
   }
@@ -590,10 +641,7 @@ TreeNode *TreeModel::isDescendantNode(TreeNode *parent, TreeNode *child) {
   return nullptr;
 };
 bool TreeModel::isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode) {
-  //  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
-  //                               copiedNode.toString(), 1,
-  //                               Qt::MatchRecursive);
-  //  auto copiedNode = getItem(copiedNodeIndex[0]);
+
   if (copiedNode->parents.isEmpty()) {
     return false;
   }
@@ -616,22 +664,6 @@ bool TreeModel::isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode) {
     }
   }
 }
-// bool TreeModel::isCoiedFromNode(QUuid copiedNode, TreeNode *originalNode) {
-//  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
-//                               copiedNode.toString(), 1, Qt::MatchRecursive);
-//  auto item = getItem(copiedNodeIndex[0]);
-//  if (item->parents.isEmpty()) {
-//    return false;
-//  }
-//  if ((item->parents[0] == originalNode->id) || item->id == originalNode->id)
-//  {
-//    return true;
-//  } else {
-//    if (!isCoiedFromNode(item->parents[0], originalNode)) {
-//      return false;
-//    }
-//  }
-//}
 
 TreeNode *TreeModel::getItem(const QModelIndex &index) const {
   if (index.isValid()) {
@@ -683,8 +715,7 @@ void TreeModel::serializeJSON(TreeNode &node) {
 
     json.insert(j.key(), array);
   }
-  //  assert(json.size() == node.position.size());
-  //  json.insert("map",myMap);
+
   defectObject.insert("position", json);
 
   QJsonArray tempParents1;
@@ -694,7 +725,6 @@ void TreeModel::serializeJSON(TreeNode &node) {
   }
   defectObject.insert("tempParents", tempParents1);
 
-  //        defectObject.insert("position", node.position);
   QJsonArray parents1;
   for (QUuid e : node.parents) {
 
@@ -708,8 +738,6 @@ void TreeModel::serializeJSON(TreeNode &node) {
   }
   defectObject.insert("copyChildren", copyChildren1);
 
-  //      defectObject.insert("positions", QJsonValue::fromVariant(positions));
-  //  QJsonArray listArray;
   listArray.push_back(defectObject);
 
   if (node.childCount()) {
@@ -764,7 +792,8 @@ void TreeModel::serializeClear(TreeNode &node) {
   }
 }
 void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
-                               bool check) {
+                               QMultiMap<QUuid, QUuid> &container,
+                               QMap<QUuid, TreeNode *> &map, bool check) {
   if (!check) {
     stream >> &node;
     //         if inserted node is not copied
@@ -782,8 +811,6 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
             node.id); // keys are parents, current item(to be copied) is value
       }
 
-      auto cont = container.find(node.parentItem->id, node.id);
-
       if (!node.position.isEmpty()) {
       }
     }
@@ -796,7 +823,7 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
     if (container.value(node.id) ==
         QUuid()) { // if node is a not parent of a copied item
 
-      deserializeDat(node.insertChildrenNew(i, 1, 0), stream);
+      deserializeDat(node.insertChildrenNew(i, 1, 0), stream, container, map);
     } else {
       TreeNode *check1 = nullptr;
       auto list = container.values(
@@ -816,17 +843,19 @@ void TreeModel::deserializeDat(TreeNode &node, QDataStream &stream,
       if (check1 != nullptr) {
 
         deserializeDat(node.insertChildrenSerialization(i, 1, 0, check1),
-                       stream, true);
+                       stream, container, map, true);
       } else {
 
-        deserializeDat(node.insertChildrenNew(i, 1, 0), stream);
+        deserializeDat(node.insertChildrenNew(i, 1, 0), stream, container, map);
       }
       check1 = nullptr;
     }
   }
   return;
 }
-void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
+void TreeModel::deserialize(TreeNode &node, QDataStream &stream,
+                            QMultiMap<QUuid, QUuid> &container,
+                            QMap<QUuid, TreeNode *> &map, bool check) {
   if (!check) {
 
     auto nodeInfo = inputArray[inputArrayIterator++].toObject();
@@ -874,8 +903,6 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
             node.id); // keys are parents, current item(to be copied) is value
       }
 
-      auto cont = container.find(node.parentItem->id, node.id);
-
       if (!node.position.isEmpty()) {
       }
     }
@@ -920,7 +947,7 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
     if (container.value(node.id) ==
         QUuid()) { // if node is a not parent of a copied item
 
-      deserialize(node.insertChildrenNew(i, 1, 0), stream);
+      deserialize(node.insertChildrenNew(i, 1, 0), stream, container, map);
     } else {
       TreeNode *check1 = nullptr;
       auto list = container.values(
@@ -940,11 +967,10 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
       if (check1 != nullptr) {
 
         deserialize(node.insertChildrenSerialization(i, 1, 0, check1), stream,
-                    true);
+                    container, map, true);
       } else {
 
-        auto score = map.value(container.value(node.id));
-        deserialize(node.insertChildrenNew(i, 1, 0), stream);
+        deserialize(node.insertChildrenNew(i, 1, 0), stream, container, map);
       }
       check1 = nullptr;
     }
@@ -953,7 +979,7 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
 }
 
 bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
-                         const QPersistentModelIndex &source) {
+                         const QPersistentModelIndex &source, bool isDetached) {
   updateProxyFilter(false);
   TreeNode *parentItem = getItem(parent);
   auto lastItem = getItem(source);
@@ -965,7 +991,7 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
     return false;
   }
 
-  if (!copyRowsAndChildren(position, 1, parent, source)) {
+  if (!copyRowsAndChildren(position, 1, parent, source, isDetached)) {
     return false;
   }
 
@@ -992,7 +1018,8 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
 
 bool TreeModel::copyRowsAndChildren(int position, int rows,
                                     const QModelIndex &parent,
-                                    const QPersistentModelIndex &source) {
+                                    const QPersistentModelIndex &source,
+                                    bool isDetached) {
   TreeNode *parentItem = getItem(parent);
 
   if (!parentItem) {
@@ -1008,15 +1035,7 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
       if ((isCopiedFromNode(lastItem, result[i]) ||
            isCopiedFromNode(result[i], lastItem)) ||
           lastItem == result[i]) {
-        beginInsertRows(parent, position, position + rows - 1);
 
-        parentItem->insertChildren(position, rows, rootItem->columnCount());
-
-        endInsertRows();
-        const QModelIndex &child = this->index(position, 0, parent);
-
-        this->setData(child, "Prevented infinite recurion", Qt::EditRole);
-        this->setData(child, "Data", Qt::UserRole + 2);
         return false;
       }
       //      if (lastItem == result[i]) {
@@ -1033,13 +1052,27 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
     this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);
 
     endInsertRows();
+    if (isDetached) {
+      for (int i = 0; i < success.siblings->size(); i++) {
+        if (!success.parents.isEmpty()) {
+          if (success.siblingItems()[i]->id == success.parents[0]) {
+            success.siblingItems()[i]->copyChildren.erase(std::find(
+                success.siblingItems()[i]->copyChildren.begin(),
+                success.siblingItems()[i]->copyChildren.end(), success.id));
+          }
+        }
+      }
+      success.parents.clear();
+      return true;
+    }
   }
+
   for (int i = 0; i < lastItem->childCount(); i++) {
     QPersistentModelIndex itemIndex = index(position, 0, parent);
-    copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source));
-    //    if (!copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source))) {
-    //      return false;
-    //    }
+    //    copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source));
+    if (!copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source))) {
+      return false;
+    }
   }
 
   return true; // TODO check for success of operation
@@ -1049,7 +1082,6 @@ void TreeModel::copyRowsRecursive(int position, QUuid callingId, QUuid calledId,
 
   auto siblingIndex = match(index(0, 0), Qt::UserRole + 2, calledId.toString(),
                             1, Qt::MatchRecursive);
-  auto sourceItem = getItem(source);
   auto item = getItem(siblingIndex[0]);
   if (item->acceptsCopies) {
 
@@ -1197,40 +1229,13 @@ bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child, int depth,
     depth--;
   };
 }
-bool TreeModel::isDirectDescendant1(TreeNode *parent, TreeNode *child,
-                                    int depth) {
-
-  while (true) {
-    if (depth == 0) {
-      return false;
-    }
-    if (child->parent() == nullptr) {
-
-      return false;
-    } else if ((child->parent() == parent) || (child == parent)) {
-
-      return true;
-
-    } /*else if (parent->copyChildren.contains(child->id)) {
-
-      return true;
-
-    }*/
-    else {
-      child = child->parent();
-      depth--;
-    }
-  };
-}
 
 QVector<TreeNode *> TreeModel::isDirectDescendantNode(TreeNode *parent,
                                                       TreeNode *child,
                                                       int depth) {
   QVector<TreeNode *> array;
   while (true) {
-    //    if (depth == 0) {
-    //      return nullptr;
-    //    }
+
     if (child->parent() == nullptr) {
 
       //      return nullptr;
@@ -1249,43 +1254,5 @@ QVector<TreeNode *> TreeModel::isDirectDescendantNode(TreeNode *parent,
     child = child->parent();
     depth--;
     //    }
-  };
-}
-bool TreeModel::isDirectDescendant2(TreeNode *parent, TreeNode *child,
-                                    int depth) {
-  auto count = 0;
-  while (true) {
-    if (depth == 0) {
-      return false;
-    }
-    if (child->parent() == nullptr) {
-
-      return false;
-    } /*else if ((child->parent() == parent) || (child == parent)) {
-
-      return true;
-
-    }*/
-    else if (!child->parents.isEmpty()) {
-      if (child->parents[0] == parent->id) {
-        count++;
-        if (count > 1) {
-          return true;
-        }
-      }
-    }
-    /*else if (!parent->copyChildren.isEmpty()) {
-      if (parent->copyChildren.back() == child->id) {
-          count++;
-          if(count >1){
-              return true;
-
-          }
-      }
-
-    }*/
-
-    child = child->parent();
-    depth--;
   };
 }
