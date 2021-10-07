@@ -190,7 +190,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 3655942, "audio": 0}], "remote_package_size": 3655942, "package_uuid": "b2421bf4-9d47-4626-82a0-0adfe7abe2e2"});
+   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 3655942, "audio": 0}], "remote_package_size": 3655942, "package_uuid": "0e3d54bf-17c0-41e9-98ee-bd3ee7b335b2"});
   
   })();
   
@@ -2003,7 +2003,7 @@ var ASM_CONSTS = {
  1261: function() {var isMobile =/iPhone|iPad|iPod|Android/i.test(navigator.userAgent); console.log(navigator.userAgent); if(isMobile) { console.log("MOBILE"); Module._setPlatform(true); } else { console.log("PC"); Module._setPlatform(false); }},  
  1604: function() {FS.syncfs(true, function(err){ });},  
  1773: function() {FS.syncfs(function(err) { Module._setPlatform(true); });},  
- 2203: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); if('serviceWorker' in navigator){ navigator.serviceWorker.register('/sw.js') .then(reg => console.log('service worker registered')) .catch(err => console.log('service worker not registered', err)); } window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
+ 2203: function() {document.addEventListener("visibilitychange", function() { if (document.visibilityState === 'visible') { } else { console.log("hide"); Module._saveIDBFS(); } }); if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js') .then(reg => console.log('service worker registered')) .catch(err => console.log('service worker not registered', err)); } window.onbeforeunload = function (e) { e = e || window.event; return 'Sure'; };}
 };
 
 function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
