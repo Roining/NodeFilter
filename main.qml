@@ -34,7 +34,7 @@ ApplicationWindow {
 
     }
 //    Loader{
-//    sourceComponent: myClass.isMobile() ? keyboard:""
+//    sourceComponent: sharedModel.isMobile() ? keyboard:""
 
 //}
 
@@ -77,7 +77,7 @@ Component.onCompleted: {
 
 
 
-if(!myClass.isMobile()){
+if(!sharedModel.isMobile()){
 
 inputPanel.destroy();
 }

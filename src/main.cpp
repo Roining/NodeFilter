@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
   qmlRegisterType<ProxyModel>("TreeModel.com", 1, 0, "Filtering");
   QQmlApplicationEngine engine;
-  engine.rootContext()->setContextProperty("myClass", &myClass1);
+  engine.rootContext()->setContextProperty("sharedModel", &sharedModel1);
   const QUrl url(QStringLiteral("qrc:/main.qml"));
 
   QObject::connect(

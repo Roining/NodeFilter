@@ -3,15 +3,15 @@
 #include "include/TreeNode.h"
 #include <QRegularExpression>
 
-TreeModel myClass1(nullptr);
+TreeModel sharedModel1(nullptr);
 
 ProxyModel::ProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 
-  sourceModel = &myClass1;
-  setSourceModel(&myClass1);
+  sourceModel = &sharedModel1;
+  setSourceModel(&sharedModel1);
   setRecursiveFilteringEnabled(true);
   setDynamicSortFilter(false);
-  QObject::connect(&myClass1, &TreeModel::updateProxyFilter, this,
+  QObject::connect(&sharedModel1, &TreeModel::updateProxyFilter, this,
                    &ProxyModel::updateFilter);
 };
 void ProxyModel::queryProcessing() {

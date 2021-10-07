@@ -42,7 +42,7 @@ function newPane(){
 
 
 close.accepted = false
-            myClass.save()
+            sharedModel.save()
 //            Qt.quit()
 
     }
@@ -58,7 +58,7 @@ close.accepted = false
 //        sequence: "Ctrl+Shift+Q"
 //        onActivated: {
 
-//myClass.kok();
+//sharedModel.kok();
 //        }
 //    }
 
@@ -66,7 +66,7 @@ close.accepted = false
         sequence: "Ctrl+Shift+O"
         onActivated: {
 
-myClass.loadFileIDBFS();
+sharedModel.loadFileIDBFS();
         }
     }
 
@@ -75,8 +75,8 @@ myClass.loadFileIDBFS();
         onActivated: {
 //uniqueid1.open();
 
-myClass.saveIDBFS();
-//myClass.saveJSON();
+sharedModel.saveIDBFS();
+//sharedModel.saveJSON();
         }
     }
 

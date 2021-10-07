@@ -31,5 +31,5 @@ private:
   QMap<QUuid, TreeNode *> itemContainer;
   TreeModel *sourceModel;
 };
-extern TreeModel myClass1;
+extern TreeModel sharedModel1;
 #endif // PROXYMODEL_H

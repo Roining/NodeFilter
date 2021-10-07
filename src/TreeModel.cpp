@@ -19,7 +19,7 @@ QJsonArray inputArray;
 int inputArrayIterator = 0;
 #include <emscripten.h>
 
-extern TreeModel myClass1;
+extern TreeModel sharedModel1;
 TreeModel::TreeModel(QObject *parent) {
   //  EM_ASM( window.onbeforeunload = function(e) {
   //    e = e || window.event;
@@ -941,11 +941,11 @@ void TreeModel::setPlatform(bool isMobile) { isPlatformMobile = isMobile; }
 extern "C" {
 void EMSCRIPTEN_KEEPALIVE setPlatform(bool isMobile) {
 
-  myClass1.setPlatform(isMobile);
+  sharedModel1.setPlatform(isMobile);
 }
 }
 extern "C" {
-void EMSCRIPTEN_KEEPALIVE saveIDBFS() { myClass1.saveIDBFS(); }
+void EMSCRIPTEN_KEEPALIVE saveIDBFS() { sharedModel1.saveIDBFS(); }
 }
 void TreeModel::saveIDBFS() {
   QDir::setCurrent(QDir::currentPath());
@@ -1099,6 +1099,33 @@ TreeNode *TreeModel::isDescendantNode(TreeNode *parent, TreeNode *child) {
 
   return nullptr;
 };
+bool TreeModel::isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode) {
+  //  auto copiedNodeIndex = match(index(0, 0), Qt::UserRole + 2,
+  //                               copiedNode.toString(), 1,
+  //                               Qt::MatchRecursive);
+  //  auto copiedNode = getItem(copiedNodeIndex[0]);
+  if (copiedNode->parents.isEmpty()) {
+    return false;
+  }
+  if ((copiedNode->parents.first() == originalNode->id) ||
+      copiedNode->id == originalNode->id || !originalNode->acceptsCopies) {
+    return true;
+  } else {
+    //      const auto& parentNode = map.value(copiedNode->parents.first());
+    TreeNode *parentNode = nullptr;
+    for (int i = 0; i < copiedNode->siblingItems().length(); i++) {
+      if (copiedNode->siblingItems()[i]->copyChildren.contains(
+              copiedNode->id)) {
+        parentNode = copiedNode->siblingItems()[i];
+      }
+    }
+    if (!isCopiedFromNode(parentNode, originalNode)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
 TreeNode *TreeModel::getItem(const QModelIndex &index) const {
   if (index.isValid()) {
     TreeNode *item = static_cast<TreeNode *>(index.internalPointer());
@@ -1234,40 +1261,38 @@ void TreeModel::deserialize(TreeNode &node, QDataStream &stream, bool check) {
 }
 
 bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
-                         const QPersistentModelIndex &source) {
+                         const QPersistentModelIndex &source, bool isDetached) {
   updateProxyFilter(false);
   TreeNode *parentItem = getItem(parent);
   auto lastItem = getItem(source);
   if (!parentItem) {
     return false;
   }
-  if ((isDescendant(lastItem, parentItem, 1000, true) &&
-       lastItem->childCount()) ||
-      ((*parentItem == *lastItem) && (lastItem->acceptsCopies))) {
-    //    emit recursionSignal();
+  if (!lastItem->parent()) {
+    emit recursionSignal();
     return false;
   }
 
-  copyRowsAndChildren(position, 1, parent, source);
+  if (!copyRowsAndChildren(position, 1, parent, source, isDetached)) {
+    return false;
+  }
 
-  if (parentItem->acceptsCopies) {
+  if ((!parentItem->copyChildren.isEmpty())) {
 
-    if ((!parentItem->copyChildren.isEmpty()) && (parentItem->acceptsCopies)) {
-
-      for (int i = 0; i < parentItem->copyChildren.size(); i++) {
-        copyRowsRecursive(position, parentItem->id, parentItem->copyChildren[i],
-                          index(position, 0, parent));
-      }
-    }
-
-    if ((!parentItem->parents.isEmpty()) && (parentItem->acceptsCopies)) {
-
-      for (int i = 0; i < parentItem->parents.size(); i++) {
-        copyRowsRecursive(position, parentItem->id, parentItem->parents[i],
-                          index(position, 0, parent));
-      }
+    for (int i = 0; i < parentItem->copyChildren.size(); i++) {
+      copyRowsRecursive(position, parentItem->id, parentItem->copyChildren[i],
+                        index(position, 0, parent));
     }
   }
+
+  if ((!parentItem->parents.isEmpty())) {
+
+    for (int i = 0; i < parentItem->parents.size(); i++) {
+      copyRowsRecursive(position, parentItem->id, parentItem->parents[i],
+                        index(position, 0, parent));
+    }
+  }
+
   updateProxyFilter(true);
 
   return true;
@@ -1275,14 +1300,32 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
 
 bool TreeModel::copyRowsAndChildren(int position, int rows,
                                     const QModelIndex &parent,
-                                    const QPersistentModelIndex &source) {
+                                    const QPersistentModelIndex &source,
+                                    bool isDetached) {
   TreeNode *parentItem = getItem(parent);
   if (!parentItem) {
     return false;
   }
-  auto copiedItem = getItem(last);
-  TreeNode *lastItem = getItem(source);
 
+  TreeNode *lastItem = getItem(source);
+  QVector<TreeNode *> result =
+      isDirectDescendantNode(lastItem, parentItem, 1000);
+  if (!result.isEmpty()) {
+    for (int i = 0; i < result.length(); i++) {
+      //    auto bool1 = isCoiedFromNode(lastItem->id, result);
+      //    auto bool2 = isCoiedFromNode(result->id, lastItem);
+      if ((isCopiedFromNode(lastItem, result[i]) ||
+           isCopiedFromNode(result[i], lastItem)) ||
+          lastItem == result[i]) {
+
+        return false;
+      }
+      //      if (lastItem == result[i]) {
+
+      //        return false;
+      //      }
+    }
+  }
   //  if (isDirectDescendant1(lastItem, parentItem, 1000)) {
   //    return false;
   //  }
@@ -1290,17 +1333,35 @@ bool TreeModel::copyRowsAndChildren(int position, int rows,
   //    return false;
   //  }
 
-  beginInsertRows(parent, position, position + rows - 1);
-  TreeNode &success = parentItem->copyNodeChildren(
-      position, rows, rootItem->columnCount(), lastItem);
-  this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);
+  if (parentItem->children().length() >= position) {
+    beginInsertRows(parent, position, position + rows - 1);
+    TreeNode &success = parentItem->copyNodeChildren(
+        position, rows, rootItem->columnCount(), lastItem);
+    this->setData(index(position, 0, parent), "Data", Qt::UserRole + 2);
 
-  endInsertRows();
-  auto o = lastItem->childItems;
+    endInsertRows();
+
+    if (isDetached) {
+      for (int i = 0; i < success.siblings->size(); i++) {
+        if (!success.parents.isEmpty()) {
+          if (success.siblingItems()[i]->id == success.parents[0]) {
+            success.siblingItems()[i]->copyChildren.erase(std::find(
+                success.siblingItems()[i]->copyChildren.begin(),
+                success.siblingItems()[i]->copyChildren.end(), success.id));
+          }
+        }
+      }
+      success.parents.clear();
+      return true;
+    }
+  }
   for (int i = 0; i < lastItem->childCount(); i++) {
     QPersistentModelIndex itemIndex = index(position, 0, parent);
 
-    copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source));
+    //    copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source));
+    if (!copyRowsAndChildren(i, 1, itemIndex, index(i, 0, source))) {
+      return false;
+    }
   }
 
   return true; // TODO check for success of operation
@@ -1457,6 +1518,32 @@ bool TreeModel::isDirectDescendant(TreeNode *parent, TreeNode *child,
       child = child->parent();
       depth--;
     }
+  };
+}
+QVector<TreeNode *> TreeModel::isDirectDescendantNode(TreeNode *parent,
+                                                      TreeNode *child,
+                                                      int depth) {
+  QVector<TreeNode *> array;
+  while (true) {
+    //    if (depth == 0) {
+    //      return nullptr;
+    //    }
+    if (child->parent() == nullptr) {
+
+      //      return nullptr;
+      return array;
+    } else if (*child == *parent) {
+
+      //      return child;
+      array.append(child);
+
+    } /*else if (parent->copyChildren.contains(child->id)) {
+      return true;
+    }*/
+    //    else {
+    child = child->parent();
+    depth--;
+    //    }
   };
 }
 bool TreeModel::isDirectDescendant1(TreeNode *parent, TreeNode *child,

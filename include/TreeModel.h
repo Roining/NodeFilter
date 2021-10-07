@@ -86,7 +86,9 @@ public:
   bool isDirectDescendant(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant1(TreeNode *parent, TreeNode *child, int depth);
   bool isDirectDescendant2(TreeNode *parent, TreeNode *child, int depth);
-
+  QVector<TreeNode *> isDirectDescendantNode(TreeNode *parent, TreeNode *child,
+                                             int depth);
+  bool isCopiedFromNode(TreeNode *copiedNode, TreeNode *originalNode);
   Q_INVOKABLE TreeNode *getItem(const QModelIndex &index) const;
   Q_INVOKABLE void serialize(TreeNode &node, QDataStream &stream);
   Q_INVOKABLE void serializeJSON(TreeNode &node);
@@ -97,13 +99,15 @@ public:
                                bool check = false);
   Q_INVOKABLE void deserializeJSON(TreeNode &node, QDataStream &stream,
                                    bool check = false);
-  Q_INVOKABLE bool
-  copyRows(int position, int rows, const QModelIndex &parent = QModelIndex(),
-           const QPersistentModelIndex &source = QModelIndex());
+  Q_INVOKABLE bool copyRows(int position, int rows,
+                            const QModelIndex &parent = QModelIndex(),
+                            const QPersistentModelIndex &source = QModelIndex(),
+                            bool isDetached = false);
   Q_INVOKABLE bool
   copyRowsAndChildren(int position, int rows,
                       const QModelIndex &parent = QModelIndex(),
-                      const QPersistentModelIndex &source = QModelIndex());
+                      const QPersistentModelIndex &source = QModelIndex(),
+                      bool isDetached = false);
   void copyRowsRecursive(int position, QUuid callingId, QUuid calledId,
                          const QModelIndex &source);
   Q_INVOKABLE QString getId(const QModelIndex &id);

@@ -26,10 +26,10 @@ Component {
 
                  MenuItem { text: "Insert a node"
                  onTriggered: {
-                     var position = myClass.position(
+                     var position = sharedModel.position(
                                  nodeTree.model.mapToSource(
                                      nodeTree.currentIndex))
-                     myClass.insertRows(
+                     sharedModel.insertRows(
                                  position + 1, 1, nodeTree.model.mapToSource(
                                      nodeTree.currentIndex).parent) //TODO
 
@@ -37,16 +37,16 @@ Component {
                  }
                  MenuItem { text: "Insert a node as a child"
                  onTriggered: {
-                     myClass.insertRows(
+                     sharedModel.insertRows(
                                  0, 1, nodeTree.model.mapToSource(
                                      nodeTree.currentIndex)) //TODO
                      nodeTree.expand(nodeTree.currentIndex)
 
                  }
                  }
-                 MenuItem { text: "Copy id of node"
+                 MenuItem { text: "Copy the id of a node"
                  onTriggered: {
-                     var id = myClass.getId(
+                     var id = sharedModel.getId(
                                  nodeTree.model.mapToSource(
                                      nodeTree.currentIndex))
 
@@ -57,41 +57,41 @@ Component {
 
                  MenuItem { text: "Copy a node"
                  onTriggered: {
-                     myClass.saveIndex(
+                     sharedModel.saveIndex(
                                                         nodeTree.model.mapToSource(
                                                             nodeTree.currentIndex)) //TODO
                  }
                  }
 
-                 MenuItem { text: "Paste a copied node"
+                 MenuItem { text: "Insert a copy as a child"
                  onTriggered: {
 
-                     var position = myClass.position(
+                     var position = sharedModel.position(
                                  nodeTree.model.mapToSource(
                                      nodeTree.currentIndex))
 
-                     myClass.copyRows(
+                     sharedModel.copyRows(
                                  position + 1, 1, nodeTree.model.mapToSource(
                                      nodeTree.currentIndex).parent,
-                                 myClass.getLastIndex()) //TODO
+                                 sharedModel.getLastIndex()) //TODO
                  }
                  }
-                 MenuItem { text: "Paste a child copied node"
+                 MenuItem { text: "Insert a child copy"
                  onTriggered: {
-                     myClass.copyRows(0, 1, nodeTree.model.mapToSource(
+                     sharedModel.copyRows(0, 1, nodeTree.model.mapToSource(
                                           nodeTree.currentIndex),
-                                      myClass.getLastIndex()) //TODO
+                                      sharedModel.getLastIndex()) //TODO
                      nodeTree.expand(nodeTree.currentIndex)
 
                  }
                  }
                  MenuItem { text: "Delete a node"
                  onTriggered: {
-                     var position = myClass.position(
+                     var position = sharedModel.position(
                                  nodeTree.model.mapToSource(
                                      nodeTree.currentIndex))
 
-                     myClass.removeRows(
+                     sharedModel.removeRows(
                                  position, 1, nodeTree.model.mapToSource(
                                      nodeTree.currentIndex).parent) //TODO
                  }
@@ -101,18 +101,18 @@ Component {
 cascade: true
                          MenuItem { text: "Load the storage(JSON)"
                          onTriggered: {
-                myClass.loadFileJSON();
+                sharedModel.loadFileJSON();
 
                          }
                          }
                          MenuItem { text: "Load the storage(.dat)"
                              onTriggered: {
-                             myClass.loadFile();
+                             sharedModel.loadFile();
                                       }
                                      }
                          MenuItem { text: "Load the storage(local)"
                              onTriggered: {
-                          myClass.loadFileIDBFS();
+                          sharedModel.loadFileIDBFS();
                                       }
                                      }
 
@@ -123,18 +123,18 @@ cascade: true
         cascade: true
         MenuItem { text: "Save the storage(JSON)"
         onTriggered: {
-        myClass.saveJSON();
+        sharedModel.saveJSON();
         }
         }
         MenuItem { text: "Save the storage(.dat)"
         onTriggered: {
-        myClass.save();
+        sharedModel.save();
         }
         }
 
                                  MenuItem { text: "Save the storage(local)"
                                      onTriggered: {
-        myClass.saveIDBFS();                                     }
+        sharedModel.saveIDBFS();                                     }
 
 
 
@@ -167,25 +167,45 @@ cascade: true
 
                                }
                                }
-                 MenuItem { text: "Mark as a template"
-                 onTriggered: {
+                 Menu { title: "Other actions"
+        cascade: true
+        MenuItem { text: "Mark as a template"
+        onTriggered: {
 
-                     myClass.acceptsCopies(nodeTree.model.mapToSource(
-                                                                     nodeTree.currentIndex),
-                                                                 false)
-                 }
-                 }
-                 MenuItem { text: "Unmark as a template"
-                 onTriggered: {
-                     myClass.acceptsCopies(nodeTree.model.mapToSource(
-                                                                       nodeTree.currentIndex),
-                                                                   true)
-                 }
-                 }
+            sharedModel.acceptsCopies(nodeTree.model.mapToSource(
+                                                            nodeTree.currentIndex),
+                                                        false)
+        }
+        }
+        MenuItem { text: "Unmark as a template"
+        onTriggered: {
+            sharedModel.acceptsCopies(nodeTree.model.mapToSource(
+                                                              nodeTree.currentIndex),
+                                                          true)
+        }
+        }
+        MenuItem { text: "Insert a detached node"
+        onTriggered: {
+
+
+
+            sharedModel.copyRows(0, 1, nodeTree.model.mapToSource(
+                                 nodeTree.currentIndex),
+                             sharedModel.getLastIndex(),true) //TODO
+            nodeTree.expand(nodeTree.currentIndex)
+        }
+        }
+                         }
+
+
 
              }
         id: viewInstance
-
+Component.onCompleted: {
+//    if(sharedModel.isMobile()){
+//                                isMobile = true
+//                                }
+}
 //width:parent.width
 //height:parent.height
         property alias tree: nodeTree
@@ -229,7 +249,7 @@ cascade: true
                     root.arrayOfWindows.push((serializationWindowsArray[i]))
                 }
                 root.settings.windows = root.arrayOfWindows
-                myClass.save()
+                sharedModel.save()
                 Qt.quit()
                 return
             } *//*else if ((event.key === Qt.Key_W)
@@ -267,7 +287,7 @@ cascade: true
 //            height:100
 //            text: "Save"
 //                     onClicked: {
-//                         myClass.save()
+//                         sharedModel.save()
 
 
 //                     }
@@ -279,7 +299,7 @@ cascade: true
 //            height:100
 //            text: "Load"
 //                     onClicked: {
-//                         myClass.loadFile();
+//                         sharedModel.loadFile();
 
 
 //                     }
@@ -319,7 +339,7 @@ cascade: true
 
                 onTextChanged: {
                     nodeTree.model.setQuery(text)
-//                    myClass.save()
+//                    sharedModel.save()
 
 
                 }
@@ -420,11 +440,11 @@ signal cHeight(var height,var row)
                     text: "Are you sure you want to delete the selected node? Children nodes will also be deleted"
                    modality:Qt.ApplicationModal
                     onAccepted: {
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
 
-                        myClass.removeRows(
+                        sharedModel.removeRows(
                                     position, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex).parent) //TODO
 //                        deleteDialog.close()
@@ -467,10 +487,10 @@ return;
 //                        } else if (wheel.angleDelta.y > 0) {
 //                            vbar.decrease()
 //                        }
-//                    }
+//                    }fis
 //                }
                 Connections{
-                target:myClass
+                target:sharedModel
                 function onRecursionSignal(){
                 copyDialog.open();
                 }
@@ -480,7 +500,7 @@ return;
 //                        title: "Name"
                         role: "edit"
 //                        width: 300
-                        width: viewInstance.width
+                        width: viewInstance.isMobile? viewInstance.width:viewInstance.parent.width
 
 
 
@@ -512,12 +532,10 @@ return;
 headerVisible: false
 //frameVisible:false
 
-//                styleHints.overlay: "green"
-//                styleHints.indent: 25
-//                styleHints.columnPadding: 30
+
                 Component.onCompleted: {
 
-                    if(myClass.isMobile()){
+                    if(sharedModel.isMobile()){
                             viewInstance.isMobile = true
                             } //TODO
 
@@ -539,7 +557,7 @@ headerVisible: false
 
 
 
-                        myClass.acceptsCopies(nodeTree.model.mapToSource(
+                        sharedModel.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentIndex),
                                               true)
 
@@ -570,7 +588,7 @@ headerVisible: false
                                         (serializationWindowsArray[i]))
                         }
                         root.settings.windows = root.arrayOfWindows
-                        myClass.save()
+                        sharedModel.save()
                         Qt.quit()
                         return
                     } else if ((event.key === Qt.Key_G)
@@ -603,7 +621,7 @@ headerVisible: false
                                && (event.modifiers & Qt.ShiftModifier)) {
      event.accepted = true
                         //insert new node as a child Ctrl Shift N
-                        myClass.insertRows(
+                        sharedModel.insertRows(
                                     0, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex)) //TODO
                         nodeTree.expand(nodeTree.currentIndex)
@@ -617,16 +635,16 @@ headerVisible: false
 
 
 
-                        myClass.copyRows(0, 1, nodeTree.model.mapToSource(
+                        sharedModel.copyRows(0, 1, nodeTree.model.mapToSource(
                                              nodeTree.currentIndex),
-                                         myClass.getLastIndex()) //TODO
+                                         sharedModel.getLastIndex()) //TODO
                         nodeTree.expand(nodeTree.currentIndex)
                         return
                     } else if ((event.key === Qt.Key_P)
                                && (event.modifiers & Qt.ControlModifier)) {
                              event.accepted = true
                         //acceptsCopies false Ctrl P
-                        myClass.acceptsCopies(nodeTree.model.mapToSource(
+                        sharedModel.acceptsCopies(nodeTree.model.mapToSource(
                                                   nodeTree.currentIndex),
                                               false)
                         return
@@ -635,7 +653,7 @@ headerVisible: false
                         event.accepted = true
 
                         //serialize/save Ctrl S
-                        myClass.save()
+                        sharedModel.save()
                         return
                     }*/ else if ((event.key === Qt.Key_5)
                                && (event.modifiers & Qt.ControlModifier)) {
@@ -656,23 +674,23 @@ headerVisible: false
                         // Delete view Alt D
                         viewInstance.destroy()
                         return
-                    } else if ((event.key === Qt.Key_U)
+                    } /*else if ((event.key === Qt.Key_U)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
                         root.settings.windows = []
                         root.array.length = []
 
                         Qt.quit()
-                    } else if ((event.key === Qt.Key_D)
+                    }*/ else if ((event.key === Qt.Key_D)
                                && (event.modifiers & Qt.ControlModifier)) {
      event.accepted = true
                         //remove node Ctrl D
 //                        deleteDialog.open()
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
 
-                        myClass.removeRows(
+                        sharedModel.removeRows(
                                     position, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex).parent) //TODO
                         return
@@ -685,7 +703,7 @@ headerVisible: false
                     }*/ else if ((event.key === Qt.Key_O)
                                && (event.modifiers & Qt.ControlModifier)) {
                              event.accepted = true
-var query =">:" + myClass.getId(
+var query =">:" + sharedModel.getId(
     nodeTree.model.mapToSource(
         nodeTree.currentIndex))
                         //remove node Ctrl D
@@ -697,23 +715,23 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)) {
 
                         //copy a copied node Ctrl A
-                        myClass.saveIndex(
+                        sharedModel.saveIndex(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex)) //TODO
                         return
-                    } else if ((event.key === Qt.Key_F)
+                    } else if ((event.key === Qt.Key_U)
                                && (event.modifiers & Qt.ControlModifier)
                                && (event.modifiers & Qt.ShiftModifier)) {
 
 
 //                        //copy Id to clipboard Ctrl E
-//                        myClass.getIdToClipboard(
+//                        sharedModel.getIdToClipboard(
 //                                    nodeTree.model.mapToSource(
 //                                        nodeTree.currentIndex))
 //                        return
                         event.accepted = true
 
-                        var id = myClass.getId(
+                        var id = sharedModel.getId(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
 
@@ -733,10 +751,10 @@ var query =">:" + myClass.getId(
                                && (event.modifiers & Qt.ControlModifier)) {
                         //Ctrl N insert node
                              event.accepted = true
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
-                        myClass.insertRows(
+                        sharedModel.insertRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex).parent) //TODO
 
@@ -753,14 +771,14 @@ var query =">:" + myClass.getId(
                         event.accepted = true
 
 
-                        var position = myClass.position(
+                        var position = sharedModel.position(
                                     nodeTree.model.mapToSource(
                                         nodeTree.currentIndex))
 
-                        myClass.copyRows(
+                        sharedModel.copyRows(
                                     position + 1, 1, nodeTree.model.mapToSource(
                                         nodeTree.currentIndex).parent,
-                                    myClass.getLastIndex()) //TODO
+                                    sharedModel.getLastIndex()) //TODO
                     } else if ((event.key === Qt.Key_G)
                                && (event.modifiers & Qt.ControlModifier)) {
      event.accepted = true
@@ -839,7 +857,8 @@ Keys.onEnterPressed: {
 
 
 }
-width: nodeTree.width
+//width: nodeTree.width
+
 selectByMouse: true
 //                            selectionColor: "#3399FF"
 //                            selectedTextColor: "white"
@@ -881,7 +900,7 @@ text: model.edit
                         visible: true
                        height:100
 //                        implicitHeight: 100
-                        implicitWidth: viewInstance.width
+                        implicitWidth: viewInstance.parent.width
                         focus: true
                         clip: true
 
@@ -985,18 +1004,18 @@ onClicked: {
 //                                onTapped: {
 
 //                                    if(content.text == "Examples"){
-//                                    myClass.save()
+//                                    sharedModel.save()
 //                                        return;
 //                                    }
 //                                    if(content.text == "Tags"){
 
-//                                        myClass.loadFile();
+//                                        sharedModel.loadFile();
 //                                        return;
 //                                    }
 
 ////                                    search.forceActiveFocus();
 ////                                    search.clear();
-////                                    search.append(">:" + myClass.getId(
+////                                    search.append(">:" + sharedModel.getId(
 ////                                                      nodeTree.model.mapToSource(
 ////                                                          nodeTree.currentIndex)));
 ////                                    return;
@@ -1080,12 +1099,12 @@ anchors.leftMargin: 5
 
                       //                                    viewInstance.parent.parent.root.parent.input.active == true
 
-                                                          if (myClass.hasMultipleSiblings(
+                                                          if (sharedModel.hasMultipleSiblings(
                                                                       nodeTree.model.mapToSource(
                                                                           nodeTree.currentIndex))) {
                                                               textDot.color = "blue"
                                                           }
-                                                          if (!myClass.acceptsCopies(
+                                                          if (!sharedModel.acceptsCopies(
                                                                       nodeTree.model.mapToSource(
                                                                           nodeTree.currentIndex))) {
                                                               textDot.color = "green"
@@ -1116,31 +1135,8 @@ anchors.leftMargin: 5
                                                   }
 
 
-                      //                            MouseArea {
-                      //                                acceptedButtons: Qt.NoButton
-                      //                                hoverEnabled: true
-                      //                                cursorShape: Qt.IBeamCursor
-                      //                                propagateComposedEvents: true
-                      //                                onClicked: mouse.accepted = false
-                      //                                onPressAndHold: mouse.accepted = false
-                      //                                onDoubleClicked: mouse.accepted = false
-                      //                                onPositionChanged: mouse.accepted = false
-                      //                                onReleased: mouse.accepted = false
-                      //                                onPressed: mouse.accepted = false
-                      //                                anchors.fill: parent
-                      //                                onEntered: {
-                      //                                    var posInTreeView = mapToItem(nodeTree,
-                      //                                                                  mouseX, mouseY)
-                      //                                    var row = nodeTree.rowAtY(posInTreeView.y,
-                      //                                                              false)
-                      //                                    nodeTree.currentIndex = nodeTree.mapToModel(
-                      //                                                nodeTree.viewIndex(0, row))
-                      //                                    if (!search.focus) {
-                      //                                        nodeTree.itemAtModelIndex(
-                      //                                                    nodeTree.currentIndex).item.forceActiveFocus()
-                      //                                    }
-                      //                                }
-                      //                            }
+
+
 
 
 
@@ -1149,32 +1145,9 @@ anchors.leftMargin: 5
 
                     }
                 }
-//                               ScrollBar.vertical: ScrollBar {
-//                                   id: vbar
 
-//                                   width: 12
-//                                   policy: ScrollBar.AlwaysOn
-//                                   active: true
-//                               }
-//                ScrollBar.horizontal: ScrollBar {
-//                    id: hbar
 
-//                    height: 12
-//                    policy: ScrollBar.AlwaysOn
-//                    active: true
-//                }
 
-//               ScrollBar {
-//                       id: vbar
-//                       hoverEnabled: true
-//                       size:0.3
-//                       active: hovered || pressed
-//                       orientation: Qt.Vertical
-////                       size: frame.height / content.height
-////                       anchors.top: parent.top
-////                       anchors.right: parent.right
-////                       anchors.bottom: parent.bottom
-//                   }
             }
 
 
