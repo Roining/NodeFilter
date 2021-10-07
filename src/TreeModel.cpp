@@ -1269,7 +1269,7 @@ bool TreeModel::copyRows(int position, int rows, const QModelIndex &parent,
     return false;
   }
   if (!lastItem->parent()) {
-    emit recursionSignal();
+    //    emit recursionSignal();
     return false;
   }
 
