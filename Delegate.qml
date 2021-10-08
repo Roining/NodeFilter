@@ -757,14 +757,7 @@ anchors.leftMargin: 5
                                                   onTextChanged: {
 
                                                       if (nodeTree.activeFocus) {
-console.log("x  " +x)
-                                                          console.log("delegateRoot.x  " +delegateRoot.x)
 
-                                                          console.log("width  " +width)
-                                                          console.log("width -  " +width)
-
-                                                          console.log("
-                                                                delegateRoot.width   " +delegateRoot.width )
 
                                                          model.edit = text
 

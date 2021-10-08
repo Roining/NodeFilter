@@ -190,7 +190,7 @@ var Module = typeof Module !== 'undefined' ? Module : {};
     }
   
    }
-   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 3690154, "audio": 0}], "remote_package_size": 3690154, "package_uuid": "d4f44f2e-fc17-4b8f-bb72-842166a6332c"});
+   loadPackage({"files": [{"filename": "/storage.dat", "start": 0, "end": 3690154, "audio": 0}], "remote_package_size": 3690154, "package_uuid": "a96cbc3d-7b83-469b-aa7c-1872c75b5ce2"});
   
   })();
   
@@ -1467,11 +1467,11 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var STATIC_BASE = 1024,
-    STACK_BASE = 20320480,
+    STACK_BASE = 20319648,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 15077600,
-    DYNAMIC_BASE = 20320480,
-    DYNAMICTOP_PTR = 15077424;
+    STACK_MAX = 15076768,
+    DYNAMIC_BASE = 20319648,
+    DYNAMICTOP_PTR = 15076592;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 assert(DYNAMIC_BASE % 16 === 0, 'heap must start aligned');
@@ -2013,7 +2013,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
 
 
 
-// STATICTOP = STATIC_BASE + 15076576;
+// STATICTOP = STATIC_BASE + 15075744;
 /* global initializers */  __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
 
 
@@ -8778,7 +8778,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   function _emscripten_get_sbrk_ptr() {
-      return 15077424;
+      return 15076592;
     }
 
   
@@ -13147,7 +13147,7 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
   }
   
   
-  var _fetch_work_queue=15077584;function __emscripten_get_fetch_work_queue() {
+  var _fetch_work_queue=15076752;function __emscripten_get_fetch_work_queue() {
       return _fetch_work_queue;
     }function _emscripten_start_fetch(fetch, successcb, errorcb, progresscb, readystatechangecb) {
     if (typeof noExitRuntime !== 'undefined') noExitRuntime = true; // If we are the main Emscripten runtime, we should not be closing down.
@@ -13779,10 +13779,10 @@ function _emscripten_asm_const_iii(code, sigPtr, argbuf) {
     }
 
   
-  var ___tm_current=15077440;
+  var ___tm_current=15076608;
   
   
-  var ___tm_timezone=(stringToUTF8("GMT", 15077488, 4), 15077488);
+  var ___tm_timezone=(stringToUTF8("GMT", 15076656, 4), 15076656);
   
   function _tzset() {
       // TODO: Use (malleable) environment variables instead of system settings.
