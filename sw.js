@@ -1,5 +1,5 @@
-const staticCacheName = 's-app-v1.29'
-const dynamicCacheName = 'd-app-v1.29'
+const staticCacheName = 's-app-v1.30'
+const dynamicCacheName = 'd-app-v1.30'
 const assetUrls = [ '/',
 '/NodeFilter.html',
 '/index.html',
