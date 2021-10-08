@@ -1,17 +1,12 @@
 import QtQuick 2.15
-//import QtQuick.Controls 1.4
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.12
-//import QtQuick.TreeView 2.15
 import TreeModel.com 1.0
 import Qt.labs.platform 1.0
 import QtQuick.Layouts 1.15
 import Qt.labs.qmlmodels 1.0
-//import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
-//import QtQuick.VirtualKeyboard 2.15
-//import QtQuick.VirtualKeyboard.Styles 2.15
-//import QtQuick.VirtualKeyboard.Settings 2.15
+
 ApplicationWindow {
     id: windowInstance
 function newPane(){
@@ -43,7 +38,6 @@ function newPane(){
 
 close.accepted = false
             sharedModel.save()
-//            Qt.quit()
 
     }
     MouseArea {
@@ -52,16 +46,6 @@ close.accepted = false
             windowInstance.contentItem.childAt(mouseX, mouseY)
         }
     }
-
-
-//    Shortcut {
-//        sequence: "Ctrl+Shift+Q"
-//        onActivated: {
-
-//sharedModel.kok();
-//        }
-//    }
-
     Shortcut {
         sequence: "Ctrl+Shift+O"
         onActivated: {
@@ -73,10 +57,8 @@ sharedModel.loadFileIDBFS();
     Shortcut {
         sequence: "Ctrl+Shift+S"
         onActivated: {
-//uniqueid1.open();
 
 sharedModel.saveIDBFS();
-//sharedModel.saveJSON();
         }
     }
 
@@ -108,14 +90,9 @@ sharedModel.saveIDBFS();
             var ut = delegateInstance.createObject(splitViewInstance, {
                                                        "test": component
                                                    })
-//            windowInstance.viewArray.push(delegateInstance.createObject(splitViewInstance, {
-//                                                                  "test": component
-//                                                              })) //
-//            splitViewInstance.addItem(ut)
 
         }
     }
-
 
     SplitView {
            id: splitViewInstance
@@ -124,12 +101,6 @@ sharedModel.saveIDBFS();
 
            anchors.fill: parent
            orientation: Qt.Horizontal
-//
-//           Layout.minimumHeight: 200
-//                            Layout.preferredHeight: parent.height / 2
-//                            Layout.minimumWidth: 100
-//                            Layout.preferredWidth: parent.width / 4
-//                            Layout.maximumWidth: 1000
            handle : Rectangle {
                implicitWidth: 4
                implicitHeight: 1
@@ -139,15 +110,11 @@ sharedModel.saveIDBFS();
            }
            SplitView {
                id: hSplit
-
-   //            Layout.preferredWidth: parent.width / 2
-   //            Layout.fillHeight: true
                orientation: Qt.Vertical
 
                handle : Rectangle {
                    implicitWidth: 4
                    implicitHeight: 4
-//                   color: SplitHandle.pressed ? "#81e889" : (SplitHandle.hovered ? Qt.lighter("#c2f4c6", 1.1) : "#c2f4c6")
                }
            }
        }
