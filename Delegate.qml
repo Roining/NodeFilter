@@ -521,7 +521,7 @@ return;
                         TextArea {
                             id: content
 
-                            width: delegateRoot.width
+                            width: delegateRoot.width - x
                             selectByMouse: true
                             selectionColor: "#3399FF"
                             selectedTextColor: "white"
