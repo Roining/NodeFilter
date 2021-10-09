@@ -188,7 +188,7 @@ Component.onCompleted: {
         property alias tree: nodeTree
         property alias ser: search
         property alias test: nodeTree.model
-        property bool isMobile: false
+
         objectName: Math.random().toString(36).substr(2, 5)
 
         SplitView.minimumHeight: 200
@@ -217,7 +217,7 @@ Component.onCompleted: {
                 placeholderText: "Find"
                 onSelectedTextChanged:  {
 
-                    if(selectedText.length >0&&viewInstance.isMobile){
+                    if(selectedText.length >0&&viewInstance.parent.parent.root.isMobile){
 
                         findSelectionMenu.x = (viewInstance.width) / 3
                                     findSelectionMenu.y = (viewInstance.height ) / 2
@@ -315,7 +315,7 @@ return;
                 QCY.TableViewColumn {
                     id:ou
                         role: "edit"
-                        width: viewInstance.isMobile? viewInstance.width:viewInstance.parent.width
+                        width: viewInstance.parent.parent.root.isMobile? viewInstance.width:viewInstance.parent.width
 
 
 
@@ -336,7 +336,8 @@ headerVisible: false
                 Component.onCompleted: {
 
                     if(sharedModel.isMobile()){
-                            viewInstance.isMobile = true
+                        console.log("aaaaaaaaaaaaaaa")
+                            viewInstance.parent.parent.root.isMobile = true
                             } //TODO
 
 
@@ -714,7 +715,7 @@ anchors.leftMargin: 5
 
                       onSelectedTextChanged:  {
 
-                          if(selectedText.length >0&&viewInstance.isMobile){
+                          if(selectedText.length >0&&viewInstance.parent.parent.root.isMobile){
 
                               selectionMenu.x = (viewInstance.width) / 3
                                           selectionMenu.y = (viewInstance.height ) / 2

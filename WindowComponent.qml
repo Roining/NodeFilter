@@ -9,6 +9,7 @@ import Qt.labs.settings 1.0
 
 ApplicationWindow {
     id: windowInstance
+    property bool isMobile: false
 function newPane(){
     var Randomnumber = Math.random().toString(36).substr(2, 5)
     var component = Qt.createQmlObject(
