@@ -23,8 +23,8 @@ Supported target browsers/devices by Qt for WebAssembly:
 - Safari(not tested for Node Filter)
 - Edge (Chrome)  
 
-The demo storage contains the following examples:
- - Examples of basic Node Filter functionality(copying nodes, hierarchical queries, etc.)
+The demo storage contains links to [video tutorials](https://www.youtube.com/channel/UCqruxxlzOyOlsdIxr5ZnMag) and the following examples of workflows:
+ - Examples of basic Node Filter functionality (copying nodes, hierarchical queries, etc.)
  - Daily documents workflow example
  - Wikidata transitive ontology used as a tagging system
  - Example of schema.org ontology use
