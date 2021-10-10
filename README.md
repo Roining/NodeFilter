@@ -1,4 +1,4 @@
-Node Filter is all-in-one local-first outlining knowledge management tool with an advanced hierarchical query system(similar to SPARQL in its purpose) that relies on the concepts of structured data, transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create and query their own transitive [ontologies](https://en.wikipedia.org/wiki/Ontology_(information_science)) and hierarchies of abstractions out of their daily notes, as well as create their own user-defined PKM functionality/workflows of any complexity, such as transitive tags,templates, bi-directional linking, sorting/property functionality, document and task management workflow, etc.  
+Node Filter is all-in-one local-first outlining knowledge management tool with an advanced hierarchical query system that relies on the concepts of structured data, transclusion(ability to copy and mirror nodes and their descendants) and hierarchical filtering to let the users create and query their own transitive [ontologies](https://en.wikipedia.org/wiki/Ontology_(information_science)) and hierarchies of abstractions out of their daily notes, as well as create their own user-defined PKM functionality/workflows of any complexity.
 
 Node Filter was created in an effort to break down note-taking and knowledge management to an atomic-level detail and to add ability to place any individual note/fact in a user-defined ontology that can be queried transitively in a way similar to SPARQL queries.  
 This project is an attempt at mixing note-taking and ontologies with as little friction as possible.  
@@ -14,9 +14,27 @@ Hierarchical filtering can be used to emulate the bi-directional linking functio
 See Query syntax below for more information on types of hierarchical filters.  
 # Demo
 Node Filter has an experimental local-first web and mobile support provided by its WebAssembly port.  
-A  WebAssembly port of Node Filter with a guide to Node Filter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
+A [WebAssembly port](https://github.com/Roining/NodeFilter#notes-on-webassemblypwamobile-support) of Node Filter with a guide to Node Filter's functionality as well as examples of usage: https://roining.github.io/NodeFilter/  
 The web version of Node Filter is generally meant to be used only if a desktop version is not available(for example, on mobile platforms), however, it has almost all the Desktop version's features with a few limitations which are specified in the demo. 
-Currently, it is possible to share/sync the knowledge base across desktop, web, and mobile versions of Node Filter.  
+Currently, it is possible to share/sync the knowledge base across desktop, web, and mobile versions of Node Filter. 
+Supported target browsers/devices by Qt for WebAssembly:
+- Chrome
+- Firefox
+- Safari(not tested for Node Filter)
+- Edge (Chrome)  
+
+The demo storage contains the following examples:
+ - Examples of basic Node Filter functionality(copying nodes, hierarchical queries, etc.)
+ - Daily documents workflow example
+ - Wikidata transitive ontology used as a tagging system
+ - Example of schema.org ontology use
+ - Task management/Priority Matrix example
+ - Cost/Benifit Priority matrix examples
+ - "Table"/Sorting functionality example
+ - Bi-directional linking example
+ - Spaced repetition example
+ - other stuff
+ 
 # Query syntax:  
 There are several types of filters.  
 1.Hierarchical filters:  
