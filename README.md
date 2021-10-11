@@ -29,8 +29,8 @@ The demo storage contains links to [video tutorials](https://www.youtube.com/cha
  - Wikidata transitive ontology used as a tagging system
  - Example of schema.org ontology use
  - Task management/Priority Matrix example
- - Cost/Benifit Priority matrix examples
- - "Table"/Sorting functionality example
+ - Cost/Benefit Priority matrix examples
+ - Property/Sorting example
  - Bi-directional linking example
  - Spaced repetition example
  - other stuff
