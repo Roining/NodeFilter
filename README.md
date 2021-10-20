@@ -5,7 +5,38 @@ This project is an attempt at mixing note-taking and ontologies with as little f
 Node Filter has a Desktop version and an experimental Web/mobile PWA support provided by its' Qt for WebAssembly port. 
 It is currently possible to share/sync the knowledge base between desktop, web, and mobile versions of Node Filter.  
  # Structure of the knowledge base  
- User input is organized in a tree structure in which each node can contain arbitrary text and any node  can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
+ User input is organized in a tree structure in which each node can contain arbitrary text and any node can be copied to any place in the hierarchy. Cloned nodes mirror each other's descendants.  
+Hierarchical queries are used to find all descendants(and all their copies) of a specified node.  
+
+ <details>
+  <summary>Example of usage</summary>  
+ An example of how to use a hierarchy of concepts with automatic tagging in NodeFilter, given the following knowledge base:  
+  
+wrongdoing  
+--violation of law  
+---crime  
+----	property crime   
+------theft  
+-------robbery  
+-----violent crime  
+------robbery  
+...   
+Notes  
+--Robbery is the crime of taking or attempting to take anything of value by force, threat of force, or by putting the victim in fear.  
+---robbery  
+
+ In the example above, a definition of robbery is tagged as robbery, but this definition will also come up in the results when searching for property crime, violent crime, crime, etc..  
+ 
+"robbery" node under "Notes" is copied from one of the "robbery" nodes in "wrongdoing" hierarchy.  
+
+If we search for all descendants of "robbery", all 3 instances of "robbery" node would come up. Every node in the knowledge base is checked to see if it is a copy of "robbery" node.  
+The query for descendants of "robbery" will look like this:  
+<<<:\*id of robbery node\*  
+If we search for all descendants of "property crime", then again, all 3 instances of "robbery" will match the filter. In this case, every node in the knowledge base is checked if it's a copy of either "property crime","theft" or "robbery" node.  
+The query for descendants of "property crime" will look like this:  
+<<<:\*id of property crime node\*  
+  </details>  
+
 # Filtering  
 Hierarchical filtering in combination with the use of copied nodes can be used to create a user-defined PKM workflow of any complexity.  
 Hierarchical filtering can be used to build a hierarchy(or multiple linked hierarchies) of abstractions of arbitrary depth that can be used as a transitive tagging system. A hierarchy of abstractions can be defined by the user. Hierarchies can be built going from specific things up to abstract concepts.  
